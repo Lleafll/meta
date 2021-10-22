@@ -12,3 +12,5 @@ target_link_libraries(${PROJECT_NAME}
         PRIVATE
         CONAN_PKG::sdl
         )
+
+add_subdirectory(metacore)
