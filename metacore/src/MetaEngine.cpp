@@ -1,5 +1,16 @@
-//
-// Created by lars- on 22/10/2021.
-//
+#include "MetaEngine.h"
+#include "GameState.h"
 
-#include "../include/metacore/MetaEngine.h"
+namespace metacore {
+
+GameState MetaEngine::calculate_state() const noexcept
+{
+    return state_;
+}
+
+void MetaEngine::input_right() noexcept
+{
+    state_.player_position.x += 1.0;
+}
+
+} // namespace metacore
