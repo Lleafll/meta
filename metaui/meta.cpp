@@ -38,7 +38,6 @@ void render_gamestate(SDL_Renderer &renderer, metacore::GameState const &state)
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
     SDL_Window *window = nullptr;
-    SDL_Renderer *renderer = nullptr;
     try {
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
             throw_sdl_error();
@@ -53,7 +52,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         if (window == nullptr) {
             throw_sdl_error();
         }
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        auto *const renderer =
+            SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (renderer == nullptr) {
             throw_sdl_error();
         }
