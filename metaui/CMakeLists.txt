@@ -10,4 +10,6 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         CONAN_PKG::sdl
+        metacore
         )
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
