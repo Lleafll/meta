@@ -5,7 +5,7 @@ using namespace metacore;
 
 namespace {
 
-TEST(MetaEngineTest, InputRight)
+TEST(MetaEngineTest, InputRightOnFreshEngine)
 {
     auto engine = MetaEngine{};
     ASSERT_EQ((Position{0.0, 0.0}), (engine.calculate_state().player_position));
