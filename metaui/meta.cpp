@@ -33,6 +33,27 @@ void render_gamestate(SDL_Renderer &renderer, metacore::GameState const &state)
     SDL_RenderPresent(&renderer);
 }
 
+enum class EscapePressed : bool { Yes, No };
+
+EscapePressed read_and_pass_input(metacore::MetaEngine &engine)
+{
+    auto esc_pressed = EscapePressed::No;
+    auto event = SDL_Event{};
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_KEYDOWN) {
+            switch (event.key.keysym.sym) {
+            case SDLK_RIGHT:
+                engine.input_right();
+                break;
+            case SDLK_ESCAPE:
+                esc_pressed = EscapePressed::Yes;
+                break;
+            }
+        }
+    }
+    return esc_pressed;
+}
+
 } // namespace
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
@@ -60,6 +81,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
         auto engine = metacore::MetaEngine{};
         while (true) {
             render_gamestate(*renderer, engine.calculate_state());
+            if (read_and_pass_input(engine) == EscapePressed::Yes) {
+                break;
+            }
             SDL_Delay(50);
         }
     } catch (std::exception const &error) {
