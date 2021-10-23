@@ -13,4 +13,9 @@ TEST(PositionTest, IsWithinDistance)
     EXPECT_TRUE(is_within_distance<10>(Position{10, 10}, Position{0, 0}));
 }
 
+TEST(PositionTest, IsWithinDistanceOnlyWithX)
+{
+    EXPECT_FALSE(is_within_distance<50>(Position{0, 0}, Position{10, 200}));
+}
+
 } // namespace

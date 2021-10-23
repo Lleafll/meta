@@ -28,7 +28,7 @@ template<int distance>
 constexpr bool is_within_distance(Position const& lhs, Position const& rhs)
 {
     return detail::is_within_distance<distance>(lhs.x, rhs.x) &&
-        detail::is_within_distance<distance>(lhs.y, lhs.y);
+        detail::is_within_distance<distance>(lhs.y, rhs.y);
 }
 
 } // namespace metacore
