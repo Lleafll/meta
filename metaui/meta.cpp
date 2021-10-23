@@ -60,7 +60,9 @@ void render_gamestate(SDL_Renderer& renderer, metacore::GameState const& state)
         throw_sdl_error();
     }
     render_player(renderer, state.player_position);
-    render_upgrade(renderer, state.upgrade);
+    if (state.upgrade_position.has_value()) {
+        render_upgrade(renderer, *state.upgrade_position);
+    }
     SDL_RenderPresent(&renderer);
 }
 

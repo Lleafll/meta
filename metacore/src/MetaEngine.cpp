@@ -1,6 +1,8 @@
 #include "MetaEngine.h"
 #include "GameState.h"
+#include "overloaded.h"
 #include "Pickup.h"
+#include <variant>
 
 namespace metacore {
 
@@ -12,15 +14,25 @@ constexpr auto initial_bounds = 250;
 
 } // namespace
 
-struct MetaEngine::Impl final {
+struct DefaultState final {
     Position player = {0, 0};
     Pickup pickup = {{200, 50}, {PickupUpgrade::Slash, PickupUpgrade::Shoot}};
+};
+
+struct PickingUpPickupState final {
+    Position player;
+    UpgradeChoices choices;
+};
+
+struct MetaEngine::Impl final {
+    std::variant<DefaultState, PickingUpPickupState> state;
 
     static Impl from(GameState const& state)
     {
-        return {
+        return {DefaultState{
             state.player_position,
-            {state.upgrade, {PickupUpgrade::Slash, PickupUpgrade::Shoot}}};
+            {state.upgrade_position.value_or(Position{0, 0}),
+             {PickupUpgrade::Slash, PickupUpgrade::Shoot}}}};
     }
 };
 
@@ -37,7 +49,15 @@ MetaEngine::~MetaEngine() = default;
 
 GameState MetaEngine::calculate_state() const
 {
-    return {impl_->player, impl_->pickup.position};
+    std::visit(
+        overloaded{
+            [](DefaultState const& state) -> GameState {
+                return {state.player, state.pickup.position, std::nullopt};
+            },
+            [](PickingUpPickupState const& state) -> GameState {
+                return {state.player, std::nullopt, state.choices};
+            }},
+        impl_->state);
 }
 
 namespace {
@@ -58,30 +78,54 @@ void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
 
 void MetaEngine::input_right()
 {
-    impl_->player.x += player_move_increment;
-    check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->pickup);
+    std::visit(
+        overloaded{
+            [](DefaultState& state) {
+                state.player.x += player_move_increment;
+                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
+                    state.player, state.pickup);
+            },
+            [](auto const&) {}},
+        impl_->state);
 }
 
 void MetaEngine::input_left()
 {
-    impl_->player.x -= player_move_increment;
-    check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->pickup);
+    std::visit(
+        overloaded{
+            [](DefaultState& state) {
+                state.player.x -= player_move_increment;
+                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
+                    state.player, state.pickup);
+            },
+            [](auto const&) {}},
+        impl_->state);
 }
 
 void MetaEngine::input_up()
 {
-    impl_->player.y += player_move_increment;
-    check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->pickup);
+    std::visit(
+        overloaded{
+            [](DefaultState& state) {
+                state.player.y += player_move_increment;
+                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
+                    state.player, state.pickup);
+            },
+            [](auto const&) {}},
+        impl_->state);
 }
 
 void MetaEngine::input_down()
 {
-    impl_->player.y -= player_move_increment;
-    check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->pickup);
+    std::visit(
+        overloaded{
+            [](DefaultState& state) {
+                state.player.y -= player_move_increment;
+                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
+                    state.player, state.pickup);
+            },
+            [](auto const&) {}},
+        impl_->state);
 }
 
 } // namespace metacore

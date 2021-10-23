@@ -49,17 +49,18 @@ TEST(MetaEngineTest, InputDownOnFreshEngine)
 TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
 {
     auto engine = MetaEngine{};
-    auto const position = engine.calculate_state().upgrade;
-    EXPECT_NE(0, position.x);
-    EXPECT_NE(0, position.y);
+    auto const position = engine.calculate_state().upgrade_position;
+    ASSERT_TRUE(position.has_value());
+    EXPECT_NE(0, position->x);
+    EXPECT_NE(0, position->y);
 }
 
 TEST(MetaEngineTest, UpgradeCollision)
 {
     auto engine = MetaEngine{{Position{0, 0}, Position{50, 0}}};
-    ASSERT_EQ((Position{50, 0}), engine.calculate_state().upgrade);
+    ASSERT_EQ((Position{50, 0}), engine.calculate_state().upgrade_position);
     engine.input_right();
-    EXPECT_NE((Position{50, 0}), engine.calculate_state().upgrade);
+    EXPECT_NE((Position{50, 0}), engine.calculate_state().upgrade_position);
 }
 
 } // namespace
