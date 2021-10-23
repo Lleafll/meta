@@ -14,6 +14,13 @@ TEST(MetaEngineTest, InputRightOnFreshEngine)
     EXPECT_LT(0, position.x);
     EXPECT_EQ(0, position.y);
 }
+
+TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
+{
+    auto engine = MetaEngine{};
+    auto const position = engine.calculate_state().upgrade;
+    EXPECT_NE(0, position.x);
+    EXPECT_NE(0, position.y);
 }
 
 } // namespace

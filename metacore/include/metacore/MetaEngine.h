@@ -10,7 +10,7 @@ class MetaEngine final {
     void input_right() noexcept;
 
   private:
-    GameState state_;
+    GameState state_ = {{}, {50, 50}};
 };
 
 }; // namespace metacore
