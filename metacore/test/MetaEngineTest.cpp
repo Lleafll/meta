@@ -1,4 +1,5 @@
 #include "MetaEngine.h"
+#include "GameState.h"
 #include <gtest/gtest.h>
 
 using namespace metacore;

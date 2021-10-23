@@ -1,13 +1,17 @@
 #pragma once
 
-#include "GameState.h"
+#include <memory>
+namespace metacore {
+struct GameState;
+} // namespace metacore
 
 namespace metacore {
 
 class MetaEngine final {
   public:
-    MetaEngine() = default;
+    MetaEngine();
     explicit MetaEngine(GameState const& state);
+    ~MetaEngine();
 
     [[nodiscard]] GameState calculate_state() const;
     void input_right();
@@ -16,7 +20,9 @@ class MetaEngine final {
     void input_down();
 
   private:
-    GameState state_ = {{}, {200, 50}};
+    struct Impl;
+
+    std::unique_ptr<Impl> impl_;
 };
 
 }; // namespace metacore

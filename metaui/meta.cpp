@@ -1,3 +1,4 @@
+#include "metacore/GameState.h"
 #include "metacore/MetaEngine.h"
 #include <iostream>
 #include <SDL2/SDL.h>

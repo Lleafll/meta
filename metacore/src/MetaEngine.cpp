@@ -11,13 +11,30 @@ constexpr auto initial_bounds = 250;
 
 } // namespace
 
-MetaEngine::MetaEngine(GameState const& state) : state_{state}
+struct MetaEngine::Impl final {
+    Position player = {0, 0};
+    Position upgrade = {200, 50};
+
+    static Impl from(GameState const& state)
+    {
+        return {state.player_position, state.upgrade};
+    }
+};
+
+MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
 {
 }
 
+MetaEngine::MetaEngine(GameState const& state)
+    : impl_{std::make_unique<Impl>(Impl::from(state))}
+{
+}
+
+MetaEngine::~MetaEngine() = default;
+
 GameState MetaEngine::calculate_state() const
 {
-    return state_;
+    return {impl_->player, impl_->upgrade};
 }
 
 namespace {
@@ -36,30 +53,30 @@ void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
 
 void MetaEngine::input_right()
 {
-    state_.player_position.x += player_move_increment;
+    impl_->player.x += player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        state_.player_position, state_.upgrade);
+        impl_->player, impl_->upgrade);
 }
 
 void MetaEngine::input_left()
 {
-    state_.player_position.x -= player_move_increment;
+    impl_->player.x -= player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        state_.player_position, state_.upgrade);
+        impl_->player, impl_->upgrade);
 }
 
 void MetaEngine::input_up()
 {
-    state_.player_position.y += player_move_increment;
+    impl_->player.y += player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        state_.player_position, state_.upgrade);
+        impl_->player, impl_->upgrade);
 }
 
 void MetaEngine::input_down()
 {
-    state_.player_position.y -= player_move_increment;
+    impl_->player.y -= player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        state_.player_position, state_.upgrade);
+        impl_->player, impl_->upgrade);
 }
 
 } // namespace metacore
