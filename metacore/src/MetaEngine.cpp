@@ -10,7 +10,6 @@ namespace {
 
 constexpr auto player_move_increment = 5;
 constexpr auto pickup_distance = 50;
-constexpr auto initial_bounds = 250;
 
 } // namespace
 
@@ -49,7 +48,7 @@ MetaEngine::~MetaEngine() = default;
 
 GameState MetaEngine::calculate_state() const
 {
-    std::visit(
+    return std::visit(
         overloaded{
             [](DefaultState const& state) -> GameState {
                 return {state.player, state.pickup.position, std::nullopt};
@@ -63,14 +62,12 @@ GameState MetaEngine::calculate_state() const
 namespace {
 
 void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-    Position const& player, Pickup& pickup)
+    Position const& player,
+    Pickup const& pickup,
+    std::variant<DefaultState, PickingUpPickupState>& state)
 {
-    auto const& position = pickup.position;
-    if (is_within_distance<pickup_distance>(player, position)) {
-        pickup = {
-            {(position.y + 333) % (2 * initial_bounds) - initial_bounds,
-             (position.x + 333) % (2 * initial_bounds) - initial_bounds},
-            {PickupUpgrade::Shoot, PickupUpgrade::Slash}};
+    if (is_within_distance<pickup_distance>(player, pickup.position)) {
+        state = PickingUpPickupState{player, pickup.upgrades};
     }
 }
 
@@ -80,10 +77,10 @@ void MetaEngine::input_right()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) {
+            [this](DefaultState& state) {
                 state.player.x += player_move_increment;
                 check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup);
+                    state.player, state.pickup, impl_->state);
             },
             [](auto const&) {}},
         impl_->state);
@@ -93,10 +90,10 @@ void MetaEngine::input_left()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) {
+            [this](DefaultState& state) {
                 state.player.x -= player_move_increment;
                 check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup);
+                    state.player, state.pickup, impl_->state);
             },
             [](auto const&) {}},
         impl_->state);
@@ -106,10 +103,10 @@ void MetaEngine::input_up()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) {
+            [this](DefaultState& state) {
                 state.player.y += player_move_increment;
                 check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup);
+                    state.player, state.pickup, impl_->state);
             },
             [](auto const&) {}},
         impl_->state);
@@ -119,10 +116,10 @@ void MetaEngine::input_down()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) {
+            [this](DefaultState& state) {
                 state.player.y -= player_move_increment;
                 check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup);
+                    state.player, state.pickup, impl_->state);
             },
             [](auto const&) {}},
         impl_->state);
