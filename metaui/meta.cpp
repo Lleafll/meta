@@ -1,5 +1,4 @@
 #include "metacore/MetaEngine.h"
-#include <format>
 #include <iostream>
 #include <SDL2/SDL.h>
 
@@ -13,6 +12,19 @@ constexpr auto height = 600;
     throw std::runtime_error{SDL_GetError()};
 }
 
+struct ScreenPosition final {
+    int x;
+    int y;
+};
+
+ScreenPosition
+world_position_to_screen_position(metacore::Position const &world_position)
+{
+    auto const x = static_cast<int>(world_position.x) + width / 2;
+    auto const y = static_cast<int>(world_position.y) + height / 2;
+    return {x, y};
+}
+
 void render_gamestate(SDL_Renderer &renderer, metacore::GameState const &state)
 {
     if (SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255) != 0) {
@@ -21,9 +33,9 @@ void render_gamestate(SDL_Renderer &renderer, metacore::GameState const &state)
     if (SDL_RenderClear(&renderer) != 0) {
         throw_sdl_error();
     }
-    auto const &player = state.player_position;
-    auto r = SDL_Rect{
-        static_cast<int>(player.x), static_cast<int>(player.y), 50, 50};
+    auto const player =
+        world_position_to_screen_position(state.player_position);
+    auto r = SDL_Rect{player.x, player.y, 50, 50};
     if (SDL_SetRenderDrawColor(&renderer, 0, 0, 255, 255) != 0) {
         throw_sdl_error();
     }
