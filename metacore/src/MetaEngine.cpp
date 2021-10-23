@@ -13,7 +13,7 @@ constexpr auto initial_bounds = 250;
 
 struct MetaEngine::Impl final {
     Position player = {0, 0};
-    Position upgrade = {200, 50};
+    Position pickup = {200, 50};
 
     static Impl from(GameState const& state)
     {
@@ -34,7 +34,7 @@ MetaEngine::~MetaEngine() = default;
 
 GameState MetaEngine::calculate_state() const
 {
-    return {impl_->player, impl_->upgrade};
+    return {impl_->player, impl_->pickup};
 }
 
 namespace {
@@ -55,28 +55,28 @@ void MetaEngine::input_right()
 {
     impl_->player.x += player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->upgrade);
+        impl_->player, impl_->pickup);
 }
 
 void MetaEngine::input_left()
 {
     impl_->player.x -= player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->upgrade);
+        impl_->player, impl_->pickup);
 }
 
 void MetaEngine::input_up()
 {
     impl_->player.y += player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->upgrade);
+        impl_->player, impl_->pickup);
 }
 
 void MetaEngine::input_down()
 {
     impl_->player.y -= player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-        impl_->player, impl_->upgrade);
+        impl_->player, impl_->pickup);
 }
 
 } // namespace metacore
