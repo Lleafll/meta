@@ -41,4 +41,11 @@ void MetaEngine::input_right()
         state_.player_position, state_.upgrade);
 }
 
+void MetaEngine::input_left()
+{
+    state_.player_position.x -= player_move_increment;
+    check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
+        state_.player_position, state_.upgrade);
+}
+
 } // namespace metacore

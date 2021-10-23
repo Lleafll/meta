@@ -76,6 +76,9 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                     case SDLK_RIGHT:
                         engine.input_right();
                         break;
+                    case SDLK_LEFT:
+                        engine.input_left();
+                        break;
                     case SDLK_ESCAPE:
                         close_requested = CloseRequested::Yes;
                         break;
