@@ -4,7 +4,7 @@ project(metacoretest)
 
 add_executable(${PROJECT_NAME}
         "MetaEngineTest.cpp"
-        )
+        "PositionTest.cpp")
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         metacore
