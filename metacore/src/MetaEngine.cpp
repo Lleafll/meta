@@ -1,5 +1,6 @@
 #include "MetaEngine.h"
 #include "GameState.h"
+#include "Pickup.h"
 
 namespace metacore {
 
@@ -13,11 +14,13 @@ constexpr auto initial_bounds = 250;
 
 struct MetaEngine::Impl final {
     Position player = {0, 0};
-    Position pickup = {200, 50};
+    Pickup pickup = {{200, 50}, {PickupUpgrade::Slash, PickupUpgrade::Shoot}};
 
     static Impl from(GameState const& state)
     {
-        return {state.player_position, state.upgrade};
+        return {
+            state.player_position,
+            {state.upgrade, {PickupUpgrade::Slash, PickupUpgrade::Shoot}}};
     }
 };
 
@@ -34,18 +37,20 @@ MetaEngine::~MetaEngine() = default;
 
 GameState MetaEngine::calculate_state() const
 {
-    return {impl_->player, impl_->pickup};
+    return {impl_->player, impl_->pickup.position};
 }
 
 namespace {
 
 void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-    Position const& player, Position& upgrade)
+    Position const& player, Pickup& pickup)
 {
-    if (is_within_distance<pickup_distance>(player, upgrade)) {
-        upgrade = {
-            (upgrade.y + 333) % (2 * initial_bounds) - initial_bounds,
-            (upgrade.x + 333) % (2 * initial_bounds) - initial_bounds};
+    auto const& position = pickup.position;
+    if (is_within_distance<pickup_distance>(player, position)) {
+        pickup = {
+            {(position.y + 333) % (2 * initial_bounds) - initial_bounds,
+             (position.x + 333) % (2 * initial_bounds) - initial_bounds},
+            {PickupUpgrade::Shoot, PickupUpgrade::Slash}};
     }
 }
 
