@@ -20,8 +20,8 @@ struct ScreenPosition final {
 ScreenPosition
 world_position_to_screen_position(metacore::Position const &world_position)
 {
-    auto const x = static_cast<int>(world_position.x) + width / 2;
-    auto const y = static_cast<int>(world_position.y) + height / 2;
+    auto const x = world_position.x + width / 2;
+    auto const y = world_position.y + height / 2;
     return {x, y};
 }
 

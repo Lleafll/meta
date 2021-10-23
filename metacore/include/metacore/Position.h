@@ -3,8 +3,8 @@
 namespace metacore {
 
 struct Position final {
-    double x;
-    double y;
+    int x = 0;
+    int y = 0;
 
     bool operator==(Position const &) const = default;
 };
