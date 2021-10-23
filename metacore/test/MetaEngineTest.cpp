@@ -25,6 +25,26 @@ TEST(MetaEngineTest, InputLeftOnFreshEngine)
     EXPECT_EQ(0, position.y);
 }
 
+TEST(MetaEngineTest, InputUpOnFreshEngine)
+{
+    auto engine = MetaEngine{};
+    ASSERT_EQ((Position{0, 0}), (engine.calculate_state().player_position));
+    engine.input_up();
+    auto const position = engine.calculate_state().player_position;
+    EXPECT_EQ(0, position.x);
+    EXPECT_LT(0, position.y);
+}
+
+TEST(MetaEngineTest, InputDownOnFreshEngine)
+{
+    auto engine = MetaEngine{};
+    ASSERT_EQ((Position{0, 0}), (engine.calculate_state().player_position));
+    engine.input_down();
+    auto const position = engine.calculate_state().player_position;
+    EXPECT_EQ(0, position.x);
+    EXPECT_GT(0, position.y);
+}
+
 TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
 {
     auto engine = MetaEngine{};

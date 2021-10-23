@@ -21,7 +21,7 @@ ScreenPosition
 world_position_to_screen_position(metacore::Position const& world_position)
 {
     auto const x = world_position.x + width / 2;
-    auto const y = world_position.y + height / 2;
+    auto const y = height / 2 - world_position.y;
     return {x, y};
 }
 
@@ -78,6 +78,12 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                         break;
                     case SDLK_LEFT:
                         engine.input_left();
+                        break;
+                    case SDLK_UP:
+                        engine.input_up();
+                        break;
+                    case SDLK_DOWN:
+                        engine.input_down();
                         break;
                     case SDLK_ESCAPE:
                         close_requested = CloseRequested::Yes;
