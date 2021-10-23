@@ -11,11 +11,11 @@ constexpr auto initial_bounds = 500;
 
 } // namespace
 
-MetaEngine::MetaEngine(GameState const& state) noexcept : state_{state}
+MetaEngine::MetaEngine(GameState const& state) : state_{state}
 {
 }
 
-GameState MetaEngine::calculate_state() const noexcept
+GameState MetaEngine::calculate_state() const
 {
     return state_;
 }
@@ -34,7 +34,7 @@ void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
 
 } // namespace
 
-void MetaEngine::input_right() noexcept
+void MetaEngine::input_right()
 {
     state_.player_position.x += player_move_increment;
     check_if_upgrade_is_hit_and_reset_upgrade_accordingly(

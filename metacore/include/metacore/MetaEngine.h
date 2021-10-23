@@ -6,11 +6,11 @@ namespace metacore {
 
 class MetaEngine final {
   public:
-    MetaEngine() noexcept = default;
-    explicit MetaEngine(GameState const& state) noexcept;
+    MetaEngine() = default;
+    explicit MetaEngine(GameState const& state);
 
-    [[nodiscard]] GameState calculate_state() const noexcept;
-    void input_right() noexcept;
+    [[nodiscard]] GameState calculate_state() const;
+    void input_right();
 
   private:
     GameState state_ = {{}, {200, 50}};
