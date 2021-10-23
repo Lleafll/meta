@@ -25,7 +25,7 @@ world_position_to_screen_position(metacore::Position const& world_position)
     return {x, y};
 }
 
-template <Uint8 red, Uint8 green, Uint8 blue>
+template<Uint8 red, Uint8 green, Uint8 blue>
 void render_at_position(
     SDL_Renderer& renderer, metacore::Position const& world_position)
 {
