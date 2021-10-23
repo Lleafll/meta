@@ -1,6 +1,5 @@
 #include "MetaEngine.h"
 #include "GameState.h"
-#include <array>
 
 namespace metacore {
 
