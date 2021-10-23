@@ -12,7 +12,7 @@ struct Position final {
 namespace detail {
 
 template<int distance>
-constexpr bool is_within_distance(double const lhs, double const rhs)
+constexpr bool is_within_distance(double const lhs, double const rhs) noexcept
 {
     auto const diff = lhs - rhs;
     if (diff >= 0) {
@@ -25,7 +25,8 @@ constexpr bool is_within_distance(double const lhs, double const rhs)
 } // namespace detail
 
 template<int distance>
-constexpr bool is_within_distance(Position const& lhs, Position const& rhs)
+constexpr bool
+is_within_distance(Position const& lhs, Position const& rhs) noexcept
 {
     return detail::is_within_distance<distance>(lhs.x, rhs.x) &&
         detail::is_within_distance<distance>(lhs.y, lhs.y);

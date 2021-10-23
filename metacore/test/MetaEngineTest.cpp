@@ -23,4 +23,12 @@ TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
     EXPECT_NE(0, position.y);
 }
 
+TEST(MetaEngineTest, UpgradeCollision)
+{
+    auto engine = MetaEngine{{Position{0, 0}, Position{50, 0}}};
+    ASSERT_EQ((Position{50, 0}), engine.calculate_state().upgrade);
+    engine.input_right();
+    EXPECT_NE((Position{50, 0}), engine.calculate_state().upgrade);
+}
+
 } // namespace
