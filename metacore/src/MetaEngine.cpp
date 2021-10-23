@@ -3,6 +3,12 @@
 
 namespace metacore {
 
+namespace {
+
+constexpr auto player_move_increment = 5;
+
+} // namespace
+
 GameState MetaEngine::calculate_state() const noexcept
 {
     return state_;
@@ -10,7 +16,7 @@ GameState MetaEngine::calculate_state() const noexcept
 
 void MetaEngine::input_right() noexcept
 {
-    state_.player_position.x += 1.0;
+    state_.player_position.x += player_move_increment;
 }
 
 } // namespace metacore
