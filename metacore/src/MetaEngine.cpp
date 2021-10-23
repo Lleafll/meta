@@ -7,7 +7,7 @@ namespace {
 
 constexpr auto player_move_increment = 5;
 constexpr auto pickup_distance = 50;
-constexpr auto initial_bounds = 500;
+constexpr auto initial_bounds = 250;
 
 } // namespace
 
@@ -27,8 +27,8 @@ void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
 {
     if (is_within_distance<pickup_distance>(player, upgrade)) {
         upgrade = {
-            (upgrade.y + 333) % initial_bounds,
-            (upgrade.x + 333) % initial_bounds};
+            (upgrade.y + 333) % (2 * initial_bounds) - initial_bounds,
+            (upgrade.x + 333) % (2 * initial_bounds) - initial_bounds};
     }
 }
 
