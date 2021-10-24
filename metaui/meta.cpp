@@ -16,6 +16,7 @@ constexpr auto screen_width = 800;
 constexpr auto screen_height = 600;
 constexpr auto first_choice_position = ScreenPosition{400, 300};
 constexpr auto second_choice_position = ScreenPosition{400, 350};
+constexpr auto game_progress_position = ScreenPosition{300, 200};
 
 [[noreturn]] void throw_sdl_error()
 {
@@ -70,11 +71,9 @@ void render_upgrade(SDL_Renderer& renderer, metacore::Position const& position)
     render_rectangle_at_position<255, 255, 255>(renderer, position);
 }
 
+template<ScreenPosition position>
 void render_text_at_position(
-    SDL_Renderer& renderer,
-    TTF_Font& font,
-    std::string const& text,
-    ScreenPosition const& position)
+    SDL_Renderer& renderer, TTF_Font& font, std::string const& text)
 {
     auto const color = SDL_Color{255, 255, 255};
     auto* const surface = TTF_RenderText_Solid(&font, text.c_str(), color);
@@ -105,16 +104,21 @@ void render_upgrade_choices(
     TTF_Font& font,
     metacore::UpgradeChoices const& choices)
 {
-    render_text_at_position(
-        renderer,
-        font,
-        std::format("1: {}", to_string(choices.first)),
-        first_choice_position);
-    render_text_at_position(
-        renderer,
-        font,
-        std::format("2: {}", to_string(choices.second)),
-        second_choice_position);
+    render_text_at_position<first_choice_position>(
+        renderer, font, std::format("1: {}", to_string(choices.first)));
+    render_text_at_position<second_choice_position>(
+        renderer, font, std::format("2: {}", to_string(choices.second)));
+}
+
+void render_game_progress(
+    SDL_Renderer& renderer,
+    TTF_Font& font,
+    metacore::GameProgress const progress)
+{
+    if (progress == metacore::GameProgress::Lost) {
+        render_text_at_position<game_progress_position>(
+            renderer, font, "Game Over! (Restart: F5)");
+    }
 }
 
 void render_gamestate(
@@ -137,6 +141,7 @@ void render_gamestate(
     if (state.upgrade_choices.has_value()) {
         render_upgrade_choices(renderer, font, *state.upgrade_choices);
     }
+    render_game_progress(renderer, font, state.progress);
     SDL_RenderPresent(&renderer);
 }
 
