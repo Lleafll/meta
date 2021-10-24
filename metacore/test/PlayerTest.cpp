@@ -49,12 +49,39 @@ TEST(PlayerTest, StartSlashAttack)
     EXPECT_TRUE(player.is_slashing());
 }
 
-TEST(PlayerTest, EndSlashAttackAfterTick)
+TEST(PlayerTest, EndSlashAttackAfterMoveUp)
 {
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
-    player.tick();
+    player.move_up();
+    EXPECT_FALSE(player.is_slashing());
+}
+
+TEST(PlayerTest, EndSlashAttackAfterMoveDown)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    player.attack();
+    player.move_down();
+    EXPECT_FALSE(player.is_slashing());
+}
+
+TEST(PlayerTest, EndSlashAttackAfterMoveRight)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    player.attack();
+    player.move_right();
+    EXPECT_FALSE(player.is_slashing());
+}
+
+TEST(PlayerTest, EndSlashAttackAfterMoveLeft)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    player.attack();
+    player.move_left();
     EXPECT_FALSE(player.is_slashing());
 }
 

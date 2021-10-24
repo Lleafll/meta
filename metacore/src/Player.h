@@ -21,7 +21,6 @@ class Player final {
     void move_left();
     void attack();
     void set_attack(AttackUpgrade upgrade);
-    void tick();
 
   private:
     Position position_ = Position{0, 0};

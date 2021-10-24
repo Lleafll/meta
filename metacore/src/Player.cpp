@@ -29,24 +29,41 @@ bool Player::is_slashing() const
         attack_);
 }
 
+namespace {
+
+void tick(std::variant<std::monostate, SlashAttackMechanic>& attack)
+{
+    return std::visit(
+        overloaded{
+            [](SlashAttackMechanic& attack) { attack.tick(); },
+            [](auto const&) {}},
+        attack);
+}
+
+} // namespace
+
 void Player::move_up()
 {
     position_.y += player_move_increment;
+    tick(attack_);
 }
 
 void Player::move_down()
 {
     position_.y -= player_move_increment;
+    tick(attack_);
 }
 
 void Player::move_right()
 {
     position_.x += player_move_increment;
+    tick(attack_);
 }
 
 void Player::move_left()
 {
     position_.x -= player_move_increment;
+    tick(attack_);
 }
 
 void Player::attack()
@@ -67,15 +84,6 @@ void Player::set_attack(AttackUpgrade const upgrade)
         case AttackUpgrade::Shoot:
             break;
     }
-}
-
-void Player::tick()
-{
-    return std::visit(
-        overloaded{
-            [](SlashAttackMechanic& attack) { attack.tick(); },
-            [](auto const&) {}},
-        attack_);
 }
 
 } // namespace metacore
