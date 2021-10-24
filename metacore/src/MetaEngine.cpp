@@ -10,6 +10,7 @@ namespace metacore {
 namespace {
 
 constexpr auto pickup_distance = 50;
+constexpr auto slash_radius = 100;
 
 } // namespace
 
@@ -136,12 +137,31 @@ void MetaEngine::input_down()
         impl_->state.value);
 }
 
+namespace {
+
+void check_if_enemies_got_hit(Position const& player, Enemies& enemies)
+{
+    auto const& positions = enemies.positions();
+    if (positions.empty()) {
+        return;
+    }
+    for (auto i = positions.size(); i > 0; --i) {
+        if (is_within_distance<slash_radius>(player, positions[i - 1])) {
+            enemies.kill(i - 1);
+        }
+    }
+}
+
+} // namespace
+
 void MetaEngine::input_attack()
 {
     std::visit(
         overloaded{
             [](DefaultState& state) {
                 state.player.attack();
+                check_if_enemies_got_hit(
+                    state.player.position(), state.enemies);
                 state.enemies.advance(state.player.position());
             },
             [](auto const&) {}},

@@ -77,4 +77,9 @@ void Enemies::advance(Position const& player_position)
     }
 }
 
+void Enemies::kill(std::size_t const index)
+{
+    positions_.erase(positions_.begin() + index);
+}
+
 } // namespace metacore

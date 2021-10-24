@@ -13,6 +13,7 @@ class Enemies final {
     [[nodiscard]] std::vector<Position> const& positions() const;
 
     void advance(Position const& player_position);
+    void kill(std::size_t index);
 
   private:
     std::vector<Position> positions_ = {};
