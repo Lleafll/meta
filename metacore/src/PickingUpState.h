@@ -1,25 +1,20 @@
 #pragma once
 
-#include "GameState.h"
-#include "Position.h"
+#include "Player.h"
 #include "UpgradeChoices.h"
+namespace metacore {
+struct GameState;
+} // namespace metacore
 
 namespace metacore {
 
 struct PickingUpState final {
-    constexpr PickingUpState(
-        Position const& player, UpgradeChoices const& choices)
-        : player{player}, choices{choices}
-    {
-    }
+    PickingUpState(Player const& player, UpgradeChoices const& choices);
 
-    Position player;
+    Player player;
     UpgradeChoices choices;
 };
 
-constexpr GameState to_game_state(PickingUpState const& state)
-{
-    return {state.player, std::nullopt, state.choices};
-}
+GameState to_game_state(PickingUpState const& state);
 
 } // namespace metacore

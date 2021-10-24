@@ -1,4 +1,5 @@
 #include "DefaultState.h"
+#include "GameState.h"
 #include <gtest/gtest.h>
 
 using namespace metacore;
@@ -8,7 +9,7 @@ namespace {
 TEST(DefaultStateTest, ToGameState)
 {
     auto const state = DefaultState{
-        Position{12, 34},
+        Player{Position{12, 34}},
         Pickup{
             Position{56, 78},
             UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}}};
