@@ -41,10 +41,8 @@ GameState MetaEngine::calculate_state() const
 
 namespace {
 
-template<void (Player::*move_direction)()>
-bool move_and_check_pickup(Player& player, Pickup const& pickup)
+bool check_pickup(Player const& player, Pickup const& pickup)
 {
-    (player.*move_direction)();
     return is_within_distance<pickup_distance>(
         player.position(), pickup.position);
 }
@@ -53,7 +51,8 @@ template<void (Player::*move_direction)()>
 void move_and_maybe_transition(
     InitialState& state, InternalGameState& internal_state)
 {
-    if (move_and_check_pickup<move_direction>(state.player, state.pickup)) {
+    (state.player.*move_direction)();
+    if (check_pickup(state.player, state.pickup)) {
         internal_state.value =
             InitialPickingUpState{state.player, state.pickup.upgrades};
     }
@@ -63,7 +62,9 @@ template<void (Player::*move_direction)()>
 void move_and_maybe_transition(
     DefaultState& state, InternalGameState& internal_state)
 {
-    if (move_and_check_pickup<move_direction>(state.player, state.pickup)) {
+    (state.player.*move_direction)();
+    state.enemies.advance(state.player.position());
+    if (check_pickup(state.player, state.pickup)) {
         internal_state.value =
             PickingUpState{state.player, state.pickup.upgrades, state.enemies};
     }
@@ -139,7 +140,10 @@ void MetaEngine::input_attack()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) { state.player.attack(); },
+            [](DefaultState& state) {
+                state.player.attack();
+                state.enemies.advance(state.player.position());
+            },
             [](auto const&) {}},
         impl_->state.value);
 }
