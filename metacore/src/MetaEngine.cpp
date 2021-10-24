@@ -1,7 +1,8 @@
 #include "MetaEngine.h"
+#include "DefaultState.h"
 #include "GameState.h"
 #include "overloaded.h"
-#include "Pickup.h"
+#include "PickingUpState.h"
 #include <variant>
 
 namespace metacore {
@@ -13,18 +14,8 @@ constexpr auto pickup_distance = 50;
 
 } // namespace
 
-struct DefaultState final {
-    Position player = {0, 0};
-    Pickup pickup = {{200, 50}, {PickupUpgrade::Slash, PickupUpgrade::Shoot}};
-};
-
-struct PickingUpPickupState final {
-    Position player;
-    UpgradeChoices choices;
-};
-
 struct MetaEngine::Impl final {
-    std::variant<DefaultState, PickingUpPickupState> state;
+    std::variant<DefaultState, PickingUpState> state;
 
     static Impl from(GameState const& state)
     {
@@ -49,13 +40,7 @@ MetaEngine::~MetaEngine() = default;
 GameState MetaEngine::calculate_state() const
 {
     return std::visit(
-        overloaded{
-            [](DefaultState const& state) -> GameState {
-                return {state.player, state.pickup.position, std::nullopt};
-            },
-            [](PickingUpPickupState const& state) -> GameState {
-                return {state.player, std::nullopt, state.choices};
-            }},
+        [](auto const& state) -> GameState { return to_game_state(state); },
         impl_->state);
 }
 
@@ -64,10 +49,10 @@ namespace {
 void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
     Position const& player,
     Pickup const& pickup,
-    std::variant<DefaultState, PickingUpPickupState>& state)
+    std::variant<DefaultState, PickingUpState>& state)
 {
     if (is_within_distance<pickup_distance>(player, pickup.position)) {
-        state = PickingUpPickupState{player, pickup.upgrades};
+        state = PickingUpState{player, pickup.upgrades};
     }
 }
 

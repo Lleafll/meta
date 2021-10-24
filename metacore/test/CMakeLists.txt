@@ -4,7 +4,9 @@ project(metacoretest)
 
 add_executable(${PROJECT_NAME}
         "MetaEngineTest.cpp"
-        "PositionTest.cpp")
+        "PositionTest.cpp"
+        "PickingUpStateTest.cpp"
+        "DefaultStateTest.cpp")
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         metacore
@@ -13,7 +15,8 @@ target_link_libraries(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         "../include/metacore"
-        "../src")
+        "../src"
+        )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 include(GoogleTest)
