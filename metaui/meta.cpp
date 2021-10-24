@@ -131,15 +131,19 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
         switch (event.type) {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
+                    case SDLK_d:
                     case SDLK_RIGHT:
                         engine.input_right();
                         break;
+                    case SDLK_a:
                     case SDLK_LEFT:
                         engine.input_left();
                         break;
+                    case SDLK_w:
                     case SDLK_UP:
                         engine.input_up();
                         break;
+                    case SDLK_s:
                     case SDLK_DOWN:
                         engine.input_down();
                         break;
