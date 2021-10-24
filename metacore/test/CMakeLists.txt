@@ -6,7 +6,10 @@ add_executable(${PROJECT_NAME}
         "MetaEngineTest.cpp"
         "PositionTest.cpp"
         "PickingUpStateTest.cpp"
-        "DefaultStateTest.cpp" PlayerTest.cpp SlashAttackMechanicTest.cpp)
+        "DefaultStateTest.cpp"
+        "PlayerTest.cpp"
+        "SlashAttackMechanicTest.cpp"
+        )
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         metacore

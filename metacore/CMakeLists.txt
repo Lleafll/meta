@@ -5,7 +5,10 @@ project(metacore)
 add_library(${PROJECT_NAME}
         "src/MetaEngine.cpp"
         "src/Player.cpp"
-        src/PickingUpState.cpp src/DefaultState.cpp src/SlashAttackMechanic.cpp)
+        "src/PickingUpState.cpp"
+        "src/DefaultState.cpp"
+        "src/SlashAttackMechanic.cpp"
+        )
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         "include"
