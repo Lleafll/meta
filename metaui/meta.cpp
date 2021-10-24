@@ -180,6 +180,9 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                     case SDLK_SPACE:
                         engine.input_attack();
                         break;
+                    case SDLK_F5:
+                        engine.input_restart();
+                        break;
                     case SDLK_ESCAPE:
                         close_requested = CloseRequested::Yes;
                         break;

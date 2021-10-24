@@ -185,6 +185,11 @@ void MetaEngine::input_attack()
         impl_->state.value);
 }
 
+void MetaEngine::input_restart()
+{
+    impl_ = std::make_unique<Impl>();
+}
+
 namespace {
 
 template<PickupUpgrade UpgradeChoices::*member>

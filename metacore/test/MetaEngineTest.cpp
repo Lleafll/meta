@@ -128,4 +128,16 @@ TEST(MetaEngineTest, ProperlyTransitionToGameOver)
     EXPECT_EQ(expected, state);
 }
 
+TEST(MetaEngineTest, InputRestart)
+{
+    auto engine = MetaEngine{{DefaultState{
+        Player{Position{34, 65}},
+        Pickup{{5634, 654}, {{}, {}}},
+        Enemies{{Position{654, 65}}}}}};
+    engine.input_restart();
+    auto const state = engine.calculate_state();
+    auto const expected = GameState{Position{0, 0}, Position{200, 50}};
+    EXPECT_EQ(expected, state);
+}
+
 } // namespace
