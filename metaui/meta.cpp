@@ -112,7 +112,7 @@ void render_upgrade_choices(
 void render_gamestate(
     SDL_Renderer& renderer, metacore::GameState const& state, TTF_Font& font)
 {
-    if (SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255) != 0) {
+    if (SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255) != 0) {
         throw_sdl_error();
     }
     if (SDL_RenderClear(&renderer) != 0) {
