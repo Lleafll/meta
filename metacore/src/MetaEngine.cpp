@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "InternalGameState.h"
 #include "overloaded.h"
+#include <algorithm>
 #include <variant>
 
 namespace metacore {
@@ -11,6 +12,7 @@ namespace {
 
 constexpr auto pickup_distance = 50;
 constexpr auto slash_radius = 100;
+constexpr auto enemy_collision_distance = 50;
 
 } // namespace
 
@@ -42,6 +44,15 @@ GameState MetaEngine::calculate_state() const
 
 namespace {
 
+bool check_for_enemy_collision(
+    Position const& player, std::vector<Position> const& enemies)
+{
+    return std::ranges::any_of(
+        enemies, [&player](Position const& enemy) -> bool {
+            return is_within_distance<enemy_collision_distance>(player, enemy);
+        });
+}
+
 bool check_pickup(Player const& player, Pickup const& pickup)
 {
     return is_within_distance<pickup_distance>(
@@ -65,7 +76,10 @@ void move_and_maybe_transition(
 {
     (state.player.*move_direction)();
     state.enemies.advance(state.player.position());
-    if (check_pickup(state.player, state.pickup)) {
+    if (check_for_enemy_collision(
+            state.player.position(), state.enemies.positions())) {
+        internal_state.value = GameOverState{};
+    } else if (check_pickup(state.player, state.pickup)) {
         internal_state.value =
             PickingUpState{state.player, state.pickup.upgrades, state.enemies};
     }

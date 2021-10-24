@@ -10,7 +10,8 @@ add_library(${PROJECT_NAME}
         "src/SlashAttackMechanic.cpp"
         "src/Enemies.cpp"
         "src/InitialState.cpp"
-        "src/InitialPickingUpState.cpp")
+        "src/InitialPickingUpState.cpp"
+        "src/GameOverState.cpp")
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         "include"

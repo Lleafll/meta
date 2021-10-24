@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DefaultState.h"
+#include "GameOverState.h"
 #include "InitialPickingUpState.h"
 #include "InitialState.h"
 #include "PickingUpState.h"
@@ -13,7 +14,8 @@ struct InternalGameState final {
         InitialState,
         InitialPickingUpState,
         DefaultState,
-        PickingUpState>
+        PickingUpState,
+        GameOverState>
         value;
 };
 
