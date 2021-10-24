@@ -58,8 +58,10 @@ TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
 
 TEST(MetaEngineTest, UpgradeCollision)
 {
-    auto engine = MetaEngine{{DefaultState{
-        Player{Position{0, 0}}, Pickup{Position{50, 0}, {{}, {}}}}}};
+    auto engine = MetaEngine{InternalGameState{DefaultState{
+        Player{Position{0, 0}},
+        Pickup{Position{50, 0}, {{}, {}}},
+        Enemies{{}}}}};
     ASSERT_EQ((Position{50, 0}), engine.calculate_state().upgrade_position);
     engine.input_right();
     EXPECT_NE((Position{50, 0}), engine.calculate_state().upgrade_position);
@@ -67,8 +69,8 @@ TEST(MetaEngineTest, UpgradeCollision)
 
 TEST(MetaEngineTest, UpgradeSelectFirst)
 {
-    auto engine = MetaEngine{
-        {PickingUpState{Player{Position{453, 7865}}, UpgradeChoices{{}, {}}}}};
+    auto engine = MetaEngine{{PickingUpState{
+        Player{Position{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
     {
         auto const original_state = engine.calculate_state();
         ASSERT_TRUE(original_state.upgrade_choices.has_value());
@@ -82,8 +84,8 @@ TEST(MetaEngineTest, UpgradeSelectFirst)
 
 TEST(MetaEngineTest, UpgradeSelectSecond)
 {
-    auto engine = MetaEngine{
-        {PickingUpState{Player{Position{453, 7865}}, UpgradeChoices{{}, {}}}}};
+    auto engine = MetaEngine{{PickingUpState{
+        Player{Position{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
     {
         auto const original_state = engine.calculate_state();
         ASSERT_TRUE(original_state.upgrade_choices.has_value());
@@ -99,7 +101,8 @@ TEST(MetaEngineTest, AttackStartsSlash)
 {
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
-    auto engine = MetaEngine{{DefaultState{player, Pickup{{}, {{}, {}}}}}};
+    auto engine =
+        MetaEngine{{DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{{}}}}};
     {
         ASSERT_FALSE(engine.calculate_state().slash_attack);
     }

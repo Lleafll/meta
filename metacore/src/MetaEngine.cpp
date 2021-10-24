@@ -14,7 +14,7 @@ constexpr auto pickup_distance = 50;
 } // namespace
 
 struct MetaEngine::Impl final {
-    InternalGameState state = {DefaultState{
+    InternalGameState state = {InitialState{
         Player{Position{0, 0}},
         Pickup{
             Position{200, 50},
@@ -41,14 +41,31 @@ GameState MetaEngine::calculate_state() const
 
 namespace {
 
-void check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-    Player const& player,
-    Pickup const& pickup,
-    std::variant<DefaultState, PickingUpState>& state)
+template<void (Player::*move_direction)()>
+bool move_and_check_pickup(Player& player, Pickup const& pickup)
 {
-    if (is_within_distance<pickup_distance>(
-            player.position(), pickup.position)) {
-        state = PickingUpState{player, pickup.upgrades};
+    (player.*move_direction)();
+    return is_within_distance<pickup_distance>(
+        player.position(), pickup.position);
+}
+
+template<void (Player::*move_direction)()>
+void move_and_maybe_transition(
+    InitialState& state, InternalGameState& internal_state)
+{
+    if (move_and_check_pickup<move_direction>(state.player, state.pickup)) {
+        internal_state.value =
+            InitialPickingUpState{state.player, state.pickup.upgrades};
+    }
+}
+
+template<void (Player::*move_direction)()>
+void move_and_maybe_transition(
+    DefaultState& state, InternalGameState& internal_state)
+{
+    if (move_and_check_pickup<move_direction>(state.player, state.pickup)) {
+        internal_state.value =
+            PickingUpState{state.player, state.pickup.upgrades, state.enemies};
     }
 }
 
@@ -58,10 +75,13 @@ void MetaEngine::input_right()
 {
     std::visit(
         overloaded{
+            [this](InitialState& state) {
+                move_and_maybe_transition<&Player::move_right>(
+                    state, impl_->state);
+            },
             [this](DefaultState& state) {
-                state.player.move_right();
-                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup, impl_->state.value);
+                move_and_maybe_transition<&Player::move_right>(
+                    state, impl_->state);
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -71,10 +91,13 @@ void MetaEngine::input_left()
 {
     std::visit(
         overloaded{
+            [this](InitialState& state) {
+                move_and_maybe_transition<&Player::move_left>(
+                    state, impl_->state);
+            },
             [this](DefaultState& state) {
-                state.player.move_left();
-                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup, impl_->state.value);
+                move_and_maybe_transition<&Player::move_left>(
+                    state, impl_->state);
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -84,10 +107,13 @@ void MetaEngine::input_up()
 {
     std::visit(
         overloaded{
+            [this](InitialState& state) {
+                move_and_maybe_transition<&Player::move_up>(
+                    state, impl_->state);
+            },
             [this](DefaultState& state) {
-                state.player.move_up();
-                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup, impl_->state.value);
+                move_and_maybe_transition<&Player::move_up>(
+                    state, impl_->state);
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -97,10 +123,13 @@ void MetaEngine::input_down()
 {
     std::visit(
         overloaded{
+            [this](InitialState& state) {
+                move_and_maybe_transition<&Player::move_down>(
+                    state, impl_->state);
+            },
             [this](DefaultState& state) {
-                state.player.move_down();
-                check_if_upgrade_is_hit_and_reset_upgrade_accordingly(
-                    state.player, state.pickup, impl_->state.value);
+                move_and_maybe_transition<&Player::move_down>(
+                    state, impl_->state);
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -118,18 +147,36 @@ void MetaEngine::input_attack()
 namespace {
 
 template<PickupUpgrade UpgradeChoices::*member>
-DefaultState apply_upgrade_and_transition(PickingUpState& state)
+void set_upgrade(Player& player, UpgradeChoices const& choices)
 {
-    auto const choice = state.choices.*member;
+    auto const choice = choices.*member;
     switch (choice) {
         case PickupUpgrade::Slash:
-            state.player.set_attack(AttackUpgrade::Slash);
+            player.set_attack(AttackUpgrade::Slash);
             break;
         case PickupUpgrade::Shoot:
             break;
     }
+}
+
+template<PickupUpgrade UpgradeChoices::*member>
+DefaultState apply_upgrade_and_transition(InitialPickingUpState& state)
+{
+    set_upgrade<member>(state.player, state.choices);
     return DefaultState{
-        state.player, Pickup{Position{0, 0}, UpgradeChoices{{}, {}}}};
+        state.player,
+        Pickup{Position{0, 0}, UpgradeChoices{{}, {}}},
+        Enemies{{Position{-100, -100}}}};
+}
+
+template<PickupUpgrade UpgradeChoices::*member>
+DefaultState apply_upgrade_and_transition(PickingUpState& state)
+{
+    set_upgrade<member>(state.player, state.choices);
+    return DefaultState{
+        state.player,
+        Pickup{Position{0, 0}, UpgradeChoices{{}, {}}},
+        state.enemies};
 }
 
 } // namespace
@@ -138,6 +185,10 @@ void MetaEngine::select_first_upgrade()
 {
     std::visit(
         overloaded{
+            [this](InitialPickingUpState& state) {
+                impl_->state.value =
+                    apply_upgrade_and_transition<&UpgradeChoices::first>(state);
+            },
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::first>(state);
@@ -150,6 +201,11 @@ void MetaEngine::select_second_upgrade()
 {
     std::visit(
         overloaded{
+            [this](InitialPickingUpState& state) {
+                impl_->state.value =
+                    apply_upgrade_and_transition<&UpgradeChoices::second>(
+                        state);
+            },
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::second>(

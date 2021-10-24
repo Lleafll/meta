@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME}
         "DefaultStateTest.cpp"
         "PlayerTest.cpp"
         "SlashAttackMechanicTest.cpp"
+        "InitialStateTest.cpp"
         )
 target_link_libraries(${PROJECT_NAME}
         PRIVATE

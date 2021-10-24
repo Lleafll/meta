@@ -11,11 +11,12 @@ struct GameState;
 namespace metacore {
 
 struct DefaultState final {
-    DefaultState(Player const& player, Pickup const& pickup);
+    DefaultState(
+        Player const& player, Pickup const& pickup, Enemies const& enemies);
 
     Player player;
     Pickup pickup;
-    std::optional<Enemies> enemies;
+    Enemies enemies;
 };
 
 GameState to_game_state(DefaultState const& state);

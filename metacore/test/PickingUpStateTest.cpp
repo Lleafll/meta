@@ -10,7 +10,8 @@ TEST(PickingUpStateTest, ToGameState)
 {
     auto const state = PickingUpState{
         Player{Position{12, 34}},
-        UpgradeChoices{PickupUpgrade::Shoot, PickupUpgrade::Slash}};
+        UpgradeChoices{PickupUpgrade::Shoot, PickupUpgrade::Slash},
+        Enemies{{}}};
     auto const game_state = to_game_state(state);
     auto const expected = GameState{
         Position{12, 34},

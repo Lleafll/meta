@@ -12,7 +12,8 @@ TEST(DefaultStateTest, ToGameState)
         Player{Position{12, 34}},
         Pickup{
             Position{56, 78},
-            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}}};
+            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}},
+        Enemies{{}}};
     auto const game_state = to_game_state(state);
     auto const expected =
         GameState{Position{12, 34}, Position{56, 78}, std::nullopt};
@@ -28,7 +29,8 @@ TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
         player,
         Pickup{
             Position{0, 0},
-            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}}};
+            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}},
+        Enemies{{}}};
     EXPECT_TRUE(to_game_state(state).slash_attack);
 }
 

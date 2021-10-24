@@ -1,11 +1,12 @@
 #include "PickingUpState.h"
 #include "GameState.h"
+#include <utility>
 
 namespace metacore {
 
 PickingUpState::PickingUpState(
-    Player const& player, UpgradeChoices const& choices)
-    : player{player}, choices{choices}
+    Player const& player, UpgradeChoices const& choices, Enemies enemies)
+    : player{player}, choices{choices}, enemies{std::move(enemies)}
 {
 }
 
