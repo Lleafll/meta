@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "overloaded.h"
 
 namespace metacore {
 
@@ -19,7 +20,13 @@ Position const& Player::position() const
 
 bool Player::is_slashing() const
 {
-    return false;
+    return std::visit(
+        overloaded{
+            [](SlashAttackMechanic const& attack) -> bool {
+                return attack.is_active();
+            },
+            [](auto const&) -> bool { return false; }},
+        attack_);
 }
 
 void Player::move_up()
@@ -44,10 +51,31 @@ void Player::move_left()
 
 void Player::attack()
 {
+    std::visit(
+        overloaded{
+            [](SlashAttackMechanic& attack) { attack.start(); },
+            [](auto const&) {}},
+        attack_);
 }
 
 void Player::set_attack(AttackUpgrade const upgrade)
 {
+    switch (upgrade) {
+        case AttackUpgrade::Slash:
+            attack_ = SlashAttackMechanic{};
+            break;
+        case AttackUpgrade::Shoot:
+            break;
+    }
+}
+
+void Player::tick()
+{
+    return std::visit(
+        overloaded{
+            [](SlashAttackMechanic& attack) { attack.tick(); },
+            [](auto const&) {}},
+        attack_);
 }
 
 } // namespace metacore

@@ -10,6 +10,7 @@ enum class AttackUpgrade { Slash, Shoot };
 
 class Player final {
   public:
+    Player() = default;
     explicit Player(Position const& position);
 
     [[nodiscard]] Position const& position() const;
@@ -20,9 +21,10 @@ class Player final {
     void move_left();
     void attack();
     void set_attack(AttackUpgrade upgrade);
+    void tick();
 
   private:
-    Position position_;
+    Position position_ = Position{0, 0};
     std::variant<std::monostate, SlashAttackMechanic> attack_ = {};
 };
 

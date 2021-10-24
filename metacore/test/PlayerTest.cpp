@@ -41,4 +41,21 @@ TEST(PlayerTest, MoveLeft)
     EXPECT_EQ(0, position.y);
 }
 
+TEST(PlayerTest, StartSlashAttack)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    player.attack();
+    EXPECT_TRUE(player.is_slashing());
+}
+
+TEST(PlayerTest, EndSlashAttackAfterTick)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    player.attack();
+    player.tick();
+    EXPECT_FALSE(player.is_slashing());
+}
+
 } // namespace
