@@ -1,5 +1,6 @@
 [requires]
 gtest/cci.20210126
+ms-gsl/3.1.0
 sdl/2.0.16
 sdl_ttf/2.0.15
 

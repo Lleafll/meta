@@ -1,10 +1,14 @@
 #include "Enemies.h"
+#include <gsl/gsl_assert>
+#include <gsl/gsl_util>
 
 namespace metacore {
 
 namespace {
 
 constexpr auto enemy_movement_steps = 25;
+constexpr auto spawn_interval = 4;
+constexpr auto spawn_edge = 300;
 
 } // namespace
 
@@ -68,6 +72,28 @@ void move_enemy(Position& enemy, Position const& target)
     }
 }
 
+Position generate_random_position(std::mt19937& random_engine)
+{
+    auto const side = std::uniform_int_distribution<int>{0, 3}(random_engine);
+    auto const position_on_edge = std::uniform_int_distribution<int>{
+        -spawn_edge, spawn_edge}(random_engine);
+    switch (side) {
+        case 0:
+            return Position{-spawn_edge, position_on_edge};
+        case 1:
+            return Position{spawn_edge, position_on_edge};
+        case 2:
+            return Position{-position_on_edge, -spawn_edge};
+        case 3:
+            return Position{-position_on_edge, spawn_edge};
+        case 4:
+        default:
+            break;
+    }
+    Expects(side >= 0 && side <= 3);
+    abort();
+}
+
 } // namespace
 
 void Enemies::advance(Position const& player_position)
@@ -75,11 +101,16 @@ void Enemies::advance(Position const& player_position)
     for (auto& enemy : positions_) {
         move_enemy(enemy, player_position);
     }
+    ++spawn_counter_;
+    if (spawn_counter_ == spawn_interval) {
+        positions_.push_back(generate_random_position(random_engine_));
+        spawn_counter_ = 0;
+    }
 }
 
 void Enemies::kill(std::size_t const index)
 {
-    positions_.erase(positions_.begin() + index);
+    positions_.erase(positions_.begin() + gsl::narrow_cast<long long>(index));
 }
 
 } // namespace metacore

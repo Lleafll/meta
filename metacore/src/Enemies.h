@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Position.h"
+#include <random>
 #include <vector>
 
 namespace metacore {
@@ -17,6 +18,8 @@ class Enemies final {
 
   private:
     std::vector<Position> positions_ = {};
+    int spawn_counter_ = 0;
+    std::mt19937 random_engine_ = std::mt19937{std::random_device{}()};
 };
 
 } // namespace metacore

@@ -14,4 +14,13 @@ TEST(EnemiesTest, AdvanceMovesEnemies)
     EXPECT_EQ(expected, enemies.positions());
 }
 
+TEST(EnemiesTest, AutomaticallySpawnAdditionalEnemies)
+{
+    auto enemies = Enemies{};
+    for (auto i = 0; i < 4; ++i) {
+        enemies.advance(Position{0, 0});
+    }
+    EXPECT_EQ(1, enemies.positions().size());
+}
+
 } // namespace

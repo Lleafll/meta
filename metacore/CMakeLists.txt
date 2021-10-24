@@ -19,6 +19,10 @@ target_include_directories(${PROJECT_NAME}
         "include/metacore"
         "src"
         )
+target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        CONAN_PKG::ms-gsl
+        )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 add_subdirectory(test)
