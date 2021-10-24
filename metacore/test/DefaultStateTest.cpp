@@ -19,4 +19,17 @@ TEST(DefaultStateTest, ToGameState)
     EXPECT_EQ(expected, game_state);
 }
 
+TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    player.attack();
+    auto const state = DefaultState{
+        player,
+        Pickup{
+            Position{0, 0},
+            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}}};
+    EXPECT_TRUE(to_game_state(state).slash_attack);
+}
+
 } // namespace

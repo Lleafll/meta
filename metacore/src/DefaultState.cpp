@@ -10,7 +10,12 @@ DefaultState::DefaultState(Player const& player, Pickup const& pickup)
 
 GameState to_game_state(DefaultState const& state)
 {
-    return {state.player.position(), state.pickup.position, std::nullopt};
+    auto const& player = state.player;
+    return {
+        player.position(),
+        state.pickup.position,
+        std::nullopt,
+        player.is_slashing()};
 }
 
 } // namespace metacore
