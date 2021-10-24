@@ -3,6 +3,7 @@
 #include <memory>
 namespace metacore {
 struct GameState;
+struct InternalGameState;
 } // namespace metacore
 
 namespace metacore {
@@ -10,7 +11,7 @@ namespace metacore {
 class MetaEngine final {
   public:
     MetaEngine();
-    explicit MetaEngine(GameState const& state);
+    explicit MetaEngine(InternalGameState const& state);
     ~MetaEngine();
 
     [[nodiscard]] GameState calculate_state() const;

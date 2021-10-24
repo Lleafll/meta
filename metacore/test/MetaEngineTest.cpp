@@ -1,5 +1,6 @@
 #include "MetaEngine.h"
 #include "GameState.h"
+#include "InternalGameState.h"
 #include <gtest/gtest.h>
 
 using namespace metacore;
@@ -57,7 +58,8 @@ TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
 
 TEST(MetaEngineTest, UpgradeCollision)
 {
-    auto engine = MetaEngine{{Position{0, 0}, Position{50, 0}}};
+    auto engine = MetaEngine{
+        {DefaultState{Position{0, 0}, Pickup{Position{50, 0}, {{}, {}}}}}};
     ASSERT_EQ((Position{50, 0}), engine.calculate_state().upgrade_position);
     engine.input_right();
     EXPECT_NE((Position{50, 0}), engine.calculate_state().upgrade_position);
