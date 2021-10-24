@@ -65,4 +65,34 @@ TEST(MetaEngineTest, UpgradeCollision)
     EXPECT_NE((Position{50, 0}), engine.calculate_state().upgrade_position);
 }
 
+TEST(MetaEngineTest, UpgradeSelectFirst)
+{
+    auto engine = MetaEngine{
+        {PickingUpState{Position{453, 7865}, UpgradeChoices{{}, {}}}}};
+    {
+        auto const original_state = engine.calculate_state();
+        ASSERT_TRUE(original_state.upgrade_choices.has_value());
+        ASSERT_FALSE(original_state.upgrade_position.has_value());
+    }
+    engine.select_first_upgrade();
+    auto const state = engine.calculate_state();
+    EXPECT_FALSE(state.upgrade_choices.has_value());
+    EXPECT_TRUE(state.upgrade_position.has_value());
+}
+
+TEST(MetaEngineTest, UpgradeSelectSecond)
+{
+    auto engine = MetaEngine{
+        {PickingUpState{Position{453, 7865}, UpgradeChoices{{}, {}}}}};
+    {
+        auto const original_state = engine.calculate_state();
+        ASSERT_TRUE(original_state.upgrade_choices.has_value());
+        ASSERT_FALSE(original_state.upgrade_position.has_value());
+    }
+    engine.select_second_upgrade();
+    auto const state = engine.calculate_state();
+    EXPECT_FALSE(state.upgrade_choices.has_value());
+    EXPECT_TRUE(state.upgrade_position.has_value());
+}
+
 } // namespace

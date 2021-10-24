@@ -19,6 +19,8 @@ class MetaEngine final {
     void input_left();
     void input_up();
     void input_down();
+    void select_first_upgrade();
+    void select_second_upgrade();
 
   private:
     struct Impl;

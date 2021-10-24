@@ -143,6 +143,12 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                     case SDLK_DOWN:
                         engine.input_down();
                         break;
+                    case SDLK_1:
+                        engine.select_first_upgrade();
+                        break;
+                    case SDLK_2:
+                        engine.select_second_upgrade();
+                        break;
                     case SDLK_ESCAPE:
                         close_requested = CloseRequested::Yes;
                         break;

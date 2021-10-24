@@ -106,4 +106,30 @@ void MetaEngine::input_down()
         impl_->state.value);
 }
 
+void MetaEngine::select_first_upgrade()
+{
+    std::visit(
+        overloaded{
+            [this](PickingUpState const& state) {
+                impl_->state = InternalGameState{DefaultState{
+                    state.player,
+                    Pickup{Position{0, 0}, UpgradeChoices{{}, {}}}}};
+            },
+            [](auto const&) {}},
+        impl_->state.value);
+}
+
+void MetaEngine::select_second_upgrade()
+{
+    std::visit(
+        overloaded{
+            [this](PickingUpState const& state) {
+                impl_->state = InternalGameState{DefaultState{
+                    state.player,
+                    Pickup{Position{0, 0}, UpgradeChoices{{}, {}}}}};
+            },
+            [](auto const&) {}},
+        impl_->state.value);
+}
+
 } // namespace metacore
