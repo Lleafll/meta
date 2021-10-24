@@ -30,19 +30,26 @@ world_position_to_screen_position(metacore::Position const& world_position)
     return {x, y};
 }
 
-template<Uint8 red, Uint8 green, Uint8 blue>
+template<Uint8 red, Uint8 green, Uint8 blue, int size = 50>
 void render_rectangle_at_position(
     SDL_Renderer& renderer, metacore::Position const& world_position)
 {
     auto const screen_position =
         world_position_to_screen_position(world_position);
-    auto r = SDL_Rect{screen_position.x, screen_position.y, 50, 50};
+    auto r = SDL_Rect{
+        screen_position.x - size / 2, screen_position.y - size / 2, size, size};
     if (SDL_SetRenderDrawColor(&renderer, red, green, blue, 255) != 0) {
         throw_sdl_error();
     }
     if (SDL_RenderFillRect(&renderer, &r) != 0) {
         throw_sdl_error();
     }
+}
+
+void render_slash_attack(
+    SDL_Renderer& renderer, metacore::Position const& position)
+{
+    render_rectangle_at_position<255, 255, 0, 100>(renderer, position);
 }
 
 void render_player(SDL_Renderer& renderer, metacore::Position const& position)
@@ -110,6 +117,9 @@ void render_gamestate(
     }
     if (SDL_RenderClear(&renderer) != 0) {
         throw_sdl_error();
+    }
+    if (state.slash_attack) {
+        render_slash_attack(renderer, state.player_position);
     }
     render_player(renderer, state.player_position);
     if (state.upgrade_position.has_value()) {
