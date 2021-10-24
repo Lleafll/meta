@@ -11,7 +11,7 @@ InitialPickingUpState::InitialPickingUpState(
 
 GameState to_game_state(InitialPickingUpState const& state)
 {
-    return {};
+    return {state.player.position(), std::nullopt, state.choices};
 }
 
 } // namespace metacore
