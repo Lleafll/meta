@@ -95,4 +95,16 @@ TEST(MetaEngineTest, UpgradeSelectSecond)
     EXPECT_TRUE(state.upgrade_position.has_value());
 }
 
+TEST(MetaEngineTest, AttackStartsSlash)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    auto engine = MetaEngine{{DefaultState{player, Pickup{{}, {{}, {}}}}}};
+    {
+        ASSERT_FALSE(engine.calculate_state().slash_attack);
+    }
+    engine.input_attack();
+    EXPECT_TRUE(engine.calculate_state().slash_attack);
+}
+
 } // namespace

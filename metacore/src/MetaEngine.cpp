@@ -106,6 +106,15 @@ void MetaEngine::input_down()
         impl_->state.value);
 }
 
+void MetaEngine::input_attack()
+{
+    std::visit(
+        overloaded{
+            [](DefaultState& state) { state.player.attack(); },
+            [](auto const&) {}},
+        impl_->state.value);
+}
+
 void MetaEngine::select_first_upgrade()
 {
     std::visit(
