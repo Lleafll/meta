@@ -7,12 +7,15 @@
 
 namespace metacore {
 
+enum class GameProgress { Running, Won, Lost };
+
 struct GameState final {
     Position player_position = {};
     std::optional<Position> upgrade_position = {};
     std::optional<UpgradeChoices> upgrade_choices = {};
     bool slash_attack = false;
     std::vector<Position> enemy_positions = {};
+    GameProgress progress = GameProgress::Running;
 
     friend bool operator==(GameState const&, GameState const&) = default;
 };
