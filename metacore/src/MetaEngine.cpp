@@ -3,7 +3,9 @@
 #include "GameState.h"
 #include "InternalGameState.h"
 #include "overloaded.h"
+#include "PickUpGenerator.h"
 #include <algorithm>
+#include <utility>
 #include <variant>
 
 namespace metacore {
@@ -17,11 +19,14 @@ constexpr auto enemy_collision_distance = 50;
 } // namespace
 
 struct MetaEngine::Impl final {
-    InternalGameState state = {InitialState{
-        Player{Position{0, 0}},
-        Pickup{
-            Position{200, 50},
-            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}}}};
+    Impl() = default;
+    explicit Impl(InternalGameState state) : state{std::move(state)}
+    {
+    }
+
+    PickUpGenerator pick_up_generator = {};
+    InternalGameState state = {
+        InitialState{Player{Position{0, 0}}, pick_up_generator.generate()}};
 };
 
 MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
@@ -206,23 +211,20 @@ void set_upgrade(Player& player, UpgradeChoices const& choices)
 }
 
 template<PickupUpgrade UpgradeChoices::*member>
-DefaultState apply_upgrade_and_transition(InitialPickingUpState& state)
+DefaultState apply_upgrade_and_transition(
+    InitialPickingUpState& state, Pickup const& next_pickup)
 {
     set_upgrade<member>(state.player, state.choices);
     return DefaultState{
-        state.player,
-        Pickup{Position{0, 0}, UpgradeChoices{{}, {}}},
-        Enemies{{Position{-100, -100}}}};
+        state.player, next_pickup, Enemies{{Position{-100, -100}}}};
 }
 
 template<PickupUpgrade UpgradeChoices::*member>
-DefaultState apply_upgrade_and_transition(PickingUpState& state)
+DefaultState
+apply_upgrade_and_transition(PickingUpState& state, Pickup const& next_pickup)
 {
     set_upgrade<member>(state.player, state.choices);
-    return DefaultState{
-        state.player,
-        Pickup{Position{0, 0}, UpgradeChoices{{}, {}}},
-        state.enemies};
+    return DefaultState{state.player, next_pickup, state.enemies};
 }
 
 } // namespace
@@ -233,11 +235,13 @@ void MetaEngine::select_first_upgrade()
         overloaded{
             [this](InitialPickingUpState& state) {
                 impl_->state.value =
-                    apply_upgrade_and_transition<&UpgradeChoices::first>(state);
+                    apply_upgrade_and_transition<&UpgradeChoices::first>(
+                        state, impl_->pick_up_generator.generate());
             },
             [this](PickingUpState& state) {
                 impl_->state.value =
-                    apply_upgrade_and_transition<&UpgradeChoices::first>(state);
+                    apply_upgrade_and_transition<&UpgradeChoices::first>(
+                        state, impl_->pick_up_generator.generate());
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -250,12 +254,12 @@ void MetaEngine::select_second_upgrade()
             [this](InitialPickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::second>(
-                        state);
+                        state, impl_->pick_up_generator.generate());
             },
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::second>(
-                        state);
+                        state, impl_->pick_up_generator.generate());
             },
             [](auto const&) {}},
         impl_->state.value);
