@@ -1,7 +1,9 @@
 #pragma once
 
+#include "Enemies.h"
 #include "Pickup.h"
 #include "Player.h"
+#include <optional>
 namespace metacore {
 struct GameState;
 } // namespace metacore
@@ -13,6 +15,7 @@ struct DefaultState final {
 
     Player player;
     Pickup pickup;
+    std::optional<Enemies> enemies;
 };
 
 GameState to_game_state(DefaultState const& state);

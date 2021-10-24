@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME}
         "src/PickingUpState.cpp"
         "src/DefaultState.cpp"
         "src/SlashAttackMechanic.cpp"
+        "src/Enemies.cpp"
         )
 target_include_directories(${PROJECT_NAME}
         PUBLIC
