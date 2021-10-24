@@ -20,6 +20,19 @@ TEST(DefaultStateTest, ToGameState)
     EXPECT_EQ(expected, game_state);
 }
 
+TEST(DefaultStateTest, ToGameStateConsidersEnemies)
+{
+    auto const state = DefaultState{
+        Player{Position{}},
+        Pickup{
+            Position{},
+            UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}},
+        Enemies{{Position{4353, 786}}}};
+    auto const enemy_positions = to_game_state(state).enemy_positions;
+    auto const expected = std::vector<Position>{{4353, 786}};
+    EXPECT_EQ(expected, enemy_positions);
+}
+
 TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
 {
     auto player = Player{};

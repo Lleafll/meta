@@ -46,6 +46,14 @@ void render_rectangle_at_position(
     }
 }
 
+void render_enemies(
+    SDL_Renderer& renderer, std::vector<metacore::Position> const& positions)
+{
+    for (auto const& position : positions) {
+        render_rectangle_at_position<255, 0, 0, 50>(renderer, position);
+    }
+}
+
 void render_slash_attack(
     SDL_Renderer& renderer, metacore::Position const& position)
 {
@@ -118,6 +126,7 @@ void render_gamestate(
     if (SDL_RenderClear(&renderer) != 0) {
         throw_sdl_error();
     }
+    render_enemies(renderer, state.enemy_positions);
     if (state.slash_attack) {
         render_slash_attack(renderer, state.player_position);
     }

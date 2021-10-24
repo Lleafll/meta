@@ -12,7 +12,12 @@ PickingUpState::PickingUpState(
 
 GameState to_game_state(PickingUpState const& state)
 {
-    return {state.player.position(), std::nullopt, state.choices};
+    return {
+        state.player.position(),
+        std::nullopt,
+        state.choices,
+        state.player.is_slashing(),
+        state.enemies.positions()};
 }
 
 } // namespace metacore

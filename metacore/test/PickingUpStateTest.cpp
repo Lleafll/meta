@@ -20,4 +20,15 @@ TEST(PickingUpStateTest, ToGameState)
     EXPECT_EQ(expected, game_state);
 }
 
+TEST(PickingUpStateTest, ToGameStateConsidersEnemies)
+{
+    auto const state = PickingUpState{
+        Player{Position{}},
+        UpgradeChoices{PickupUpgrade::Shoot, PickupUpgrade::Slash},
+        Enemies{{Position{435, 765}}}};
+    auto const enemy_positions = to_game_state(state).enemy_positions;
+    auto const expected = std::vector<Position>{{435, 765}};
+    EXPECT_EQ(expected, enemy_positions);
+}
+
 } // namespace

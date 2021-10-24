@@ -11,8 +11,7 @@ struct GameState;
 namespace metacore {
 
 struct DefaultState final {
-    DefaultState(
-        Player const& player, Pickup const& pickup, Enemies const& enemies);
+    DefaultState(Player const& player, Pickup const& pickup, Enemies enemies);
 
     Player player;
     Pickup pickup;
