@@ -5,7 +5,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto player_move_increment = 5;
+constexpr auto player_move_increment = 50;
 
 } // namespace
 
