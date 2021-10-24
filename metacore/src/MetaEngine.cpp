@@ -115,14 +115,32 @@ void MetaEngine::input_attack()
         impl_->state.value);
 }
 
+namespace {
+
+template<PickupUpgrade UpgradeChoices::*member>
+DefaultState apply_upgrade_and_transition(PickingUpState& state)
+{
+    auto const choice = state.choices.*member;
+    switch (choice) {
+        case PickupUpgrade::Slash:
+            state.player.set_attack(AttackUpgrade::Slash);
+            break;
+        case PickupUpgrade::Shoot:
+            break;
+    }
+    return DefaultState{
+        state.player, Pickup{Position{0, 0}, UpgradeChoices{{}, {}}}};
+}
+
+} // namespace
+
 void MetaEngine::select_first_upgrade()
 {
     std::visit(
         overloaded{
-            [this](PickingUpState const& state) {
-                impl_->state = InternalGameState{DefaultState{
-                    state.player,
-                    Pickup{Position{0, 0}, UpgradeChoices{{}, {}}}}};
+            [this](PickingUpState& state) {
+                impl_->state.value =
+                    apply_upgrade_and_transition<&UpgradeChoices::first>(state);
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -132,10 +150,10 @@ void MetaEngine::select_second_upgrade()
 {
     std::visit(
         overloaded{
-            [this](PickingUpState const& state) {
-                impl_->state = InternalGameState{DefaultState{
-                    state.player,
-                    Pickup{Position{0, 0}, UpgradeChoices{{}, {}}}}};
+            [this](PickingUpState& state) {
+                impl_->state.value =
+                    apply_upgrade_and_transition<&UpgradeChoices::second>(
+                        state);
             },
             [](auto const&) {}},
         impl_->state.value);
