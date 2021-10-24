@@ -110,4 +110,22 @@ TEST(MetaEngineTest, AttackStartsSlash)
     EXPECT_TRUE(engine.calculate_state().slash_attack);
 }
 
+TEST(MetaEngineTest, ProperlyTransitionToGameOver)
+{
+    auto engine = MetaEngine{{DefaultState{
+        Player{Position{50, 0}},
+        Pickup{{500, 500}, {{}, {}}},
+        Enemies{{Position{0, 0}}}}}};
+    engine.input_left();
+    auto const state = engine.calculate_state();
+    auto const expected = GameState{
+        {0, 0},
+        Position{500, 500},
+        std::nullopt,
+        false,
+        {{0, 0}},
+        GameProgress::Lost};
+    EXPECT_EQ(expected, state);
+}
+
 } // namespace

@@ -78,7 +78,10 @@ void move_and_maybe_transition(
     state.enemies.advance(state.player.position());
     if (check_for_enemy_collision(
             state.player.position(), state.enemies.positions())) {
-        internal_state.value = GameOverState{};
+        internal_state.value = GameOverState{
+            state.player.position(),
+            state.pickup.position,
+            state.enemies.positions()};
     } else if (check_pickup(state.player, state.pickup)) {
         internal_state.value =
             PickingUpState{state.player, state.pickup.upgrades, state.enemies};
