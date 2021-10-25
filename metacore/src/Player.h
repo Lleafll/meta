@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Position.h"
+#include "ShootAttackMechanic.h"
 #include "SlashAttackMechanic.h"
 #include <variant>
+#include <vector>
 
 namespace metacore {
 
@@ -15,6 +17,7 @@ class Player final {
 
     [[nodiscard]] Position const& position() const;
     [[nodiscard]] bool is_slashing() const;
+    [[nodiscard]] std::vector<Position> const* projectiles() const;
     void move_up();
     void move_down();
     void move_right();
@@ -24,7 +27,8 @@ class Player final {
 
   private:
     Position position_ = Position{0, 0};
-    std::variant<std::monostate, SlashAttackMechanic> attack_ = {};
+    std::variant<std::monostate, SlashAttackMechanic, ShootAttackMechanic>
+        attack_ = {};
 };
 
 } // namespace metacore

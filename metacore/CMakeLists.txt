@@ -12,7 +12,8 @@ add_library(${PROJECT_NAME}
         "src/InitialState.cpp"
         "src/InitialPickingUpState.cpp"
         "src/GameOverState.cpp"
-        "src/PickUpGenerator.cpp")
+        "src/PickUpGenerator.cpp"
+        "src/ShootAttackMechanic.cpp")
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         "include"

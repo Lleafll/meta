@@ -29,13 +29,30 @@ bool Player::is_slashing() const
         attack_);
 }
 
+std::vector<Position> const* Player::projectiles() const
+{
+    return std::visit(
+        overloaded{
+            [](ShootAttackMechanic const& attack)
+                -> std::vector<Position> const* {
+                return &attack.projectiles();
+            },
+            [](auto const&) -> std::vector<Position> const* {
+                return nullptr;
+            }},
+        attack_);
+} //
+
 namespace {
 
-void tick(std::variant<std::monostate, SlashAttackMechanic>& attack)
+void tick(
+    std::variant<std::monostate, SlashAttackMechanic, ShootAttackMechanic>&
+        attack)
 {
     return std::visit(
         overloaded{
             [](SlashAttackMechanic& attack) { attack.tick(); },
+            [](ShootAttackMechanic& attack) { attack.tick(); },
             [](auto const&) {}},
         attack);
 }
@@ -71,6 +88,7 @@ void Player::attack()
     std::visit(
         overloaded{
             [](SlashAttackMechanic& attack) { attack.start(); },
+            [](ShootAttackMechanic& attack) { attack.start(); },
             [](auto const&) {}},
         attack_);
 }
