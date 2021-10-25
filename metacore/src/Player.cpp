@@ -100,6 +100,7 @@ void Player::set_attack(AttackUpgrade const upgrade)
             attack_ = SlashAttackMechanic{};
             break;
         case AttackUpgrade::Shoot:
+            attack_ = ShootAttackMechanic{};
             break;
     }
 }
