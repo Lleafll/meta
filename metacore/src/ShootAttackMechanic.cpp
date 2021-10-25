@@ -2,6 +2,12 @@
 
 namespace metacore {
 
+namespace {
+
+constexpr auto projectile_step_size = 50;
+
+} // namespace
+
 ShootAttackMechanic::ShootAttackMechanic(std::vector<Position> projectiles)
     : projectiles_{std::move(projectiles)}
 {
@@ -19,6 +25,9 @@ void ShootAttackMechanic::start(Position const& position)
 
 void ShootAttackMechanic::tick()
 {
+    for (auto& projectile : projectiles_) {
+        projectile.x += projectile_step_size;
+    }
 }
 
 } // namespace metacore

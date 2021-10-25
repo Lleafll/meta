@@ -15,4 +15,12 @@ TEST(ShootAttackMechanic, Start)
     EXPECT_EQ(expected, projectiles);
 }
 
+TEST(ShootAttackMechanic, Tick)
+{
+    auto attack = ShootAttackMechanic{{Position{0, 0}}};
+    attack.tick();
+    auto const expected = std::vector<Position>{{50, 0}};
+    EXPECT_EQ(expected, attack.projectiles());
+}
+
 } // namespace
