@@ -136,7 +136,7 @@ TEST(MetaEngineTest, InputRestart)
         Enemies{{Position{654, 65}}}}}};
     engine.input_restart();
     auto const state = engine.calculate_state();
-    auto const expected = GameState{Position{0, 0}, Position{200, 50}};
+    auto const expected = GameState{Position{0, 0}, state.upgrade_position};
     EXPECT_EQ(expected, state);
 }
 
