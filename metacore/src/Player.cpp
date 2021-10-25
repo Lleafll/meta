@@ -88,7 +88,7 @@ void Player::attack()
     std::visit(
         overloaded{
             [](SlashAttackMechanic& attack) { attack.start(); },
-            [](ShootAttackMechanic& attack) { attack.start(); },
+            [this](ShootAttackMechanic& attack) { attack.start(position_); },
             [](auto const&) {}},
         attack_);
 }
