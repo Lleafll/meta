@@ -47,4 +47,17 @@ TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
     EXPECT_TRUE(to_game_state(state).slash_attack);
 }
 
+TEST(DefaultState, ToGameStateConsidersProjectiles)
+{
+    auto player = Player{Position{324, 765}};
+    {
+        player.set_attack(AttackUpgrade::Shoot);
+        player.attack();
+    }
+    auto const state = DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{}};
+    auto const game_state_projectiles = to_game_state(state).projectiles;
+    auto const expected = std::vector{Position{324, 765}};
+    EXPECT_EQ(expected, game_state_projectiles);
+}
+
 } // namespace
