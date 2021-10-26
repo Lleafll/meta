@@ -13,7 +13,7 @@ target_link_libraries(${PROJECT_NAME}
         CONAN_PKG::sdl_ttf
         metacore
         )
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 23)
 
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
