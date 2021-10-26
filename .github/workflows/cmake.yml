@@ -20,7 +20,7 @@ jobs:
       run: |
         pip install conan
         mkdir ${{github.workspace}}/build
-        conan install -if ${{github.workspace}}/build ${{github.workspace}}
+        conan install -if ${{github.workspace}}/build ${{github.workspace}} --build missing
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
