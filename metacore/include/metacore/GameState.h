@@ -16,6 +16,7 @@ struct GameState final {
     bool slash_attack = false;
     std::vector<Position> enemy_positions = {};
     GameProgress progress = GameProgress::Running;
+    std::optional<std::vector<Position>> projectiles = {};
 
     friend bool operator==(GameState const&, GameState const&) = default;
 };

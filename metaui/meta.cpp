@@ -2,6 +2,7 @@
 #include "metacore/MetaEngine.h"
 #include <format>
 #include <iostream>
+#include <ranges>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -121,6 +122,14 @@ void render_game_progress(
     }
 }
 
+void render_projectiles(
+    SDL_Renderer& renderer, std::vector<metacore::Position> const& projectiles)
+{
+    for (auto const& position : projectiles) {
+        render_rectangle_at_position<255, 255, 255, 10>(renderer, position);
+    }
+}
+
 void render_gamestate(
     SDL_Renderer& renderer, metacore::GameState const& state, TTF_Font& font)
 {
@@ -137,6 +146,9 @@ void render_gamestate(
     render_player(renderer, state.player_position);
     if (state.upgrade_position.has_value()) {
         render_upgrade(renderer, *state.upgrade_position);
+    }
+    if (state.projectiles.has_value()) {
+        render_projectiles(renderer, *state.projectiles);
     }
     if (state.upgrade_choices.has_value()) {
         render_upgrade_choices(renderer, font, *state.upgrade_choices);
