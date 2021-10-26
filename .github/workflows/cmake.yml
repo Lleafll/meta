@@ -18,8 +18,7 @@ jobs:
       
     - name: Install dependencies from conan
       run: |
-        sudo apt-get update
-        sudo apt-get install conan
+        pip install conan
         mkdir ${{github.workspace}}/build
         conan install -if ${{github.workspace}}/build ${{github.workspace}}
 
