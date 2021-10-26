@@ -9,6 +9,8 @@ on:
 env:
   BUILD_TYPE: Release
   CONAN_SYSREQUIRES_MODE: enabled
+  CC:   gcc-11
+  CXX:  g++-11
 
 jobs:
   build:
