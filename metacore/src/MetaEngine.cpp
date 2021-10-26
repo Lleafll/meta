@@ -206,6 +206,7 @@ void set_upgrade(Player& player, UpgradeChoices const& choices)
             player.set_attack(AttackUpgrade::Slash);
             break;
         case PickupUpgrade::Shoot:
+            player.set_attack(AttackUpgrade::Shoot);
             break;
     }
 }
