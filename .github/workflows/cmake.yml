@@ -16,8 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Check formatting with clang-format
-      run: clang-format --dry-run --Werror *.h *.cpp
+    - name: clang-format Check
+      uses: jidicula/clang-format-action@v4.2.0
 
   test:
     runs-on: windows-latest
