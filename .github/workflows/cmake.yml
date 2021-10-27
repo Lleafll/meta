@@ -10,7 +10,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  format:
+  clang-format:
     runs-on: ubuntu-latest
     
     steps:
@@ -18,6 +18,15 @@ jobs:
     
     - name: clang-format Check
       uses: jidicula/clang-format-action@v4.2.0
+      
+  clang-tidy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: clang-tidy check
+      uses: muxee/clang-tidy-action@0.0.1-rc1
 
   test:
     runs-on: windows-latest
