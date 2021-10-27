@@ -14,7 +14,8 @@ struct UpgradeChoices final {
     PickupUpgrade first;
     PickupUpgrade second;
 
-    friend bool operator==(UpgradeChoices const&, UpgradeChoices const&) = default;
+    friend bool
+    operator==(UpgradeChoices const&, UpgradeChoices const&) = default;
 };
 
 } // namespace metacore
