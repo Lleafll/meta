@@ -10,15 +10,17 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build:
+  test:
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Install conan
+      run: pip install conan
       
     - name: Install dependencies from conan
       run: |
-        pip install conan
         mkdir ${{github.workspace}}/build
         conan install -if ${{github.workspace}}/build ${{github.workspace}}
     
