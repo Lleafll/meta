@@ -7,7 +7,7 @@
 
 namespace metacore {
 
-enum class GameProgress { Running, Won, Lost };
+enum class GameProgress { Running, Lost };
 
 struct GameState final {
     Position player_position = {};
