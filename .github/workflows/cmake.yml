@@ -20,14 +20,14 @@ jobs:
     - name: clang-format Check
       uses: jidicula/clang-format-action@v4.2.0
       
-  clang-tidy:
+  static-analysis:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
     
-    - name: clang-tidy check
-      uses: smay1613/clang-tidy-action@master
+    - name: Run static analysis for C++ project
+      uses: JacobDomagala/StaticAnalysis@v0.0.4
 
   test:
     runs-on: windows-latest
