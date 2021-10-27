@@ -16,6 +16,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Install clang-format 13
+      run: |
+        deb http://apt.llvm.org/focal/ llvm-toolchain-focal main
+        deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal main
+    
     - name: Check formatting with clang-format
       run: find . -regex '.*\.\(cpp\|h\)' -exec clang-format --dry-run -Werror {} \;
 
