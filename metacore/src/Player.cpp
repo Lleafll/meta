@@ -126,8 +126,9 @@ bool Player::target_is_hit(Position const& target) const
     return std::visit(
         overloaded{
             [this, &target](SlashAttackMechanic const& attack) -> bool {
-                return is_within_distance<slash_radius>(
-                    position_and_orientation_.position, target);
+                return attack.is_active() &&
+                    is_within_distance<slash_radius>(
+                           position_and_orientation_.position, target);
             },
             [&target](ShootAttackMechanic const& attack) -> bool {
                 return std::ranges::any_of(

@@ -95,6 +95,15 @@ TEST(PlayerTest, TargetIsHitWorksWithShoot)
     EXPECT_TRUE(player.target_is_hit({0, 0}));
 }
 
+TEST(PlayerTest, TargetIsHitWorksWithSlash)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Slash);
+    EXPECT_FALSE(player.target_is_hit({0, 0}));
+    player.attack();
+    EXPECT_TRUE(player.target_is_hit({0, 0}));
+}
+
 TEST(PlayerTest, ShootAttackObeysDirection)
 {
     auto player = Player{PositionAndOrientation{{0, 0}, Orientation::Down}};
