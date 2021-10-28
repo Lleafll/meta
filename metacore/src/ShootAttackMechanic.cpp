@@ -45,8 +45,8 @@ void ShootAttackMechanic::start(
 
 void ShootAttackMechanic::tick()
 {
-    for (auto& projectile : positions_) {
-        projectile.x += projectile_step_size;
+    for (auto& position : positions_) {
+        position.x += projectile_step_size;
     }
 }
 
