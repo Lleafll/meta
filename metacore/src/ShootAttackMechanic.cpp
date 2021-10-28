@@ -1,5 +1,6 @@
 #include "ShootAttackMechanic.h"
 #include <algorithm>
+#include <gsl/gsl_assert>
 #include <iterator>
 
 namespace metacore {
@@ -45,8 +46,23 @@ void ShootAttackMechanic::start(
 
 void ShootAttackMechanic::tick()
 {
-    for (auto& position : positions_) {
-        position.x += projectile_step_size;
+    Expects(positions_.size() == orientations_.size());
+    for (auto i = 0ull; i < positions_.size(); ++i) {
+        auto& position = positions_[i];
+        switch (orientations_[i]) {
+            case Orientation::Up:
+                position.y += projectile_step_size;
+                break;
+            case Orientation::Down:
+                position.y -= projectile_step_size;
+                break;
+            case Orientation::Right:
+                position.x += projectile_step_size;
+                break;
+            case Orientation::Left:
+                position.x -= projectile_step_size;
+                break;
+        }
     }
 }
 

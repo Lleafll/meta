@@ -25,4 +25,13 @@ TEST(ShootAttackMechanic, Tick)
     EXPECT_EQ(expected, attack.projectiles());
 }
 
+TEST(ShootAttackMechanic, TickObeysDirections)
+{
+    auto attack = ShootAttackMechanic{
+        std::array{PositionAndOrientation{Position{0, 0}, Orientation::Up}}};
+    attack.tick();
+    auto const expected = std::vector<Position>{{0, 50}};
+    EXPECT_EQ(expected, attack.projectiles());
+}
+
 } // namespace
