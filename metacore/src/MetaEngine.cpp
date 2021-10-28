@@ -97,64 +97,56 @@ void move_and_maybe_transition(
 void MetaEngine::input_right()
 {
     std::visit(
-        overloaded{
-            [this](InitialState& state) {
+        [this]<typename T>(T& state) {
+            if constexpr (
+                std::is_same_v<T, InitialState> ||
+                std::is_same_v<T, DefaultState>) {
                 move_and_maybe_transition<&Player::move_right>(
                     state, impl_->state);
-            },
-            [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_right>(
-                    state, impl_->state);
-            },
-            [](auto const&) {}},
+            }
+        },
         impl_->state.value);
 }
 
 void MetaEngine::input_left()
 {
     std::visit(
-        overloaded{
-            [this](InitialState& state) {
+        [this]<typename T>(T& state) {
+            if constexpr (
+                std::is_same_v<T, InitialState> ||
+                std::is_same_v<T, DefaultState>) {
                 move_and_maybe_transition<&Player::move_left>(
                     state, impl_->state);
-            },
-            [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_left>(
-                    state, impl_->state);
-            },
-            [](auto const&) {}},
+            }
+        },
         impl_->state.value);
 }
 
 void MetaEngine::input_up()
 {
     std::visit(
-        overloaded{
-            [this](InitialState& state) {
+        [this]<typename T>(T& state) {
+            if constexpr (
+                std::is_same_v<T, InitialState> ||
+                std::is_same_v<T, DefaultState>) {
                 move_and_maybe_transition<&Player::move_up>(
                     state, impl_->state);
-            },
-            [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_up>(
-                    state, impl_->state);
-            },
-            [](auto const&) {}},
+            }
+        },
         impl_->state.value);
 }
 
 void MetaEngine::input_down()
 {
     std::visit(
-        overloaded{
-            [this](InitialState& state) {
+        [this]<typename T>(T& state) {
+            if constexpr (
+                std::is_same_v<T, InitialState> ||
+                std::is_same_v<T, DefaultState>) {
                 move_and_maybe_transition<&Player::move_down>(
                     state, impl_->state);
-            },
-            [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_down>(
-                    state, impl_->state);
-            },
-            [](auto const&) {}},
+            }
+        },
         impl_->state.value);
 }
 
