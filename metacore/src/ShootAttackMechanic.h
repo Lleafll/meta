@@ -19,7 +19,7 @@ class ShootAttackMechanic final {
     void tick();
 
   private:
-    std::vector<Position> projectiles_ = {};
+    std::vector<Position> positions_ = {};
     std::vector<Orientation> orientations_ = {};
 };
 

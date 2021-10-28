@@ -12,32 +12,40 @@ constexpr auto projectile_step_size = 50;
 
 ShootAttackMechanic::ShootAttackMechanic(
     std::span<PositionAndOrientation const> const projectiles)
-    : projectiles_{[projectiles]() -> std::vector<Position> {
+    : positions_{[projectiles]() -> std::vector<Position> {
           auto positions = std::vector<Position>{};
           std::ranges::transform(
               projectiles,
               std::back_inserter(positions),
               &PositionAndOrientation::position);
           return positions;
+      }()},
+      orientations_{[projectiles]() -> std::vector<Orientation> {
+          auto orientations = std::vector<Orientation>{};
+          std::ranges::transform(
+              projectiles,
+              std::back_inserter(orientations),
+              &PositionAndOrientation::orientation);
+          return orientations;
       }()}
 {
 }
 
 std::vector<Position> const& ShootAttackMechanic::projectiles() const
 {
-    return projectiles_;
+    return positions_;
 }
 
 void ShootAttackMechanic::start(
     PositionAndOrientation const& position_and_orientation)
 {
-    projectiles_.push_back(position_and_orientation.position);
+    positions_.push_back(position_and_orientation.position);
     orientations_.push_back(position_and_orientation.orientation);
 }
 
 void ShootAttackMechanic::tick()
 {
-    for (auto& projectile : projectiles_) {
+    for (auto& projectile : positions_) {
         projectile.x += projectile_step_size;
     }
 }
