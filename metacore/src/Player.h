@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Position.h"
+#include "PositionAndOrientation.h"
 #include "ShootAttackMechanic.h"
 #include "SlashAttackMechanic.h"
 #include <variant>
@@ -27,7 +28,8 @@ class Player final {
     [[nodiscard]] bool target_is_hit(Position const& target) const;
 
   private:
-    Position position_ = Position{0, 0};
+    PositionAndOrientation position_and_orientation =
+        PositionAndOrientation{{0, 0}, Orientation::Up};
     std::variant<std::monostate, SlashAttackMechanic, ShootAttackMechanic>
         attack_ = {};
 };

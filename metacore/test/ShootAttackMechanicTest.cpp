@@ -1,4 +1,5 @@
 #include "ShootAttackMechanic.h"
+#include <array>
 #include <gtest/gtest.h>
 
 using namespace metacore;
@@ -9,7 +10,7 @@ TEST(ShootAttackMechanic, Start)
 {
     auto attack = ShootAttackMechanic{};
     ASSERT_TRUE(attack.projectiles().empty());
-    attack.start(Position{23, 65});
+    attack.start({Position{23, 65}, Orientation::Right});
     auto const& projectiles = attack.projectiles();
     auto const expected = std::vector<Position>{{23, 65}};
     EXPECT_EQ(expected, projectiles);
@@ -17,7 +18,8 @@ TEST(ShootAttackMechanic, Start)
 
 TEST(ShootAttackMechanic, Tick)
 {
-    auto attack = ShootAttackMechanic{{Position{0, 0}}};
+    auto attack = ShootAttackMechanic{
+        std::array{PositionAndOrientation{Position{0, 0}, Orientation::Right}}};
     attack.tick();
     auto const expected = std::vector<Position>{{50, 0}};
     EXPECT_EQ(expected, attack.projectiles());

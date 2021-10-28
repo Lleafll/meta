@@ -12,13 +12,14 @@ constexpr auto shoot_kill_radius = 50;
 
 } // namespace
 
-Player::Player(Position const& position) : position_{position}
+Player::Player(Position const& position)
+    : position_and_orientation{position, Orientation::Up}
 {
 }
 
 Position const& Player::position() const
 {
-    return position_;
+    return position_and_orientation.position;
 }
 
 bool Player::is_slashing() const
@@ -64,25 +65,25 @@ void tick(
 
 void Player::move_up()
 {
-    position_.y += player_move_increment;
+    position_and_orientation.position.y += player_move_increment;
     tick(attack_);
 }
 
 void Player::move_down()
 {
-    position_.y -= player_move_increment;
+    position_and_orientation.position.y -= player_move_increment;
     tick(attack_);
 }
 
 void Player::move_right()
 {
-    position_.x += player_move_increment;
+    position_and_orientation.position.x += player_move_increment;
     tick(attack_);
 }
 
 void Player::move_left()
 {
-    position_.x -= player_move_increment;
+    position_and_orientation.position.x -= player_move_increment;
     tick(attack_);
 }
 
@@ -92,7 +93,9 @@ void Player::attack()
     std::visit(
         overloaded{
             [](SlashAttackMechanic& attack) { attack.start(); },
-            [this](ShootAttackMechanic& attack) { attack.start(position_); },
+            [this](ShootAttackMechanic& attack) {
+                attack.start(position_and_orientation);
+            },
             [](auto const&) {}},
         attack_);
 }
@@ -114,7 +117,8 @@ bool Player::target_is_hit(Position const& target) const
     return std::visit(
         overloaded{
             [this, &target](SlashAttackMechanic const& attack) -> bool {
-                return is_within_distance<slash_radius>(position_, target);
+                return is_within_distance<slash_radius>(
+                    position_and_orientation.position, target);
             },
             [&target](ShootAttackMechanic const& attack) -> bool {
                 return std::ranges::any_of(
