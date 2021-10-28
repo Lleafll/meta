@@ -6,6 +6,8 @@ namespace metacore {
 namespace {
 
 constexpr auto player_move_increment = 50;
+constexpr auto slash_radius = 100;
+constexpr auto shoot_kill_radius = 50;
 
 } // namespace
 
@@ -107,7 +109,14 @@ void Player::set_attack(AttackUpgrade const upgrade)
 
 bool Player::target_is_hit(Position const& target) const
 {
-    return false;
+    return std::visit(
+        overloaded{
+            [this, &target](SlashAttackMechanic const& attack) -> bool {
+                return is_within_distance<slash_radius>(position_, target);
+            },
+            [](ShootAttackMechanic const& attack) -> bool { return false; },
+            [](auto const&) -> bool { return false; }},
+        attack_);
 }
 
 } // namespace metacore
