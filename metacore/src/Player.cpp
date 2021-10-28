@@ -105,4 +105,9 @@ void Player::set_attack(AttackUpgrade const upgrade)
     }
 }
 
+bool Player::target_is_hit(Position const& target) const
+{
+    return false;
+}
+
 } // namespace metacore

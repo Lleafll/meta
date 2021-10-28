@@ -24,6 +24,7 @@ class Player final {
     void move_left();
     void attack();
     void set_attack(AttackUpgrade upgrade);
+    [[nodiscard]] bool target_is_hit(Position const& target) const;
 
   private:
     Position position_ = Position{0, 0};
