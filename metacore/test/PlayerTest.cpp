@@ -85,4 +85,13 @@ TEST(PlayerTest, EndSlashAttackAfterMoveLeft)
     EXPECT_FALSE(player.is_slashing());
 }
 
+TEST(PlayerTest, PlayerTargetIsHitShoot)
+{
+    auto player = Player{};
+    player.set_attack(AttackUpgrade::Shoot);
+    EXPECT_FALSE(player.target_is_hit({0, 0}));
+    player.attack();
+    EXPECT_TRUE(player.target_is_hit({0, 0}));
+}
+
 } // namespace

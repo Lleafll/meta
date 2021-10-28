@@ -156,7 +156,9 @@ TEST(MetaengineTest, KillEnemiesInSlashRangeIfSlashUpgradeIsSelected)
     auto player = Player{Position{0, 0}};
     player.set_attack(AttackUpgrade::Slash);
     auto engine = MetaEngine{{DefaultState{
-        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{Position{-50, -50}}}}}};
+        player,
+        Pickup{{5634, 654}, {{}, {}}},
+        Enemies{{Position{-100, -100}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(0, enemies_count);
@@ -167,7 +169,9 @@ TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfShootUpgradeIsSelected)
     auto player = Player{Position{0, 0}};
     player.set_attack(AttackUpgrade::Shoot);
     auto engine = MetaEngine{{DefaultState{
-        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{Position{-50, -50}}}}}};
+        player,
+        Pickup{{5634, 654}, {{}, {}}},
+        Enemies{{Position{-100, -100}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(1, enemies_count);

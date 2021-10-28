@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "overloaded.h"
+#include <algorithm>
 
 namespace metacore {
 
@@ -114,7 +115,14 @@ bool Player::target_is_hit(Position const& target) const
             [this, &target](SlashAttackMechanic const& attack) -> bool {
                 return is_within_distance<slash_radius>(position_, target);
             },
-            [](ShootAttackMechanic const& attack) -> bool { return false; },
+            [&target](ShootAttackMechanic const& attack) -> bool {
+                return std::ranges::any_of(
+                    attack.projectiles(),
+                    [&target](Position const& projectile) -> bool {
+                        return is_within_distance<shoot_kill_radius>(
+                            projectile, target);
+                    });
+            },
             [](auto const&) -> bool { return false; }},
         attack_);
 }
