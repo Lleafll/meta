@@ -177,4 +177,28 @@ TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfShootUpgradeIsSelected)
     EXPECT_EQ(1, enemies_count);
 }
 
+TEST(MetaEngineTest, InputAttackAdvancesProjectiles)
+{
+    auto player = Player{Position{0, 0}};
+    player.set_attack(AttackUpgrade::Shoot);
+    auto engine = MetaEngine{
+        {DefaultState{player, Pickup{{65464, 754676}, {{}, {}}}, Enemies{{}}}}};
+    {
+        auto const projectiles = engine.calculate_state().projectiles;
+        ASSERT_TRUE(projectiles.has_value());
+        ASSERT_TRUE(projectiles->empty());
+    }
+    engine.input_attack();
+    ASSERT_TRUE(engine.calculate_state().projectiles.has_value());
+    ASSERT_EQ(1, engine.calculate_state().projectiles->size());
+    auto const projectile_first_position =
+        engine.calculate_state().projectiles->front();
+    engine.input_attack();
+    ASSERT_TRUE(engine.calculate_state().projectiles.has_value());
+    ASSERT_EQ(2, engine.calculate_state().projectiles->size());
+    auto const projectile_second_position =
+        engine.calculate_state().projectiles->front();
+    EXPECT_NE(projectile_first_position, projectile_second_position);
+}
+
 } // namespace

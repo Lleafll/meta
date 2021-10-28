@@ -88,6 +88,7 @@ void Player::move_left()
 
 void Player::attack()
 {
+    tick(attack_);
     std::visit(
         overloaded{
             [](SlashAttackMechanic& attack) { attack.start(); },
