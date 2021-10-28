@@ -63,6 +63,33 @@ bool check_pickup(Player const& player, Pickup const& pickup)
         player.position(), pickup.position);
 }
 
+void kill_enemies_that_got_hit(Player const& player, Enemies& enemies)
+{
+    auto const& positions = enemies.positions();
+    if (positions.empty()) {
+        return;
+    }
+    for (auto i = positions.size(); i > 0; --i) {
+        if (player.target_is_hit(positions[i - 1])) {
+            enemies.kill(i - 1);
+        }
+    }
+}
+
+void advance_and_maybe_transition(
+    DefaultState& state, InternalGameState& internal_state)
+{
+    kill_enemies_that_got_hit(state.player, state.enemies);
+    state.enemies.advance(state.player.position());
+    if (check_for_enemy_collision(
+            state.player.position(), state.enemies.positions())) {
+        internal_state.value = GameOverState{
+            state.player.position(),
+            state.pickup.position,
+            state.enemies.positions()};
+    }
+}
+
 template<void (Player::*move_direction)()>
 void move_and_maybe_transition(
     InitialState& state, InternalGameState& internal_state)
@@ -79,14 +106,9 @@ void move_and_maybe_transition(
     DefaultState& state, InternalGameState& internal_state)
 {
     (state.player.*move_direction)();
-    state.enemies.advance(state.player.position());
-    if (check_for_enemy_collision(
-            state.player.position(), state.enemies.positions())) {
-        internal_state.value = GameOverState{
-            state.player.position(),
-            state.pickup.position,
-            state.enemies.positions()};
-    } else if (check_pickup(state.player, state.pickup)) {
+    advance_and_maybe_transition(state, internal_state);
+    if (std::holds_alternative<DefaultState>(internal_state.value) &&
+        check_pickup(state.player, state.pickup)) {
         internal_state.value =
             PickingUpState{state.player, state.pickup.upgrades, state.enemies};
     }
@@ -152,29 +174,15 @@ void MetaEngine::input_down()
 
 namespace {
 
-void check_if_enemies_got_hit(Player const& player, Enemies& enemies)
-{
-    auto const& positions = enemies.positions();
-    if (positions.empty()) {
-        return;
-    }
-    for (auto i = positions.size(); i > 0; --i) {
-        if (player.target_is_hit(positions[i - 1])) {
-            enemies.kill(i - 1);
-        }
-    }
-}
-
 } // namespace
 
 void MetaEngine::input_attack()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) {
+            [this](DefaultState& state) {
                 state.player.attack();
-                check_if_enemies_got_hit(state.player, state.enemies);
-                state.enemies.advance(state.player.position());
+                advance_and_maybe_transition(state, impl_->state);
             },
             [](auto const&) {}},
         impl_->state.value);
