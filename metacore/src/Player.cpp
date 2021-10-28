@@ -13,13 +13,18 @@ constexpr auto shoot_kill_radius = 50;
 } // namespace
 
 Player::Player(Position const& position)
-    : position_and_orientation{position, Orientation::Up}
+    : position_and_orientation_{position, Orientation::Up}
+{
+}
+
+Player::Player(PositionAndOrientation const& position_and_orientation)
+    : position_and_orientation_{position_and_orientation}
 {
 }
 
 Position const& Player::position() const
 {
-    return position_and_orientation.position;
+    return position_and_orientation_.position;
 }
 
 bool Player::is_slashing() const
@@ -65,25 +70,29 @@ void tick(
 
 void Player::move_up()
 {
-    position_and_orientation.position.y += player_move_increment;
+    position_and_orientation_.position.y += player_move_increment;
+    position_and_orientation_.orientation = Orientation::Up;
     tick(attack_);
 }
 
 void Player::move_down()
 {
-    position_and_orientation.position.y -= player_move_increment;
+    position_and_orientation_.position.y -= player_move_increment;
+    position_and_orientation_.orientation = Orientation::Down;
     tick(attack_);
 }
 
 void Player::move_right()
 {
-    position_and_orientation.position.x += player_move_increment;
+    position_and_orientation_.position.x += player_move_increment;
+    position_and_orientation_.orientation = Orientation::Right;
     tick(attack_);
 }
 
 void Player::move_left()
 {
-    position_and_orientation.position.x -= player_move_increment;
+    position_and_orientation_.position.x -= player_move_increment;
+    position_and_orientation_.orientation = Orientation::Left;
     tick(attack_);
 }
 
@@ -94,7 +103,7 @@ void Player::attack()
         overloaded{
             [](SlashAttackMechanic& attack) { attack.start(); },
             [this](ShootAttackMechanic& attack) {
-                attack.start(position_and_orientation);
+                attack.start(position_and_orientation_);
             },
             [](auto const&) {}},
         attack_);
@@ -118,7 +127,7 @@ bool Player::target_is_hit(Position const& target) const
         overloaded{
             [this, &target](SlashAttackMechanic const& attack) -> bool {
                 return is_within_distance<slash_radius>(
-                    position_and_orientation.position, target);
+                    position_and_orientation_.position, target);
             },
             [&target](ShootAttackMechanic const& attack) -> bool {
                 return std::ranges::any_of(
