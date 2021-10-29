@@ -24,7 +24,7 @@ target_include_directories(${PROJECT_NAME}
         "../include/metacore"
         "../src"
         )
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 23)
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
