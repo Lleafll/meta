@@ -9,8 +9,6 @@ add_executable(${PROJECT_NAME}
         "DefaultStateTest.cpp"
         "PlayerTest.cpp"
         "SlashAttackMechanicTest.cpp"
-        "InitialStateTest.cpp"
-        "InitialPickingUpStateTest.cpp"
         "EnemiesTest.cpp"
         "GameOverStateTest.cpp"
         "ShootAttackMechanicTest.cpp")

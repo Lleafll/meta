@@ -24,8 +24,8 @@ struct MetaEngine::Impl final {
     }
 
     PickUpGenerator pick_up_generator = {};
-    InternalGameState state = {
-        InitialState{Player{Position{0, 0}}, pick_up_generator.generate()}};
+    InternalGameState state = {DefaultState{
+        Player{Position{0, 0}}, pick_up_generator.generate(), Enemies{}}};
 };
 
 MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
@@ -92,17 +92,6 @@ void advance_and_maybe_transition(
 
 template<void (Player::*move_direction)()>
 void move_and_maybe_transition(
-    InitialState& state, InternalGameState& internal_state)
-{
-    (state.player.*move_direction)();
-    if (check_pickup(state.player, state.pickup)) {
-        internal_state.value =
-            InitialPickingUpState{state.player, state.pickup.upgrades};
-    }
-}
-
-template<void (Player::*move_direction)()>
-void move_and_maybe_transition(
     DefaultState& state, InternalGameState& internal_state)
 {
     (state.player.*move_direction)();
@@ -120,9 +109,7 @@ void MetaEngine::input_right()
 {
     std::visit(
         [this]<typename T>(T& state) {
-            if constexpr (
-                std::is_same_v<T, InitialState> ||
-                std::is_same_v<T, DefaultState>) {
+            if constexpr (std::is_same_v<T, DefaultState>) {
                 move_and_maybe_transition<&Player::move_right>(
                     state, impl_->state);
             }
@@ -133,42 +120,36 @@ void MetaEngine::input_right()
 void MetaEngine::input_left()
 {
     std::visit(
-        [this]<typename T>(T& state) {
-            if constexpr (
-                std::is_same_v<T, InitialState> ||
-                std::is_same_v<T, DefaultState>) {
+        overloaded{
+            [this](DefaultState& state) {
                 move_and_maybe_transition<&Player::move_left>(
                     state, impl_->state);
-            }
-        },
+            },
+            [](auto const&) {}},
         impl_->state.value);
 }
 
 void MetaEngine::input_up()
 {
     std::visit(
-        [this]<typename T>(T& state) {
-            if constexpr (
-                std::is_same_v<T, InitialState> ||
-                std::is_same_v<T, DefaultState>) {
+        overloaded{
+            [this](DefaultState& state) {
                 move_and_maybe_transition<&Player::move_up>(
                     state, impl_->state);
-            }
-        },
+            },
+            [](auto const&) {}},
         impl_->state.value);
 }
 
 void MetaEngine::input_down()
 {
     std::visit(
-        [this]<typename T>(T& state) {
-            if constexpr (
-                std::is_same_v<T, InitialState> ||
-                std::is_same_v<T, DefaultState>) {
+        overloaded{
+            [this](DefaultState& state) {
                 move_and_maybe_transition<&Player::move_down>(
                     state, impl_->state);
-            }
-        },
+            },
+            [](auto const&) {}},
         impl_->state.value);
 }
 
@@ -210,15 +191,6 @@ void set_upgrade(Player& player, UpgradeChoices const& choices)
 }
 
 template<PickupUpgrade UpgradeChoices::*member>
-DefaultState apply_upgrade_and_transition(
-    InitialPickingUpState& state, Pickup const& next_pickup)
-{
-    set_upgrade<member>(state.player, state.choices);
-    return DefaultState{
-        state.player, next_pickup, Enemies{{Position{-100, -100}}}};
-}
-
-template<PickupUpgrade UpgradeChoices::*member>
 DefaultState
 apply_upgrade_and_transition(PickingUpState& state, Pickup const& next_pickup)
 {
@@ -232,11 +204,6 @@ void MetaEngine::select_first_upgrade()
 {
     std::visit(
         overloaded{
-            [this](InitialPickingUpState& state) {
-                impl_->state.value =
-                    apply_upgrade_and_transition<&UpgradeChoices::first>(
-                        state, impl_->pick_up_generator.generate());
-            },
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::first>(
@@ -250,11 +217,6 @@ void MetaEngine::select_second_upgrade()
 {
     std::visit(
         overloaded{
-            [this](InitialPickingUpState& state) {
-                impl_->state.value =
-                    apply_upgrade_and_transition<&UpgradeChoices::second>(
-                        state, impl_->pick_up_generator.generate());
-            },
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::second>(

@@ -9,8 +9,6 @@ add_library(${PROJECT_NAME}
         "src/DefaultState.cpp"
         "src/SlashAttackMechanic.cpp"
         "src/Enemies.cpp"
-        "src/InitialState.cpp"
-        "src/InitialPickingUpState.cpp"
         "src/GameOverState.cpp"
         "src/PickUpGenerator.cpp"
         "src/ShootAttackMechanic.cpp")
