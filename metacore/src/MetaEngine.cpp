@@ -199,6 +199,12 @@ void set_upgrade(Player& player, Layout& layout, UpgradeChoices const& choices)
         case PickupUpgrade::OpenWorld:
             layout.set_upgrade(LayoutUpgrade::OpenWorld);
             break;
+        case PickupUpgrade::Car:
+            player.texture = CharacterTexture::Car;
+            break;
+        case PickupUpgrade::Knight:
+            player.texture = CharacterTexture::Knight;
+            break;
     }
 }
 

@@ -2,6 +2,6 @@
 
 namespace metacore {
 
-enum class PickupUpgrade { Slash, Shoot, Dungeon, OpenWorld };
+enum class PickupUpgrade { Slash, Shoot, Dungeon, OpenWorld, Car, Knight };
 
 } // namespace metacore

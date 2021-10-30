@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ranges>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
 namespace {
@@ -62,9 +63,59 @@ void render_slash_attack(
     render_rectangle_at_position<255, 255, 0, 100>(renderer, position);
 }
 
-void render_player(SDL_Renderer& renderer, metacore::Position const& position)
+void render_character_texture_at_position(
+    SDL_Renderer& renderer,
+    metacore::Position const& position,
+    metacore::CharacterTexture const character_texture)
 {
-    render_rectangle_at_position<0, 0, 255>(renderer, position);
+    auto* const image = [character_texture]() -> SDL_Surface* {
+        static auto* const car_texture = IMG_Load("YellowBuggy_0.png");
+        static auto* const knight_texture = IMG_Load("knight.png");
+        switch (character_texture) {
+            case metacore::CharacterTexture::None:
+                return nullptr;
+            case metacore::CharacterTexture::Car:
+                return car_texture;
+            case metacore::CharacterTexture::Knight:
+                return knight_texture;
+        }
+        return nullptr;
+    }();
+    if (image == nullptr) {
+        throw_sdl_error();
+    }
+    auto* const texture = SDL_CreateTextureFromSurface(&renderer, image);
+    if (texture == nullptr) {
+        throw_sdl_error();
+    }
+    auto const screen_position = world_position_to_screen_position(position);
+    auto dstrect =
+        SDL_Rect{screen_position.x - 25, screen_position.y - 25, 50, 50};
+    if (SDL_RenderCopy(&renderer, texture, nullptr, &dstrect) != 0) {
+        throw_sdl_error();
+    }
+    SDL_DestroyTexture(texture);
+}
+
+template<Uint8 red, Uint8 green, Uint8 blue>
+void render_at_position(
+    SDL_Renderer& renderer,
+    metacore::Position const& position,
+    metacore::CharacterTexture const texture)
+{
+    if (texture == metacore::CharacterTexture::None) {
+        render_rectangle_at_position<red, green, blue>(renderer, position);
+    } else {
+        render_character_texture_at_position(renderer, position, texture);
+    }
+}
+
+void render_player(
+    SDL_Renderer& renderer,
+    metacore::Position const& position,
+    metacore::CharacterTexture const texture)
+{
+    render_at_position<0, 0, 255>(renderer, position, texture);
 }
 
 void render_upgrade(SDL_Renderer& renderer, metacore::Position const& position)
@@ -99,6 +150,10 @@ constexpr char const* to_string(metacore::PickupUpgrade const upgrade)
             return "Dungeon";
         case metacore::PickupUpgrade::OpenWorld:
             return "Open World";
+        case metacore::PickupUpgrade::Car:
+            return "Car";
+        case metacore::PickupUpgrade::Knight:
+            return "Knight";
     }
     throw std::runtime_error{std::format(
         "{} not handled in {}", static_cast<int>(upgrade), __func__)};
@@ -165,7 +220,7 @@ void render_gamestate(
     if (state.slash_attack) {
         render_slash_attack(renderer, state.player_position);
     }
-    render_player(renderer, state.player_position);
+    render_player(renderer, state.player_position, state.player_texture);
     if (state.upgrade_position.has_value()) {
         render_upgrade(renderer, *state.upgrade_position);
     }
@@ -243,6 +298,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
         }
         if (TTF_Init() != 0) {
             throw_sdl_error();
+        }
+        constexpr auto imgFlags = IMG_INIT_PNG;
+        if (!(IMG_Init(imgFlags) & imgFlags)) {
+            throw std::runtime_error{std::format(
+                "SDL_image could not initialize! SDL_image Error: {}\n",
+                IMG_GetError())};
         }
         window = SDL_CreateWindow(
             "SDL Example",

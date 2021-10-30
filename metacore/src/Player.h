@@ -8,6 +8,7 @@
 #include <span>
 #include <variant>
 #include <vector>
+#include "CharacterTexture.h"
 
 namespace metacore {
 
@@ -15,6 +16,8 @@ enum class AttackUpgrade { Slash, Shoot };
 
 class Player final {
   public:
+    CharacterTexture texture = CharacterTexture::None;
+
     Player() = default;
     explicit Player(Position const& position);
     explicit Player(PositionAndOrientation const& position_and_orientation);

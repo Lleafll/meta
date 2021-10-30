@@ -27,7 +27,8 @@ GameState to_game_state(DefaultState const& state)
         GameProgress::Running,
         projectiles == nullptr ? std::optional<std::vector<Position>>{}
                                : std::optional{*projectiles},
-        {tiles.begin(), tiles.end()}};
+        {tiles.begin(), tiles.end()},
+        player.texture};
 }
 
 } // namespace metacore
