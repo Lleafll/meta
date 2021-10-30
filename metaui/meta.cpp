@@ -130,6 +130,14 @@ void render_projectiles(
     }
 }
 
+void render_tiles(
+    SDL_Renderer& renderer, std::vector<metacore::Tile> const& tiles)
+{
+    for (auto const& tile : tiles) {
+        render_rectangle_at_position<64, 64, 64, 50>(renderer, tile.position);
+    }
+}
+
 void render_gamestate(
     SDL_Renderer& renderer, metacore::GameState const& state, TTF_Font& font)
 {
@@ -139,6 +147,7 @@ void render_gamestate(
     if (SDL_RenderClear(&renderer) != 0) {
         throw_sdl_error();
     }
+    render_tiles(renderer, state.tiles);
     render_enemies(renderer, state.enemy_positions);
     if (state.slash_attack) {
         render_slash_attack(renderer, state.player_position);
