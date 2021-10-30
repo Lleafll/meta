@@ -25,7 +25,10 @@ struct MetaEngine::Impl final {
 
     PickUpGenerator pick_up_generator = {};
     InternalGameState state = {DefaultState{
-        Player{Position{0, 0}}, pick_up_generator.generate(), Enemies{}}};
+        Player{Position{0, 0}},
+        pick_up_generator.generate(),
+        Enemies{},
+        Layout{LayoutUpgrade::Arena}}};
 };
 
 MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}

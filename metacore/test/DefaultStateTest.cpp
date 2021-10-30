@@ -62,7 +62,11 @@ TEST(DefaultStateTest, ToGameStateConsidersProjectiles)
 
 TEST(DefaultStateTest, ToGameStateConsidersLayout)
 {
-    auto const state = DefaultState{Player{}, Pickup{{}, {{}, {}}}, Enemies{}};
+    auto const state = DefaultState{
+        Player{},
+        Pickup{{}, {{}, {}}},
+        Enemies{},
+        Layout{LayoutUpgrade::Arena}};
     auto const tiles = to_game_state(state).tiles;
     EXPECT_EQ(36, tiles.size());
 }
