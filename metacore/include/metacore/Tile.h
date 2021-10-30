@@ -4,7 +4,7 @@
 
 namespace metacore {
 
-enum class TileType { Obstacle };
+enum class TileType { Obstacle, Stairs };
 
 struct Tile final {
     Position position = {};

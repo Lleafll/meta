@@ -4,6 +4,7 @@ project(metacore)
 
 add_library(${PROJECT_NAME}
         "src/DefaultState.cpp"
+        "src/DungeonLayoutMechanic.cpp"
         "src/Enemies.cpp"
         "src/GameOverState.cpp"
         "src/Layout.cpp"

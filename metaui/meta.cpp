@@ -95,6 +95,10 @@ constexpr char const* to_string(metacore::PickupUpgrade const upgrade)
             return "Slash";
         case metacore::PickupUpgrade::Shoot:
             return "Shoot";
+        case metacore::PickupUpgrade::Dungeon:
+            return "Dungeon";
+        case metacore::PickupUpgrade::OpenWorld:
+            return "Open World";
     }
     throw std::runtime_error{std::format(
         "{} not handled in {}", static_cast<int>(upgrade), __func__)};
@@ -134,7 +138,16 @@ void render_tiles(
     SDL_Renderer& renderer, std::vector<metacore::Tile> const& tiles)
 {
     for (auto const& tile : tiles) {
-        render_rectangle_at_position<64, 64, 64, 50>(renderer, tile.position);
+        switch (tile.type) {
+            case metacore::TileType::Obstacle:
+                render_rectangle_at_position<64, 64, 64, 50>(
+                    renderer, tile.position);
+                break;
+            case metacore::TileType::Stairs:
+                render_rectangle_at_position<123, 63, 0, 50>(
+                    renderer, tile.position);
+                break;
+        }
     }
 }
 

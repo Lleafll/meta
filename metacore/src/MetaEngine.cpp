@@ -179,7 +179,7 @@ void MetaEngine::input_restart()
 namespace {
 
 template<PickupUpgrade UpgradeChoices::*member>
-void set_upgrade(Player& player, UpgradeChoices const& choices)
+void set_upgrade(Player& player, Layout& layout, UpgradeChoices const& choices)
 {
     auto const choice = choices.*member;
     switch (choice) {
@@ -189,6 +189,12 @@ void set_upgrade(Player& player, UpgradeChoices const& choices)
         case PickupUpgrade::Shoot:
             player.set_attack(AttackUpgrade::Shoot);
             break;
+        case PickupUpgrade::Dungeon:
+            layout.set_upgrade(LayoutUpgrade::Dungeon);
+            break;
+        case PickupUpgrade::OpenWorld:
+            layout.set_upgrade(LayoutUpgrade::OpenWorld);
+            break;
     }
 }
 
@@ -196,7 +202,7 @@ template<PickupUpgrade UpgradeChoices::*member>
 DefaultState
 apply_upgrade_and_transition(PickingUpState& state, Pickup const& next_pickup)
 {
-    set_upgrade<member>(state.player, state.choices);
+    set_upgrade<member>(state.player, state.layout, state.choices);
     return DefaultState{state.player, next_pickup, state.enemies, state.layout};
 }
 

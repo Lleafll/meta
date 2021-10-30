@@ -7,6 +7,20 @@ namespace {
 
 constexpr auto spawn_edge = 250;
 
+UpgradeChoices next_choices(int& state)
+{
+    ++state;
+    switch (state) {
+        case 1:
+            return UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot};
+        case 2:
+            return UpgradeChoices{
+                PickupUpgrade::Dungeon, PickupUpgrade::OpenWorld};
+        default:
+            return UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot};
+    }
+}
+
 } // namespace
 
 Pickup PickUpGenerator::generate(std::optional<LayoutBounds> const& bounds)
@@ -21,7 +35,7 @@ Pickup PickUpGenerator::generate(std::optional<LayoutBounds> const& bounds)
         Position{
             distribution_width(random_engine_),
             distribution_height(random_engine_)},
-        UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}};
+        next_choices(state)};
 }
 
 } // namespace metacore
