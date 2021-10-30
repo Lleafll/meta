@@ -101,7 +101,8 @@ void move_and_maybe_transition(
     DefaultState& state, InternalGameState& internal_state)
 {
     (state.player.*move_direction)(state.layout.tiles());
-    if (state.layout.check_for_transition(state.player)) {
+    if (state.layout.check_for_transition(
+            state.player, state.enemies.positions())) {
         return;
     }
     advance_and_maybe_transition(state, internal_state);

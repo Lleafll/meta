@@ -22,6 +22,11 @@ std::vector<Position> const& Enemies::positions() const
     return positions_;
 }
 
+std::vector<Position>& Enemies::positions()
+{
+    return positions_;
+}
+
 namespace {
 
 enum class Direction { None, Up, Down, Right, Left };

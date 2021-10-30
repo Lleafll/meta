@@ -51,15 +51,16 @@ void Layout::set_upgrade(LayoutUpgrade const upgrade)
     }
 }
 
-bool Layout::check_for_transition(Player& player)
+bool Layout::check_for_transition(
+    Player& player, std::span<Position> const enemies)
 {
     return std::visit(
         overloaded{
             [&player](DungeonLayoutMechanic& layout) -> bool {
                 return layout.check_for_transition(player.position());
             },
-            [&player](OpenWorldLayoutMechanic& layout) -> bool {
-                return layout.check_for_transition(player);
+            [&player, enemies](OpenWorldLayoutMechanic& layout) -> bool {
+                return layout.check_for_transition(player, enemies);
             },
             [](auto const&) -> bool { return false; }},
         layout_);

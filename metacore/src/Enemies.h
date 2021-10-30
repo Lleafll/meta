@@ -12,7 +12,7 @@ class Enemies final {
     explicit Enemies(std::vector<Position> positions);
 
     [[nodiscard]] std::vector<Position> const& positions() const;
-
+    [[nodiscard]] std::vector<Position>& positions();
     void advance(Position const& player_position);
     void kill(std::size_t index);
 

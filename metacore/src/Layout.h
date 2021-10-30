@@ -23,7 +23,7 @@ class Layout final {
     [[nodiscard]] std::span<Tile const> tiles() const;
     [[nodiscard]] std::optional<LayoutBounds> bounds() const;
     void set_upgrade(LayoutUpgrade upgrade);
-    bool check_for_transition(Player& player);
+    bool check_for_transition(Player& player, std::span<Position> enemies);
 
   private:
     std::variant<
