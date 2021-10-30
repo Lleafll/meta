@@ -15,6 +15,7 @@ GameState to_game_state(DefaultState const& state)
 {
     auto const& player = state.player;
     auto const* const projectiles = player.projectiles();
+    auto const tiles = state.layout.tiles();
     return {
         player.position(),
         state.pickup.position,
@@ -23,7 +24,8 @@ GameState to_game_state(DefaultState const& state)
         state.enemies.positions(),
         GameProgress::Running,
         projectiles == nullptr ? std::optional<std::vector<Position>>{}
-                               : std::optional{*projectiles}};
+                               : std::optional{*projectiles},
+        {tiles.begin(), tiles.end()}};
 }
 
 } // namespace metacore

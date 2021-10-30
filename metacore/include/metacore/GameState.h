@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Position.h"
+#include "Tile.h"
 #include "UpgradeChoices.h"
 #include <optional>
 #include <vector>
@@ -17,8 +18,9 @@ struct GameState final {
     std::vector<Position> enemy_positions = {};
     GameProgress progress = GameProgress::Running;
     std::optional<std::vector<Position>> projectiles = {};
+    std::vector<Tile> tiles = {};
 
-    friend bool operator==(GameState const&, GameState const&) = default;
+    bool operator==(GameState const&) const = default;
 };
 
 } // namespace metacore

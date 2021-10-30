@@ -47,7 +47,7 @@ TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
     EXPECT_TRUE(to_game_state(state).slash_attack);
 }
 
-TEST(DefaultState, ToGameStateConsidersProjectiles)
+TEST(DefaultStateTest, ToGameStateConsidersProjectiles)
 {
     auto player = Player{Position{324, 765}};
     {
@@ -58,6 +58,13 @@ TEST(DefaultState, ToGameStateConsidersProjectiles)
     auto const game_state_projectiles = to_game_state(state).projectiles;
     auto const expected = std::vector{Position{324, 765}};
     EXPECT_EQ(expected, game_state_projectiles);
+}
+
+TEST(DefaultStateTest, ToGameStateConsidersLayout)
+{
+    auto const state = DefaultState{Player{}, Pickup{{}, {{}, {}}}, Enemies{}};
+    auto const tiles = to_game_state(state).tiles;
+    EXPECT_EQ(36, tiles.size());
 }
 
 } // namespace
