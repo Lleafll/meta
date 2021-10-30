@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enemies.h"
+#include "Layout.h"
 #include "Player.h"
 #include "UpgradeChoices.h"
 namespace metacore {
@@ -11,11 +12,15 @@ namespace metacore {
 
 struct PickingUpState final {
     PickingUpState(
-        Player const& player, UpgradeChoices const& choices, Enemies enemies);
+        Player player,
+        UpgradeChoices const& choices,
+        Enemies enemies,
+        Layout const& layout = {});
 
     Player player;
     UpgradeChoices choices;
     Enemies enemies;
+    Layout layout;
 };
 
 GameState to_game_state(PickingUpState const& state);

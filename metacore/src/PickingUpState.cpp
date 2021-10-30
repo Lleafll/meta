@@ -5,8 +5,14 @@
 namespace metacore {
 
 PickingUpState::PickingUpState(
-    Player const& player, UpgradeChoices const& choices, Enemies enemies)
-    : player{player}, choices{choices}, enemies{std::move(enemies)}
+    Player player,
+    UpgradeChoices const& choices,
+    Enemies enemies,
+    Layout const& layout)
+    : player{std::move(player)},
+      choices{choices},
+      enemies{std::move(enemies)},
+      layout{layout}
 {
 }
 
