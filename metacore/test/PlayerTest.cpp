@@ -16,15 +16,6 @@ TEST(PlayerTest, MoveUp)
     EXPECT_GT(position.y, 0);
 }
 
-TEST(PlayerTest, MoveUpConsidersObstacles)
-{
-    auto const environment = std::array{Tile{{0, 50}, TileType::Obstacle}};
-    auto player = Player{{0, 0}};
-    player.move_up(environment);
-    auto const position = player.position();
-    EXPECT_EQ((Position{0, 0}), position);
-}
-
 TEST(PlayerTest, MoveDown)
 {
     auto player = Player{{0, 0}};
@@ -50,6 +41,42 @@ TEST(PlayerTest, MoveLeft)
     auto const position = player.position();
     EXPECT_LT(position.x, 0);
     EXPECT_EQ(0, position.y);
+}
+
+TEST(PlayerTest, MoveUpConsidersObstacles)
+{
+    auto const environment = std::array{Tile{{0, 50}, TileType::Obstacle}};
+    auto player = Player{{0, 0}};
+    player.move_up(environment);
+    auto const position = player.position();
+    EXPECT_EQ((Position{0, 0}), position);
+}
+
+TEST(PlayerTest, MoveDownConsidersObstacles)
+{
+    auto const environment = std::array{Tile{{0, -50}, TileType::Obstacle}};
+    auto player = Player{{0, 0}};
+    player.move_down(environment);
+    auto const position = player.position();
+    EXPECT_EQ((Position{0, 0}), position);
+}
+
+TEST(PlayerTest, MoveRightConsidersObstacles)
+{
+    auto const environment = std::array{Tile{{50, 0}, TileType::Obstacle}};
+    auto player = Player{{0, 0}};
+    player.move_right(environment);
+    auto const position = player.position();
+    EXPECT_EQ((Position{0, 0}), position);
+}
+
+TEST(PlayerTest, MoveLeftConsidersObstacles)
+{
+    auto const environment = std::array{Tile{{-50, 0}, TileType::Obstacle}};
+    auto player = Player{{0, 0}};
+    player.move_left(environment);
+    auto const position = player.position();
+    EXPECT_EQ((Position{0, 0}), position);
 }
 
 TEST(PlayerTest, StartSlashAttack)

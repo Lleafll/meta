@@ -95,22 +95,31 @@ void Player::move_up(std::span<Tile const> const environment)
 
 void Player::move_down(std::span<Tile const> const environment)
 {
-    position_and_orientation_.position.y -= player_move_increment;
-    position_and_orientation_.orientation = Orientation::Down;
+    auto const& position = position_and_orientation_.position;
+    move_to_position_if_not_obstructed(
+        position_and_orientation_,
+        {{position.x, position.y - player_move_increment}, Orientation::Down},
+        environment);
     tick(attack_);
 }
 
 void Player::move_right(std::span<Tile const> const environment)
 {
-    position_and_orientation_.position.x += player_move_increment;
-    position_and_orientation_.orientation = Orientation::Right;
+    auto const& position = position_and_orientation_.position;
+    move_to_position_if_not_obstructed(
+        position_and_orientation_,
+        {{position.x + player_move_increment, position.y}, Orientation::Right},
+        environment);
     tick(attack_);
 }
 
 void Player::move_left(std::span<Tile const> const environment)
 {
-    position_and_orientation_.position.x -= player_move_increment;
-    position_and_orientation_.orientation = Orientation::Left;
+    auto const& position = position_and_orientation_.position;
+    move_to_position_if_not_obstructed(
+        position_and_orientation_,
+        {{position.x - player_move_increment, position.y}, Orientation::Left},
+        environment);
     tick(attack_);
 }
 
