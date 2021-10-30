@@ -2,9 +2,9 @@
 
 namespace metacore {
 
-mdspan<Tile> Layout::tiles() const
+std::span<Tile const> Layout::tiles() const
 {
-    return {};
+    return layout_.tiles();
 }
 
 } // namespace metacore

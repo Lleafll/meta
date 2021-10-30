@@ -1,7 +1,14 @@
 #pragma once
 
+#include "Position.h"
+
 namespace metacore {
 
-enum class Tile { Empty, Obstacle };
+enum class TileType { Obstacle };
+
+struct Tile final {
+    Position position = {};
+    TileType type = TileType::Obstacle;
+};
 
 } // namespace metacore

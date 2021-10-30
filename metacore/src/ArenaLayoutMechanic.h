@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mdspan.h"
 #include "Tile.h"
 #include <array>
 
@@ -9,33 +8,38 @@ namespace metacore {
 class ArenaLayoutMechanic final {
     static constexpr auto height = 10;
     static constexpr auto width = 10;
+    static constexpr auto tile_count = 2 * height + 2 * width - 4;
+    static constexpr auto tile_size = 50;
 
   public:
     constexpr ArenaLayoutMechanic()
     {
-        auto const tiles_2D = tiles();
-        for (auto i = 0; i < tiles_2D.extent(0); ++i) {
-            tiles_2D(i, 0) = Tile::Obstacle;
-            tiles_2D(i, tiles_2D.extent(1) - 1) = Tile::Obstacle;
+        auto index = std::size_t{0};
+        for (auto i = -width / 2; i < width / 2; ++i) {
+            tiles_[index] = Tile{{i * tile_size, 0}, TileType::Obstacle};
+            ++index;
+            tiles_[index] = Tile{
+                {i * tile_size, (height / 2 - 1) * tile_size},
+                TileType::Obstacle};
+            ++index;
         }
-        for (auto i = 0; i < tiles_2D.extent(1); ++i) {
-            tiles_2D(0, i) = Tile::Obstacle;
-            tiles_2D(tiles_2D.extent(0) - 1, i) = Tile::Obstacle;
+        for (auto i = -height / 2 - 1; i < height / 2 - 1; ++i) {
+            tiles_[index] = Tile{{0, i * tile_size}, TileType::Obstacle};
+            ++index;
+            tiles_[index] = Tile{
+                {(width / 2 - 1) * tile_size, i * tile_size},
+                TileType::Obstacle};
+            ++index;
         }
     }
 
-    [[nodiscard]] constexpr mdspan<Tile const, width, height> tiles() const
+    [[nodiscard]] constexpr std::array<Tile, tile_count> const& tiles() const
     {
-        return mdspan<Tile const, width, height>{tiles_.data()};
+        return tiles_;
     }
 
   private:
-    std::array<Tile, width* height> tiles_ = {Tile::Empty};
-
-    [[nodiscard]] constexpr mdspan<Tile, width, height> tiles()
-    {
-        return mdspan<Tile, width, height>{tiles_.data()};
-    }
+    std::array<Tile, tile_count> tiles_ = {};
 };
 
 } // namespace metacore

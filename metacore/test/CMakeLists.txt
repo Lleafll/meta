@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.19.1)
 project(metacoretest)
 
 add_executable(${PROJECT_NAME}
-        "ArenaLayoutMechanicTest.cpp"
         "DefaultStateTest.cpp"
         "EnemiesTest.cpp"
         "GameOverStateTest.cpp"
@@ -18,7 +17,6 @@ target_link_libraries(${PROJECT_NAME}
         PRIVATE
         metacore
         CONAN_PKG::gtest
-        CONAN_PKG::mdspan
         )
 target_include_directories(${PROJECT_NAME}
         PRIVATE

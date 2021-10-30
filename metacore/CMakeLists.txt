@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.19.1)
 project(metacore)
 
 add_library(${PROJECT_NAME}
-        "src/ArenaLayoutMechanic.cpp"
         "src/DefaultState.cpp"
         "src/Enemies.cpp"
         "src/GameOverState.cpp"
@@ -24,7 +23,6 @@ target_include_directories(${PROJECT_NAME}
         )
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
-        CONAN_PKG::mdspan
         CONAN_PKG::ms-gsl
         )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
