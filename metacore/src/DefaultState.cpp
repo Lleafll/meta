@@ -4,8 +4,10 @@
 
 namespace metacore {
 
-DefaultState::DefaultState(Player player, Pickup const& pickup, Enemies enemies)
-    : player{std::move(player)}, pickup{pickup}, enemies{std::move(enemies)}
+DefaultState::DefaultState(
+    Player player, Pickup const& pickup, Enemies enemies, Layout const& layout)
+    : player{std::move(player)}, pickup{pickup}, enemies{std::move(enemies)},
+      layout{layout}
 {
 }
 

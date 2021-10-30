@@ -16,6 +16,7 @@ target_link_libraries(${PROJECT_NAME}
         PRIVATE
         metacore
         CONAN_PKG::gtest
+        CONAN_PKG::mdspan
         )
 target_include_directories(${PROJECT_NAME}
         PRIVATE
