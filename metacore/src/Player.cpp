@@ -28,6 +28,11 @@ Position const& Player::position() const
     return position_and_orientation_.position;
 }
 
+Position& Player::position()
+{
+    return position_and_orientation_.position;
+}
+
 bool Player::is_slashing() const
 {
     return std::visit(

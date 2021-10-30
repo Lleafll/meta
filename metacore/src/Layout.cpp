@@ -13,9 +13,13 @@ std::span<Tile const> Layout::tiles() const
     return std::visit(
         overloaded{
             [](std::monostate const&) -> std::span<Tile const> { return {}; },
+            [](OpenWorldLayoutMechanic const&) -> std::span<Tile const> {
+                return {};
+            },
             [](auto const& layout) -> std::span<Tile const> {
                 return layout.tiles();
-            }},
+            },
+        },
         layout_);
 }
 
@@ -42,17 +46,20 @@ void Layout::set_upgrade(LayoutUpgrade const upgrade)
             layout_ = DungeonLayoutMechanic{};
             break;
         case LayoutUpgrade::OpenWorld:
-            // TODO
+            layout_ = OpenWorldLayoutMechanic{};
             break;
     }
 }
 
-bool Layout::check_for_transition(Position const& player_position)
+bool Layout::check_for_transition(Player& player)
 {
     return std::visit(
         overloaded{
-            [&player_position](DungeonLayoutMechanic& layout) -> bool {
-                return layout.check_for_transition(player_position);
+            [&player](DungeonLayoutMechanic& layout) -> bool {
+                return layout.check_for_transition(player.position());
+            },
+            [&player](OpenWorldLayoutMechanic& layout) -> bool {
+                return layout.check_for_transition(player);
             },
             [](auto const&) -> bool { return false; }},
         layout_);

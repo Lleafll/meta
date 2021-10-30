@@ -9,6 +9,7 @@ add_library(${PROJECT_NAME}
         "src/GameOverState.cpp"
         "src/Layout.cpp"
         "src/MetaEngine.cpp"
+        "src/OpenWorldLayoutMechanic.cpp"
         "src/PickingUpState.cpp"
         "src/PickUpGenerator.cpp"
         "src/Player.cpp"
