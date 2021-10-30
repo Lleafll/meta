@@ -15,19 +15,25 @@ class ArenaLayoutMechanic final {
     constexpr ArenaLayoutMechanic()
     {
         auto index = std::size_t{0};
-        for (auto i = -width / 2; i < width / 2; ++i) {
-            tiles_[index] = Tile{{i * tile_size, 0}, TileType::Obstacle};
+        constexpr auto width_begin = -width / 2;
+        constexpr auto width_end = width / 2;
+        constexpr auto height_begin = -height / 2;
+        constexpr auto height_end = height / 2;
+        for (auto i = width_begin; i < width_end; ++i) {
+            tiles_[index] = Tile{
+                {i * tile_size, height_begin * tile_size}, TileType::Obstacle};
             ++index;
             tiles_[index] = Tile{
-                {i * tile_size, (height / 2 - 1) * tile_size},
+                {i * tile_size, (height_end - 1) * tile_size},
                 TileType::Obstacle};
             ++index;
         }
-        for (auto i = -height / 2 - 1; i < height / 2 - 1; ++i) {
-            tiles_[index] = Tile{{0, i * tile_size}, TileType::Obstacle};
+        for (auto i = height_begin + 1; i < height_end - 1; ++i) {
+            tiles_[index] = Tile{
+                {width_begin * tile_size, i * tile_size}, TileType::Obstacle};
             ++index;
             tiles_[index] = Tile{
-                {(width / 2 - 1) * tile_size, i * tile_size},
+                {(width_end - 1) * tile_size, i * tile_size},
                 TileType::Obstacle};
             ++index;
         }
