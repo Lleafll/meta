@@ -74,8 +74,11 @@ void move_to_position_if_not_obstructed(
 {
     if (std::ranges::none_of(
             environment, [&new_value](Tile const& tile) -> bool {
-                return is_within_distance<player_size>(
-                    new_value.position, tile.position);
+                if (tile.type == TileType::Obstacle) {
+                    return is_within_distance<player_size>(
+                        new_value.position, tile.position);
+                }
+                return false;
             })) {
         old_value = new_value;
     }

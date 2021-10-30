@@ -52,6 +52,15 @@ TEST(PlayerTest, MoveUpConsidersObstacles)
     EXPECT_EQ((Position{0, 0}), position);
 }
 
+TEST(PlayerTest, MoveUpDoesWorkWithStairs)
+{
+    auto const environment = std::array{Tile{{0, 50}, TileType::Stairs}};
+    auto player = Player{{0, 0}};
+    player.move_up(environment);
+    auto const position = player.position();
+    EXPECT_EQ((Position{0, 50}), position);
+}
+
 TEST(PlayerTest, MoveDownConsidersObstacles)
 {
     auto const environment = std::array{Tile{{0, -50}, TileType::Obstacle}};
