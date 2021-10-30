@@ -31,4 +31,15 @@ TEST(PickingUpStateTest, ToGameStateConsidersEnemies)
     EXPECT_EQ(expected, enemy_positions);
 }
 
+TEST(PickingUpStateTest, ToGameStateConsidersLayout)
+{
+    auto const state = PickingUpState{
+        Player{},
+        UpgradeChoices{PickupUpgrade::Shoot, PickupUpgrade::Slash},
+        Enemies{},
+        Layout{LayoutUpgrade::Arena}};
+    auto const tiles = to_game_state(state).tiles;
+    EXPECT_EQ(36, tiles.size());
+}
+
 } // namespace

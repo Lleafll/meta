@@ -18,12 +18,18 @@ PickingUpState::PickingUpState(
 
 GameState to_game_state(PickingUpState const& state)
 {
+    auto const tiles = state.layout.tiles();
+    auto const projectiles = state.player.projectiles();
     return {
         state.player.position(),
         std::nullopt,
         state.choices,
         state.player.is_slashing(),
-        state.enemies.positions()};
+        state.enemies.positions(),
+        GameProgress::Running,
+        projectiles == nullptr ? std::optional<std::vector<Position>>{}
+                               : *projectiles,
+        {tiles.begin(), tiles.end()}};
 }
 
 } // namespace metacore

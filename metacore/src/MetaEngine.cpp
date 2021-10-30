@@ -101,8 +101,8 @@ void move_and_maybe_transition(
     advance_and_maybe_transition(state, internal_state);
     if (std::holds_alternative<DefaultState>(internal_state.value) &&
         check_pickup(state.player, state.pickup)) {
-        internal_state.value =
-            PickingUpState{state.player, state.pickup.upgrades, state.enemies};
+        internal_state.value = PickingUpState{
+            state.player, state.pickup.upgrades, state.enemies, state.layout};
     }
 }
 
@@ -194,7 +194,7 @@ DefaultState
 apply_upgrade_and_transition(PickingUpState& state, Pickup const& next_pickup)
 {
     set_upgrade<member>(state.player, state.choices);
-    return DefaultState{state.player, next_pickup, state.enemies};
+    return DefaultState{state.player, next_pickup, state.enemies, state.layout};
 }
 
 } // namespace
