@@ -22,6 +22,7 @@ class Layout final {
     [[nodiscard]] std::span<Tile const> tiles() const;
     [[nodiscard]] std::optional<LayoutBounds> bounds() const;
     void set_upgrade(LayoutUpgrade upgrade);
+    bool check_for_transition(Position const& player_position);
 
   private:
     std::variant<std::monostate, ArenaLayoutMechanic, DungeonLayoutMechanic>

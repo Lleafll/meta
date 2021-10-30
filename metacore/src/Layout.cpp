@@ -47,4 +47,15 @@ void Layout::set_upgrade(LayoutUpgrade const upgrade)
     }
 }
 
+bool Layout::check_for_transition(Position const& player_position)
+{
+    return std::visit(
+        overloaded{
+            [&player_position](DungeonLayoutMechanic& layout) -> bool {
+                return layout.check_for_transition(player_position);
+            },
+            [](auto const&) -> bool { return false; }},
+        layout_);
+}
+
 } // namespace metacore
