@@ -24,11 +24,14 @@ struct MetaEngine::Impl final {
     }
 
     PickUpGenerator pick_up_generator = {};
-    InternalGameState state = {DefaultState{
-        Player{Position{0, 0}},
-        pick_up_generator.generate(),
-        Enemies{},
-        Layout{LayoutUpgrade::Arena}}};
+    InternalGameState state = [this]() -> InternalGameState {
+        auto const layout = Layout{LayoutUpgrade::Arena};
+        return {DefaultState{
+            Player{Position{0, 0}},
+            pick_up_generator.generate(layout.bounds()),
+            Enemies{},
+            layout}};
+    }();
 };
 
 MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
@@ -206,7 +209,9 @@ void MetaEngine::select_first_upgrade()
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::first>(
-                        state, impl_->pick_up_generator.generate());
+                        state,
+                        impl_->pick_up_generator.generate(
+                            state.layout.bounds()));
             },
             [](auto const&) {}},
         impl_->state.value);
@@ -219,7 +224,9 @@ void MetaEngine::select_second_upgrade()
             [this](PickingUpState& state) {
                 impl_->state.value =
                     apply_upgrade_and_transition<&UpgradeChoices::second>(
-                        state, impl_->pick_up_generator.generate());
+                        state,
+                        impl_->pick_up_generator.generate(
+                            state.layout.bounds()));
             },
             [](auto const&) {}},
         impl_->state.value);

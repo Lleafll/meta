@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LayoutBounds.h"
 #include "Tile.h"
 #include <array>
 
@@ -15,26 +16,17 @@ class ArenaLayoutMechanic final {
     constexpr ArenaLayoutMechanic()
     {
         auto index = std::size_t{0};
-        constexpr auto width_begin = -width / 2;
-        constexpr auto width_end = width / 2;
-        constexpr auto height_begin = -height / 2;
-        constexpr auto height_end = height / 2;
-        for (auto i = width_begin; i < width_end; ++i) {
-            tiles_[index] = Tile{
-                {i * tile_size, height_begin * tile_size}, TileType::Obstacle};
+        auto const& [left, right, bottom, top] = bounds_;
+        for (auto i = left; i < right; i += tile_size) {
+            tiles_[index] = Tile{{i, bottom}, TileType::Obstacle};
             ++index;
-            tiles_[index] = Tile{
-                {i * tile_size, (height_end - 1) * tile_size},
-                TileType::Obstacle};
+            tiles_[index] = Tile{{i, top - tile_size}, TileType::Obstacle};
             ++index;
         }
-        for (auto i = height_begin + 1; i < height_end - 1; ++i) {
-            tiles_[index] = Tile{
-                {width_begin * tile_size, i * tile_size}, TileType::Obstacle};
+        for (auto i = bottom + tile_size; i < top - tile_size; i += tile_size) {
+            tiles_[index] = Tile{{left, i}, TileType::Obstacle};
             ++index;
-            tiles_[index] = Tile{
-                {(width_end - 1) * tile_size, i * tile_size},
-                TileType::Obstacle};
+            tiles_[index] = Tile{{right - tile_size, i}, TileType::Obstacle};
             ++index;
         }
     }
@@ -44,7 +36,17 @@ class ArenaLayoutMechanic final {
         return tiles_;
     }
 
+    [[nodiscard]] static constexpr LayoutBounds const& bounds()
+    {
+        return bounds_;
+    }
+
   private:
+    static constexpr LayoutBounds bounds_ = {
+        -width / 2 * tile_size,
+        width / 2 * tile_size,
+        -height / 2 * tile_size,
+        height / 2 * tile_size};
     std::array<Tile, tile_count> tiles_ = {};
 };
 

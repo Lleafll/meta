@@ -18,4 +18,17 @@ std::span<Tile const> Layout::tiles() const
         layout_);
 }
 
+std::optional<LayoutBounds> Layout::bounds() const
+{
+    return std::visit(
+        overloaded{
+            [](std::monostate const&) -> std::optional<LayoutBounds> {
+                return {};
+            },
+            [](ArenaLayoutMechanic const&) -> std::optional<LayoutBounds> {
+                return ArenaLayoutMechanic::bounds();
+            }},
+        layout_);
+};
+
 } // namespace metacore
