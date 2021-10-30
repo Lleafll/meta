@@ -9,6 +9,7 @@ namespace {
 constexpr auto player_move_increment = 50;
 constexpr auto slash_radius = 100;
 constexpr auto shoot_kill_radius = 50;
+constexpr auto player_size = 49;
 
 } // namespace
 
@@ -66,30 +67,47 @@ void tick(
         attack);
 }
 
+void move_to_position_if_not_obstructed(
+    PositionAndOrientation& old_value,
+    PositionAndOrientation const& new_value,
+    std::span<Tile const> const environment)
+{
+    if (std::ranges::none_of(
+            environment, [&new_value](Tile const& tile) -> bool {
+                return is_within_distance<player_size>(
+                    new_value.position, tile.position);
+            })) {
+        old_value = new_value;
+    }
+}
+
 } // namespace
 
-void Player::move_up()
+void Player::move_up(std::span<Tile const> const environment)
 {
-    position_and_orientation_.position.y += player_move_increment;
-    position_and_orientation_.orientation = Orientation::Up;
+    auto const& position = position_and_orientation_.position;
+    move_to_position_if_not_obstructed(
+        position_and_orientation_,
+        {{position.x, position.y + player_move_increment}, Orientation::Up},
+        environment);
     tick(attack_);
 }
 
-void Player::move_down()
+void Player::move_down(std::span<Tile const> const environment)
 {
     position_and_orientation_.position.y -= player_move_increment;
     position_and_orientation_.orientation = Orientation::Down;
     tick(attack_);
 }
 
-void Player::move_right()
+void Player::move_right(std::span<Tile const> const environment)
 {
     position_and_orientation_.position.x += player_move_increment;
     position_and_orientation_.orientation = Orientation::Right;
     tick(attack_);
 }
 
-void Player::move_left()
+void Player::move_left(std::span<Tile const> const environment)
 {
     position_and_orientation_.position.x -= player_move_increment;
     position_and_orientation_.orientation = Orientation::Left;

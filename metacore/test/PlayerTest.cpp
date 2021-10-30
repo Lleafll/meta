@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <array>
 #include <format>
 #include <gtest/gtest.h>
 
@@ -9,16 +10,25 @@ namespace {
 TEST(PlayerTest, MoveUp)
 {
     auto player = Player{{0, 0}};
-    player.move_up();
+    player.move_up({});
     auto const position = player.position();
     EXPECT_EQ(0, position.x);
     EXPECT_GT(position.y, 0);
 }
 
+TEST(PlayerTest, MoveUpConsidersObstacles)
+{
+    auto const environment = std::array{Tile{{0, 50}, TileType::Obstacle}};
+    auto player = Player{{0, 0}};
+    player.move_up(environment);
+    auto const position = player.position();
+    EXPECT_EQ((Position{0, 0}), position);
+}
+
 TEST(PlayerTest, MoveDown)
 {
     auto player = Player{{0, 0}};
-    player.move_down();
+    player.move_down({});
     auto const position = player.position();
     EXPECT_EQ(0, position.x);
     EXPECT_LT(position.y, 0);
@@ -27,7 +37,7 @@ TEST(PlayerTest, MoveDown)
 TEST(PlayerTest, MoveRight)
 {
     auto player = Player{{0, 0}};
-    player.move_right();
+    player.move_right({});
     auto const position = player.position();
     EXPECT_GT(position.x, 0);
     EXPECT_EQ(0, position.y);
@@ -36,7 +46,7 @@ TEST(PlayerTest, MoveRight)
 TEST(PlayerTest, MoveLeft)
 {
     auto player = Player{{0, 0}};
-    player.move_left();
+    player.move_left({});
     auto const position = player.position();
     EXPECT_LT(position.x, 0);
     EXPECT_EQ(0, position.y);
@@ -55,7 +65,7 @@ TEST(PlayerTest, EndSlashAttackAfterMoveUp)
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
-    player.move_up();
+    player.move_up({});
     EXPECT_FALSE(player.is_slashing());
 }
 
@@ -64,7 +74,7 @@ TEST(PlayerTest, EndSlashAttackAfterMoveDown)
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
-    player.move_down();
+    player.move_down({});
     EXPECT_FALSE(player.is_slashing());
 }
 
@@ -73,7 +83,7 @@ TEST(PlayerTest, EndSlashAttackAfterMoveRight)
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
-    player.move_right();
+    player.move_right({});
     EXPECT_FALSE(player.is_slashing());
 }
 
@@ -82,7 +92,7 @@ TEST(PlayerTest, EndSlashAttackAfterMoveLeft)
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
-    player.move_left();
+    player.move_left({});
     EXPECT_FALSE(player.is_slashing());
 }
 
@@ -109,7 +119,7 @@ TEST(PlayerTest, ShootAttackObeysDirection)
     auto player = Player{PositionAndOrientation{{0, 0}, Orientation::Down}};
     player.set_attack(AttackUpgrade::Shoot);
     player.attack();
-    player.move_up();
+    player.move_up({});
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
@@ -123,9 +133,9 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingUp)
 {
     auto player = Player{PositionAndOrientation{{0, 0}, Orientation::Down}};
     player.set_attack(AttackUpgrade::Shoot);
-    player.move_up();
+    player.move_up({});
     player.attack();
-    player.move_up();
+    player.move_up({});
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
@@ -139,9 +149,9 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingLeft)
 {
     auto player = Player{PositionAndOrientation{{0, 0}, Orientation::Down}};
     player.set_attack(AttackUpgrade::Shoot);
-    player.move_right();
+    player.move_right({});
     player.attack();
-    player.move_up();
+    player.move_up({});
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
@@ -155,9 +165,9 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingRight)
 {
     auto player = Player{PositionAndOrientation{{0, 0}, Orientation::Down}};
     player.set_attack(AttackUpgrade::Shoot);
-    player.move_left();
+    player.move_left({});
     player.attack();
-    player.move_up();
+    player.move_up({});
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
@@ -171,9 +181,9 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingDown)
 {
     auto player = Player{PositionAndOrientation{{0, 0}, Orientation::Up}};
     player.set_attack(AttackUpgrade::Shoot);
-    player.move_down();
+    player.move_down({});
     player.attack();
-    player.move_up();
+    player.move_up({});
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());

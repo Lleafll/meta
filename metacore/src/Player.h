@@ -4,6 +4,8 @@
 #include "PositionAndOrientation.h"
 #include "ShootAttackMechanic.h"
 #include "SlashAttackMechanic.h"
+#include "Tile.h"
+#include <span>
 #include <variant>
 #include <vector>
 
@@ -20,10 +22,10 @@ class Player final {
     [[nodiscard]] Position const& position() const;
     [[nodiscard]] bool is_slashing() const;
     [[nodiscard]] std::vector<Position> const* projectiles() const;
-    void move_up();
-    void move_down();
-    void move_right();
-    void move_left();
+    void move_up(std::span<Tile const> environment);
+    void move_down(std::span<Tile const> environment);
+    void move_right(std::span<Tile const> environment);
+    void move_left(std::span<Tile const> environment);
     void attack();
     void set_attack(AttackUpgrade upgrade);
     [[nodiscard]] bool target_is_hit(Position const& target) const;

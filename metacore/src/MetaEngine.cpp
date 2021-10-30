@@ -93,11 +93,11 @@ void advance_and_maybe_transition(
     }
 }
 
-template<void (Player::*move_direction)()>
+template<void (Player::*move_direction)(std::span<Tile const>)>
 void move_and_maybe_transition(
     DefaultState& state, InternalGameState& internal_state)
 {
-    (state.player.*move_direction)();
+    (state.player.*move_direction)(state.layout.tiles());
     advance_and_maybe_transition(state, internal_state);
     if (std::holds_alternative<DefaultState>(internal_state.value) &&
         check_pickup(state.player, state.pickup)) {
