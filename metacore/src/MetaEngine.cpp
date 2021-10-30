@@ -153,10 +153,6 @@ void MetaEngine::input_down()
         impl_->state.value);
 }
 
-namespace {
-
-} // namespace
-
 void MetaEngine::input_attack()
 {
     std::visit(
