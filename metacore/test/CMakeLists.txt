@@ -3,15 +3,17 @@ cmake_minimum_required(VERSION 3.19.1)
 project(metacoretest)
 
 add_executable(${PROJECT_NAME}
-        "MetaEngineTest.cpp"
-        "PositionTest.cpp"
-        "PickingUpStateTest.cpp"
+        "ArenaLayoutMechanicTest.cpp"
         "DefaultStateTest.cpp"
-        "PlayerTest.cpp"
-        "SlashAttackMechanicTest.cpp"
         "EnemiesTest.cpp"
         "GameOverStateTest.cpp"
-        "ShootAttackMechanicTest.cpp")
+        "MetaEngineTest.cpp"
+        "PickingUpStateTest.cpp"
+        "PlayerTest.cpp"
+        "PositionTest.cpp"
+        "ShootAttackMechanicTest.cpp"
+        "SlashAttackMechanicTest.cpp"
+        )
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         metacore
