@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CharacterTexture.h"
 #include "Position.h"
 #include "PositionAndOrientation.h"
 #include "ShootAttackMechanic.h"
@@ -8,7 +9,6 @@
 #include <span>
 #include <variant>
 #include <vector>
-#include "CharacterTexture.h"
 
 namespace metacore {
 
