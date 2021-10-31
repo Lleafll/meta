@@ -22,10 +22,10 @@ class DungeonLayoutMechanic final {
   private:
     static constexpr auto tile_size = 50;
     static constexpr LayoutBounds bounds_ = {
-        -width / 2 * tile_size,
-        width / 2 * tile_size,
-        -height / 2 * tile_size,
-        height / 2 * tile_size};
+        -(width * tile_size) / 2,
+        (width * tile_size) / 2,
+        -(height* tile_size) / 2,
+        (height * tile_size) / 2};
 
     std::array<Tile, tile_count> tiles_ = {};
     std::mt19937 random_engine_ = std::mt19937{std::random_device{}()};

@@ -1,29 +1,76 @@
 #include "OpenWorldLayoutMechanic.h"
+#include "LayoutBounds.h"
 #include <optional>
 
 namespace metacore {
 
 namespace {
 
-constexpr auto left_bound = -375;
-constexpr auto right_bound = 375;
-constexpr auto bottom_bound = -275;
-constexpr auto top_bound = 275;
-constexpr auto width = right_bound - left_bound;
-constexpr auto height = top_bound - bottom_bound;
+constexpr auto height_count = 11;
+constexpr auto width_count = 15;
+constexpr auto tile_size = 50;
+constexpr auto height = height_count * tile_size;
+constexpr auto width = width_count * tile_size;
+constexpr LayoutBounds bounds = {
+    -width / 2, width / 2, -height / 2, height / 2};
+constexpr auto tile_fill_rate = 0.4;
 
-std::optional<Orientation> check_if_out_of_bounds(Position const& position)
+int simple_hash(int const x, int const y, int const z)
 {
-    if (position.x < left_bound) {
+    auto seed = ((x >> 16) ^ y) * 0x45d9f3b;
+    seed = ((seed >> 16) ^ z) * 0x45d9f3b;
+    return seed;
+}
+
+std::vector<Tile>
+build_tiles(int const world_seed, int const world_x, int const world_y)
+{
+    auto tiles = std::vector<Tile>{};
+    auto const tile_seed = simple_hash(world_seed, world_x, world_y);
+    constexpr auto cutoff = static_cast<int>(
+        std::numeric_limits<int>::max() * (1 - tile_fill_rate));
+    for (auto x = bounds.left; x < bounds.right; x += tile_size) {
+        for (auto y = bounds.bottom; y < bounds.top; y += tile_size) {
+            auto const hash = simple_hash(tile_seed, x, y);
+            if (hash > cutoff) {
+                tiles.push_back(Tile{{x - 25, y + 25}, TileType::Obstacle});
+            }
+        }
+    }
+    return tiles;
+}
+
+} // namespace
+
+OpenWorldLayoutMechanic::OpenWorldLayoutMechanic()
+    : seed{547839}, tiles_{build_tiles(seed, world_x, world_y)}
+{
+}
+
+std::vector<Tile> const& OpenWorldLayoutMechanic::tiles() const
+{
+    return tiles_;
+}
+
+namespace {
+
+std::optional<Orientation>
+check_if_out_of_bounds(Position const& position, int& x, int& y)
+{
+    if (position.x < bounds.left) {
+        --x;
         return Orientation::Left;
     }
-    if (position.x > right_bound) {
+    if (position.x > bounds.right) {
+        ++x;
         return Orientation::Right;
     }
-    if (position.y < bottom_bound) {
+    if (position.y < bounds.bottom) {
+        --y;
         return Orientation::Down;
     }
-    if (position.y > right_bound) {
+    if (position.y > bounds.right) {
+        ++y;
         return Orientation::Up;
     }
     return std::nullopt;
@@ -52,12 +99,14 @@ void move_from_bound(Position& position, Orientation const bound)
 bool OpenWorldLayoutMechanic::check_for_transition(
     Player& player, std::span<Position> const enemies)
 {
-    auto const bound = check_if_out_of_bounds(player.position());
+    auto const bound =
+        check_if_out_of_bounds(player.position(), world_x, world_y);
     if (bound.has_value()) {
         move_from_bound(player.position(), *bound);
         for (auto& enemy : enemies) {
             move_from_bound(enemy, *bound);
         }
+        tiles_ = build_tiles(seed, world_x, world_y);
         return true;
     }
     return false;

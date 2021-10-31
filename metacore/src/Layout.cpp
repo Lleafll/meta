@@ -13,8 +13,8 @@ std::span<Tile const> Layout::tiles() const
     return std::visit(
         overloaded{
             [](std::monostate const&) -> std::span<Tile const> { return {}; },
-            [](OpenWorldLayoutMechanic const&) -> std::span<Tile const> {
-                return {};
+            [](OpenWorldLayoutMechanic const& layout) -> std::span<Tile const> {
+                return layout.tiles();
             },
             [](auto const& layout) -> std::span<Tile const> {
                 return layout.tiles();
