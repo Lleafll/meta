@@ -38,6 +38,7 @@ TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
+    player.advance();
     auto const state = DefaultState{
         player,
         Pickup{
@@ -53,6 +54,7 @@ TEST(DefaultStateTest, ToGameStateConsidersProjectiles)
     {
         player.set_attack(AttackUpgrade::Shoot);
         player.attack();
+        player.advance();
     }
     auto const state = DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{}};
     auto const game_state_projectiles = to_game_state(state).projectiles;

@@ -4,7 +4,7 @@
 
 namespace metacore {
 
-Clock::Clock(InternalGameState& state) : state_{state}
+Clock::Clock(InternalGameState& state) : state_{&state}
 {
 }
 
@@ -37,7 +37,7 @@ void Clock::input()
                 state.enemies.advance(state.player.position());
             },
             [](auto const&) {}},
-        state_.get().value);
+        state_->value);
 }
 
 } // namespace metacore

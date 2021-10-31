@@ -201,7 +201,7 @@ void Player::advance()
                 [this](ShootAttackMechanic& attack) {
                     attack.start(position_and_orientation_);
                 },
-                [](auto const&) {}},
+                [](std::monostate const&) {}},
             attack_);
     }
     next_move_ = NextMove::None;

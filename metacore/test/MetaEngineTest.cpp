@@ -103,9 +103,7 @@ TEST(MetaEngineTest, AttackStartsSlash)
     player.set_attack(AttackUpgrade::Slash);
     auto engine =
         MetaEngine{{DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{{}}}}};
-    {
-        ASSERT_FALSE(engine.calculate_state().slash_attack);
-    }
+    ASSERT_FALSE(engine.calculate_state().slash_attack);
     engine.input_attack();
     EXPECT_TRUE(engine.calculate_state().slash_attack);
 }

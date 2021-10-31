@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 namespace metacore {
 struct InternalGameState;
 } // namespace metacore
@@ -14,7 +13,7 @@ class Clock {
     void input();
 
   private:
-    std::reference_wrapper<InternalGameState> state_;
+    InternalGameState* state_;
 };
 
 } // namespace metacore
