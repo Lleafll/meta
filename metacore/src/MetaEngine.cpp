@@ -215,6 +215,12 @@ void set_upgrade(
         case PickupUpgrade::Robot:
             enemies.texture = CharacterTexture::Robot;
             break;
+        case PickupUpgrade::SpaceStation:
+            layout.texture = EnvironmentTexture::SpaceStation;
+            break;
+        case PickupUpgrade::Castle:
+            layout.texture = EnvironmentTexture::Castle;
+            break;
     }
 }
 

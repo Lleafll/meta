@@ -20,6 +20,9 @@ UpgradeChoices next_choices(int& state)
         case 4:
             return UpgradeChoices{
                 PickupUpgrade::Dungeon, PickupUpgrade::OpenWorld};
+        case 5:
+            return UpgradeChoices{
+                PickupUpgrade::Castle, PickupUpgrade::SpaceStation};
         default:
             return UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot};
     }

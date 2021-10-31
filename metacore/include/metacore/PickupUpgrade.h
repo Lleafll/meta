@@ -10,7 +10,9 @@ enum class PickupUpgrade {
     Car,
     Knight,
     Alien,
-    Robot
+    Robot,
+    SpaceStation,
+    Castle
 };
 
 } // namespace metacore

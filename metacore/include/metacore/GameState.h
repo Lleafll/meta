@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CharacterTexture.h"
+#include "EnvironmentTexture.h"
 #include "Position.h"
 #include "Tile.h"
 #include "UpgradeChoices.h"
@@ -22,6 +23,7 @@ struct GameState final {
     std::vector<Tile> tiles = {};
     CharacterTexture player_texture = CharacterTexture::None;
     CharacterTexture enemies_texture = CharacterTexture::None;
+    EnvironmentTexture environment_texture = EnvironmentTexture::None;
 
     bool operator==(GameState const&) const = default;
 };

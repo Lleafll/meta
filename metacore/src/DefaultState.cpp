@@ -17,8 +17,9 @@ GameState to_game_state(DefaultState const& state)
 {
     auto const& player = state.player;
     auto const& enemies = state.enemies;
+    auto const& layout = state.layout;
     auto const* const projectiles = player.projectiles();
-    auto const tiles = state.layout.tiles();
+    auto const tiles = layout.tiles();
     return {
         player.position(),
         state.pickup.position,
@@ -30,7 +31,8 @@ GameState to_game_state(DefaultState const& state)
                                : std::optional{*projectiles},
         {tiles.begin(), tiles.end()},
         player.texture,
-        enemies.texture};
+        enemies.texture,
+        layout.texture};
 }
 
 } // namespace metacore

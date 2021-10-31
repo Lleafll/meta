@@ -2,6 +2,7 @@
 
 #include "ArenaLayoutMechanic.h"
 #include "DungeonLayoutMechanic.h"
+#include "EnvironmentTexture.h"
 #include "OpenWorldLayoutMechanic.h"
 #include <optional>
 #include <span>
@@ -17,6 +18,8 @@ enum class LayoutUpgrade { Arena, Dungeon, OpenWorld };
 
 class Layout final {
   public:
+    EnvironmentTexture texture = EnvironmentTexture::None;
+
     Layout() = default;
     explicit Layout(LayoutUpgrade upgrade);
 

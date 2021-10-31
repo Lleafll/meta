@@ -166,6 +166,10 @@ constexpr char const* to_string(metacore::PickupUpgrade const upgrade)
             return "Alien Enemies";
         case metacore::PickupUpgrade::Robot:
             return "Robot Enemies";
+        case metacore::PickupUpgrade::SpaceStation:
+            return "Space Station";
+        case metacore::PickupUpgrade::Castle:
+            return "Castle";
     }
     throw std::runtime_error{std::format(
         "{} not handled in {}", static_cast<int>(upgrade), __func__)};
