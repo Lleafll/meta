@@ -7,7 +7,6 @@ namespace metacore {
 namespace {
 
 constexpr auto player_move_increment = 50;
-constexpr auto slash_radius = 100;
 constexpr auto shoot_kill_radius = 50;
 constexpr auto player_size = 49;
 
@@ -136,7 +135,9 @@ void Player::attack()
     tick(attack_);
     std::visit(
         overloaded{
-            [](SlashAttackMechanic& attack) { attack.start(); },
+            [this](SlashAttackMechanic& attack) {
+                attack.start(position_and_orientation_);
+            },
             [this](ShootAttackMechanic& attack) {
                 attack.start(position_and_orientation_);
             },
@@ -160,10 +161,8 @@ bool Player::target_is_hit(Position const& target) const
 {
     return std::visit(
         overloaded{
-            [this, &target](SlashAttackMechanic const& attack) -> bool {
-                return attack.is_active() &&
-                    is_within_distance<slash_radius>(
-                           position_and_orientation_.position, target);
+            [&target](SlashAttackMechanic const& attack) -> bool {
+                return attack.target_is_hit(target);
             },
             [&target](ShootAttackMechanic const& attack) -> bool {
                 return std::ranges::any_of(

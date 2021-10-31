@@ -145,9 +145,9 @@ TEST(PlayerTest, TargetIsHitWorksWithSlash)
 {
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
-    EXPECT_FALSE(player.target_is_hit({0, 0}));
+    EXPECT_FALSE(player.target_is_hit({0, 1}));
     player.attack();
-    EXPECT_TRUE(player.target_is_hit({0, 0}));
+    EXPECT_TRUE(player.target_is_hit({0, 1}));
 }
 
 TEST(PlayerTest, ShootAttackObeysDirection)

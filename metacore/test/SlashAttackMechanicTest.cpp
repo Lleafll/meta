@@ -14,14 +14,14 @@ TEST(SlashAttackMechanicTest, IsInitiallyNotActive)
 TEST(SlashAttackMechanicTest, IsActiveAfterStarting)
 {
     auto mechanic = SlashAttackMechanic{};
-    mechanic.start();
+    mechanic.start({});
     EXPECT_TRUE(mechanic.is_active());
 }
 
 TEST(SlashAttackMechanicTest, IsInactiveAfterTick)
 {
     auto mechanic = SlashAttackMechanic{};
-    mechanic.start();
+    mechanic.start({});
     mechanic.tick();
     EXPECT_FALSE(mechanic.is_active());
 }
