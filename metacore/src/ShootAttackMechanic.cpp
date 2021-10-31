@@ -40,7 +40,22 @@ std::vector<Position> const& ShootAttackMechanic::projectiles() const
 void ShootAttackMechanic::start(
     PositionAndOrientation const& position_and_orientation)
 {
-    positions_.push_back(position_and_orientation.position);
+    auto position = position_and_orientation.position;
+    switch (position_and_orientation.orientation) {
+        case Orientation::Up:
+            position.y += projectile_step_size;
+            break;
+        case Orientation::Down:
+            position.y -= projectile_step_size;
+            break;
+        case Orientation::Left:
+            position.x -= projectile_step_size;
+            break;
+        case Orientation::Right:
+            position.x += projectile_step_size;
+            break;
+    }
+    positions_.push_back(position);
     orientations_.push_back(position_and_orientation.orientation);
 }
 

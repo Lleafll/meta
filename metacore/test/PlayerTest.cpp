@@ -160,7 +160,7 @@ TEST(PlayerTest, ShootAttackObeysDirection)
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
     auto const projectile = projectiles->front();
-    auto const expected = Position{0, -50};
+    auto const expected = Position{0, -50 - 50};
     EXPECT_EQ(expected, projectile)
         << std::format("{},{}", projectile.x, projectile.y);
 }
@@ -176,7 +176,7 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingUp)
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
     auto const projectile = projectiles->front();
-    auto const expected = Position{0, 50 + 50};
+    auto const expected = Position{0, 50 + 50 + 50};
     EXPECT_EQ(expected, projectile)
         << std::format("{},{}", projectile.x, projectile.y);
 }
@@ -192,7 +192,7 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingLeft)
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
     auto const projectile = projectiles->front();
-    auto const expected = Position{50 + 50, 0};
+    auto const expected = Position{50 + 50 + 50, 0};
     EXPECT_EQ(expected, projectile)
         << std::format("{},{}", projectile.x, projectile.y);
 }
@@ -208,7 +208,7 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingRight)
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
     auto const projectile = projectiles->front();
-    auto const expected = Position{-50 - 50, 0};
+    auto const expected = Position{-50 - 50 - 50, 0};
     EXPECT_EQ(expected, projectile)
         << std::format("{},{}", projectile.x, projectile.y);
 }
@@ -223,7 +223,7 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingDown)
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
-    auto const expected = Position{0, -50 - 50};
+    auto const expected = Position{0, -50 - 50 - 50};
     EXPECT_EQ(expected, projectiles->front());
 }
 
