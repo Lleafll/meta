@@ -48,6 +48,19 @@ void render_rectangle_at_position(
         throw_sdl_error();
     }
 }
+void render_texture_at_position(
+    SDL_Renderer& renderer,
+    metacore::Position const& position,
+    SDL_Texture* const texture)
+{
+    auto const screen_position = world_position_to_screen_position(position);
+    auto dstrect =
+        SDL_Rect{screen_position.x - 25, screen_position.y - 25, 50, 50};
+    if (SDL_RenderCopy(&renderer, texture, nullptr, &dstrect) != 0) {
+        throw_sdl_error();
+    }
+    SDL_DestroyTexture(texture);
+}
 
 void render_character_texture_at_position(
     SDL_Renderer& renderer,
@@ -80,13 +93,7 @@ void render_character_texture_at_position(
     if (texture == nullptr) {
         throw_sdl_error();
     }
-    auto const screen_position = world_position_to_screen_position(position);
-    auto dstrect =
-        SDL_Rect{screen_position.x - 25, screen_position.y - 25, 50, 50};
-    if (SDL_RenderCopy(&renderer, texture, nullptr, &dstrect) != 0) {
-        throw_sdl_error();
-    }
-    SDL_DestroyTexture(texture);
+    render_texture_at_position(renderer, position, texture);
 }
 
 template<Uint8 red, Uint8 green, Uint8 blue>
@@ -205,19 +212,69 @@ void render_projectiles(
     }
 }
 
+void render_tile(
+    SDL_Renderer& renderer,
+    metacore::Tile const& tile,
+    metacore::EnvironmentTexture const environment_texture)
+{
+    auto* const image = [environment_texture, &tile]() -> SDL_Surface* {
+        switch (environment_texture) {
+            case metacore::EnvironmentTexture::None:
+                return nullptr;
+            case metacore::EnvironmentTexture::SpaceStation:
+                switch (tile.type) {
+                    case metacore::TileType::Obstacle:
+                        static auto* const obstacle =
+                            IMG_Load("spacestationobstacle.png");
+                        return obstacle;
+                    case metacore::TileType::Stairs:
+                        static auto* const stairs =
+                            IMG_Load("spacestationstairs.png");
+                        return stairs;
+                }
+            case metacore::EnvironmentTexture::Castle:
+                switch (tile.type) {
+                    case metacore::TileType::Obstacle:
+                        static auto* const obstacle =
+                            IMG_Load("castleobstacle.png");
+                        return obstacle;
+                    case metacore::TileType::Stairs:
+                        static auto* const stairs =
+                            IMG_Load("castlestairs.png");
+                        return stairs;
+                }
+        }
+        return nullptr;
+    }();
+    if (image == nullptr) {
+        throw_sdl_error();
+    }
+    auto* const texture = SDL_CreateTextureFromSurface(&renderer, image);
+    if (texture == nullptr) {
+        throw_sdl_error();
+    }
+    render_texture_at_position(renderer, tile.position, texture);
+}
+
 void render_tiles(
-    SDL_Renderer& renderer, std::vector<metacore::Tile> const& tiles)
+    SDL_Renderer& renderer,
+    std::vector<metacore::Tile> const& tiles,
+    metacore::EnvironmentTexture const texture)
 {
     for (auto const& tile : tiles) {
-        switch (tile.type) {
-            case metacore::TileType::Obstacle:
-                render_rectangle_at_position<64, 64, 64, 50>(
-                    renderer, tile.position);
-                break;
-            case metacore::TileType::Stairs:
-                render_rectangle_at_position<123, 63, 0, 50>(
-                    renderer, tile.position);
-                break;
+        if (texture == metacore::EnvironmentTexture::None) {
+            switch (tile.type) {
+                case metacore::TileType::Obstacle:
+                    render_rectangle_at_position<64, 64, 64, 50>(
+                        renderer, tile.position);
+                    break;
+                case metacore::TileType::Stairs:
+                    render_rectangle_at_position<123, 63, 0, 50>(
+                        renderer, tile.position);
+                    break;
+            }
+        } else {
+            render_tile(renderer, tile, texture);
         }
     }
 }
@@ -231,7 +288,7 @@ void render_gamestate(
     if (SDL_RenderClear(&renderer) != 0) {
         throw_sdl_error();
     }
-    render_tiles(renderer, state.tiles);
+    render_tiles(renderer, state.tiles, state.environment_texture);
     render_enemies(renderer, state.enemy_positions, state.enemies_texture);
     if (state.slash_attack) {
         render_slash_attack(renderer, state.player_position);

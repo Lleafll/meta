@@ -18,31 +18,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 23)
 
 add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/resources/Pixel_Berry_08_84_Ltd.Edition.TTF"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Pixel_Berry_08_84_Ltd.Edition.TTF"
-)
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/resources/alien.png"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/alien.png"
-)
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/resources/car.png"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/car.png"
-)
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/resources/knight.png"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/knight.png"
-)
-add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/resources/robot.png"
-        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/robot.png"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/resources"
+        "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
 )
