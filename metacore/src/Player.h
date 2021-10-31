@@ -24,6 +24,7 @@ class Player final {
 
     [[nodiscard]] Position const& position() const;
     [[nodiscard]] Position& position();
+    [[nodiscard]] Orientation orientation() const;
     [[nodiscard]] bool is_slashing() const;
     [[nodiscard]] std::vector<Position> const* projectiles() const;
     void move_up(std::span<Tile const> environment);

@@ -122,7 +122,7 @@ TEST(MetaEngineTest, ProperlyTransitionToGameOver)
         {0, 0},
         Position{500, 500},
         std::nullopt,
-        false,
+        std::nullopt,
         {{0, 0}},
         GameProgress::Lost};
     EXPECT_EQ(expected, state);

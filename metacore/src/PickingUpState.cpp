@@ -27,7 +27,8 @@ GameState to_game_state(PickingUpState const& state)
         player.position(),
         std::nullopt,
         state.choices,
-        player.is_slashing(),
+        player.is_slashing() ? std::optional{player.orientation()}
+                             : std::optional<Orientation>{},
         enemies.positions(),
         GameProgress::Running,
         projectiles == nullptr ? std::optional<std::vector<Position>>{}

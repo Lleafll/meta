@@ -15,7 +15,7 @@ TEST(GameOverStateTest, ToGameState)
         Position{45, 78},
         Position{65, 876},
         std::nullopt,
-        false,
+        std::nullopt,
         {Position{7, 9}},
         GameProgress::Lost};
     EXPECT_EQ(expected, game_state);

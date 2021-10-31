@@ -9,7 +9,7 @@ GameState to_game_state(GameOverState const& state)
         state.player_position,
         state.pickup_position,
         std::nullopt,
-        false,
+        std::nullopt,
         state.enemy_positions,
         GameProgress::Lost};
 }

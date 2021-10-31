@@ -2,6 +2,7 @@
 
 #include "CharacterTexture.h"
 #include "EnvironmentTexture.h"
+#include "Orientation.h"
 #include "Position.h"
 #include "Tile.h"
 #include "UpgradeChoices.h"
@@ -16,7 +17,7 @@ struct GameState final {
     Position player_position = {};
     std::optional<Position> upgrade_position = {};
     std::optional<UpgradeChoices> upgrade_choices = {};
-    bool slash_attack = false;
+    std::optional<Orientation> slash_attack = {};
     std::vector<Position> enemy_positions = {};
     GameProgress progress = GameProgress::Running;
     std::optional<std::vector<Position>> projectiles = {};

@@ -176,4 +176,9 @@ bool Player::target_is_hit(Position const& target) const
         attack_);
 }
 
+Orientation Player::orientation() const
+{
+    return position_and_orientation_.orientation;
+}
+
 } // namespace metacore

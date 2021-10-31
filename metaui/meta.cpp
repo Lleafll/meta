@@ -33,14 +33,20 @@ world_position_to_screen_position(metacore::Position const& world_position)
     return {x, y};
 }
 
-template<Uint8 red, Uint8 green, Uint8 blue, int size = 50>
+template<Uint8 red, Uint8 green, Uint8 blue>
 void render_rectangle_at_position(
-    SDL_Renderer& renderer, metacore::Position const& world_position)
+    SDL_Renderer& renderer,
+    metacore::Position const& world_position,
+    int const width = 50,
+    int const height = 50)
 {
     auto const screen_position =
         world_position_to_screen_position(world_position);
     auto r = SDL_Rect{
-        screen_position.x - size / 2, screen_position.y - size / 2, size, size};
+        screen_position.x - width / 2,
+        screen_position.y - height / 2,
+        width,
+        height};
     if (SDL_SetRenderDrawColor(&renderer, red, green, blue, 255) != 0) {
         throw_sdl_error();
     }
@@ -120,9 +126,37 @@ void render_enemies(
 }
 
 void render_slash_attack(
-    SDL_Renderer& renderer, metacore::Position const& position)
+    SDL_Renderer& renderer,
+    metacore::Position position,
+    metacore::Orientation const orientation)
 {
-    render_rectangle_at_position<255, 255, 0, 100>(renderer, position);
+    constexpr auto slash_reach = 100;
+    int height = 0;
+    int width = 0;
+    switch (orientation) {
+        case metacore::Orientation::Up:
+            height = slash_reach / 2;
+            width = slash_reach;
+            position.y += height / 2;
+            break;
+        case metacore::Orientation::Down:
+            height = slash_reach / 2;
+            width = slash_reach;
+            position.y -= height / 2;
+            break;
+        case metacore::Orientation::Left:
+            height = slash_reach;
+            width = slash_reach / 2;
+            position.x -= width / 2;
+            break;
+        case metacore::Orientation::Right:
+            height = slash_reach;
+            width = slash_reach / 2;
+            position.x += width / 2;
+            break;
+    }
+    render_rectangle_at_position<255, 255, 0>(
+        renderer, position, width, height);
 }
 
 void render_player(
@@ -208,7 +242,7 @@ void render_projectiles(
     SDL_Renderer& renderer, std::vector<metacore::Position> const& projectiles)
 {
     for (auto const& position : projectiles) {
-        render_rectangle_at_position<255, 255, 255, 10>(renderer, position);
+        render_rectangle_at_position<255, 255, 255>(renderer, position, 10, 10);
     }
 }
 
@@ -265,11 +299,11 @@ void render_tiles(
         if (texture == metacore::EnvironmentTexture::None) {
             switch (tile.type) {
                 case metacore::TileType::Obstacle:
-                    render_rectangle_at_position<64, 64, 64, 50>(
+                    render_rectangle_at_position<64, 64, 64>(
                         renderer, tile.position);
                     break;
                 case metacore::TileType::Stairs:
-                    render_rectangle_at_position<123, 63, 0, 50>(
+                    render_rectangle_at_position<123, 63, 0>(
                         renderer, tile.position);
                     break;
             }
@@ -290,8 +324,9 @@ void render_gamestate(
     }
     render_tiles(renderer, state.tiles, state.environment_texture);
     render_enemies(renderer, state.enemy_positions, state.enemies_texture);
-    if (state.slash_attack) {
-        render_slash_attack(renderer, state.player_position);
+    if (state.slash_attack.has_value()) {
+        render_slash_attack(
+            renderer, state.player_position, *state.slash_attack);
     }
     render_player(renderer, state.player_position, state.player_texture);
     if (state.upgrade_position.has_value()) {
