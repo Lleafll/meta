@@ -43,7 +43,10 @@ void render_rectangle_at_position(
     auto const screen_position =
         world_position_to_screen_position(world_position);
     auto r = SDL_Rect{
-        screen_position.x - width, screen_position.y - height, width, height};
+        screen_position.x - width / 2 + 25,
+        screen_position.y - height / 2 - 25,
+        width,
+        height};
     if (SDL_SetRenderDrawColor(&renderer, red, green, blue, 255) != 0) {
         throw_sdl_error();
     }
@@ -57,8 +60,7 @@ void render_texture_at_position(
     SDL_Texture* const texture)
 {
     auto const screen_position = world_position_to_screen_position(position);
-    auto dstrect =
-        SDL_Rect{screen_position.x - 50, screen_position.y - 50, 50, 50};
+    auto dstrect = SDL_Rect{screen_position.x, screen_position.y - 50, 50, 50};
     if (SDL_RenderCopy(&renderer, texture, nullptr, &dstrect) != 0) {
         throw_sdl_error();
     }
@@ -134,26 +136,22 @@ void render_slash_attack(
         case metacore::Orientation::Up:
             height = slash_reach / 2;
             width = slash_reach;
-            position.x += 25;
-            position.y += 25;
+            position.y += height / 2;
             break;
         case metacore::Orientation::Down:
             height = slash_reach / 2;
             width = slash_reach;
-            position.x += 25;
-            position.y -= 25;
+            position.y -= height / 2;
             break;
         case metacore::Orientation::Left:
             height = slash_reach;
             width = slash_reach / 2;
-            position.x -= 25;
-            position.y -= 25;
+            position.x -= width / 2;
             break;
         case metacore::Orientation::Right:
             height = slash_reach;
             width = slash_reach / 2;
-            position.x += 25;
-            position.y -= 25;
+            position.x += width / 2;
             break;
     }
     render_rectangle_at_position<255, 255, 0>(
@@ -242,7 +240,9 @@ void render_game_progress(
 void render_projectiles(
     SDL_Renderer& renderer, std::vector<metacore::Position> const& projectiles)
 {
-    for (auto const& position : projectiles) {
+    for (auto position : projectiles) {
+        position.x -= 25;
+        position.y += 25;
         render_rectangle_at_position<255, 255, 255>(renderer, position, 10, 10);
     }
 }
