@@ -4,7 +4,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto slash_radius = 100;
+constexpr auto slash_radius = 50;
 
 } // namespace
 

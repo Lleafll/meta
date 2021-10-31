@@ -158,7 +158,7 @@ TEST(MetaengineTest, KillEnemiesInSlashRangeIfSlashUpgradeIsSelected)
     auto player = Player{Position{0, 0}}; // Player faces up
     player.set_attack(AttackUpgrade::Slash);
     auto engine = MetaEngine{{DefaultState{
-        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{Position{100, 100}}}}}};
+        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{Position{50, 50}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(0, enemies_count);
