@@ -240,9 +240,7 @@ void render_game_progress(
 void render_projectiles(
     SDL_Renderer& renderer, std::vector<metacore::Position> const& projectiles)
 {
-    for (auto position : projectiles) {
-        position.x -= 25;
-        position.y += 25;
+    for (auto const& position : projectiles) {
         render_rectangle_at_position<255, 255, 255>(renderer, position, 10, 10);
     }
 }
