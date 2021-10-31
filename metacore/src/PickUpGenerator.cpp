@@ -12,10 +12,12 @@ UpgradeChoices next_choices(int& state)
     ++state;
     switch (state) {
         case 1:
-            return UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot};
-        case 2:
             return UpgradeChoices{PickupUpgrade::Car, PickupUpgrade::Knight};
+        case 2:
+            return UpgradeChoices{PickupUpgrade::Alien, PickupUpgrade::Robot};
         case 3:
+            return UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot};
+        case 4:
             return UpgradeChoices{
                 PickupUpgrade::Dungeon, PickupUpgrade::OpenWorld};
         default:

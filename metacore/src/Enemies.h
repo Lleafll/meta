@@ -3,11 +3,14 @@
 #include "Position.h"
 #include <random>
 #include <vector>
+#include "CharacterTexture.h"
 
 namespace metacore {
 
 class Enemies final {
   public:
+    CharacterTexture texture = CharacterTexture::None;
+
     Enemies() = default;
     explicit Enemies(std::vector<Position> positions);
 

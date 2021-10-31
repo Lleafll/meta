@@ -21,6 +21,7 @@ struct GameState final {
     std::optional<std::vector<Position>> projectiles = {};
     std::vector<Tile> tiles = {};
     CharacterTexture player_texture = CharacterTexture::None;
+    CharacterTexture enemies_texture = CharacterTexture::None;
 
     bool operator==(GameState const&) const = default;
 };

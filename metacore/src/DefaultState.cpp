@@ -16,6 +16,7 @@ DefaultState::DefaultState(
 GameState to_game_state(DefaultState const& state)
 {
     auto const& player = state.player;
+    auto const& enemies = state.enemies;
     auto const* const projectiles = player.projectiles();
     auto const tiles = state.layout.tiles();
     return {
@@ -23,12 +24,13 @@ GameState to_game_state(DefaultState const& state)
         state.pickup.position,
         std::nullopt,
         player.is_slashing(),
-        state.enemies.positions(),
+        enemies.positions(),
         GameProgress::Running,
         projectiles == nullptr ? std::optional<std::vector<Position>>{}
                                : std::optional{*projectiles},
         {tiles.begin(), tiles.end()},
-        player.texture};
+        player.texture,
+        enemies.texture};
 }
 
 } // namespace metacore

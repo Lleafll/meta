@@ -183,7 +183,11 @@ void MetaEngine::input_restart()
 namespace {
 
 template<PickupUpgrade UpgradeChoices::*member>
-void set_upgrade(Player& player, Layout& layout, UpgradeChoices const& choices)
+void set_upgrade(
+    Player& player,
+    Enemies& enemies,
+    Layout& layout,
+    UpgradeChoices const& choices)
 {
     auto const choice = choices.*member;
     switch (choice) {
@@ -205,6 +209,12 @@ void set_upgrade(Player& player, Layout& layout, UpgradeChoices const& choices)
         case PickupUpgrade::Knight:
             player.texture = CharacterTexture::Knight;
             break;
+        case PickupUpgrade::Alien:
+            enemies.texture = CharacterTexture::Alien;
+            break;
+        case PickupUpgrade::Robot:
+            enemies.texture = CharacterTexture::Robot;
+            break;
     }
 }
 
@@ -212,7 +222,8 @@ template<PickupUpgrade UpgradeChoices::*member>
 DefaultState
 apply_upgrade_and_transition(PickingUpState& state, Pickup const& next_pickup)
 {
-    set_upgrade<member>(state.player, state.layout, state.choices);
+    set_upgrade<member>(
+        state.player, state.enemies, state.layout, state.choices);
     return DefaultState{state.player, next_pickup, state.enemies, state.layout};
 }
 

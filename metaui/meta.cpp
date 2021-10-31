@@ -49,28 +49,16 @@ void render_rectangle_at_position(
     }
 }
 
-void render_enemies(
-    SDL_Renderer& renderer, std::vector<metacore::Position> const& positions)
-{
-    for (auto const& position : positions) {
-        render_rectangle_at_position<255, 0, 0, 50>(renderer, position);
-    }
-}
-
-void render_slash_attack(
-    SDL_Renderer& renderer, metacore::Position const& position)
-{
-    render_rectangle_at_position<255, 255, 0, 100>(renderer, position);
-}
-
 void render_character_texture_at_position(
     SDL_Renderer& renderer,
     metacore::Position const& position,
     metacore::CharacterTexture const character_texture)
 {
     auto* const image = [character_texture]() -> SDL_Surface* {
-        static auto* const car_texture = IMG_Load("YellowBuggy_0.png");
+        static auto* const alien_texture = IMG_Load("alien.png");
+        static auto* const car_texture = IMG_Load("car.png");
         static auto* const knight_texture = IMG_Load("knight.png");
+        static auto* const robot_texture = IMG_Load("robot.png");
         switch (character_texture) {
             case metacore::CharacterTexture::None:
                 return nullptr;
@@ -78,6 +66,11 @@ void render_character_texture_at_position(
                 return car_texture;
             case metacore::CharacterTexture::Knight:
                 return knight_texture;
+            case metacore::CharacterTexture::Alien:
+                return alien_texture;
+                break;
+            case metacore::CharacterTexture::Robot:
+                break;
         }
         return nullptr;
     }();
@@ -108,6 +101,22 @@ void render_at_position(
     } else {
         render_character_texture_at_position(renderer, position, texture);
     }
+}
+
+void render_enemies(
+    SDL_Renderer& renderer,
+    std::vector<metacore::Position> const& positions,
+    metacore::CharacterTexture const texture)
+{
+    for (auto const& position : positions) {
+        render_at_position<255, 0, 0>(renderer, position, texture);
+    }
+}
+
+void render_slash_attack(
+    SDL_Renderer& renderer, metacore::Position const& position)
+{
+    render_rectangle_at_position<255, 255, 0, 100>(renderer, position);
 }
 
 void render_player(
@@ -151,9 +160,13 @@ constexpr char const* to_string(metacore::PickupUpgrade const upgrade)
         case metacore::PickupUpgrade::OpenWorld:
             return "Open World";
         case metacore::PickupUpgrade::Car:
-            return "Car";
+            return "Car Player";
         case metacore::PickupUpgrade::Knight:
-            return "Knight";
+            return "Knight Player";
+        case metacore::PickupUpgrade::Alien:
+            return "Alien Enemies";
+        case metacore::PickupUpgrade::Robot:
+            return "Robot Enemies";
     }
     throw std::runtime_error{std::format(
         "{} not handled in {}", static_cast<int>(upgrade), __func__)};
@@ -216,7 +229,7 @@ void render_gamestate(
         throw_sdl_error();
     }
     render_tiles(renderer, state.tiles);
-    render_enemies(renderer, state.enemy_positions);
+    render_enemies(renderer, state.enemy_positions, state.enemies_texture);
     if (state.slash_attack) {
         render_slash_attack(renderer, state.player_position);
     }

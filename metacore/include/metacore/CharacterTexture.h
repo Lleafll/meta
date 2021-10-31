@@ -2,6 +2,6 @@
 
 namespace metacore {
 
-enum class CharacterTexture { None, Car, Knight };
+enum class CharacterTexture { None, Car, Knight, Alien, Robot };
 
 } // namespace metacore
