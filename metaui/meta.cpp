@@ -68,9 +68,8 @@ void render_character_texture_at_position(
                 return knight_texture;
             case metacore::CharacterTexture::Alien:
                 return alien_texture;
-                break;
             case metacore::CharacterTexture::Robot:
-                break;
+                return robot_texture;
         }
         return nullptr;
     }();
