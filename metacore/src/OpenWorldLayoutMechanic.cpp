@@ -11,9 +11,18 @@ constexpr auto width_count = 15;
 constexpr auto tile_size = 50;
 constexpr auto height = height_count * tile_size;
 constexpr auto width = width_count * tile_size;
-constexpr LayoutBounds bounds = {
+constexpr LayoutBounds layout_bounds = {
     -width / 2, width / 2, -height / 2, height / 2};
 constexpr auto tile_fill_rate = 0.4;
+
+} // namespace
+
+LayoutBounds const& OpenWorldLayoutMechanic::bounds()
+{
+    return layout_bounds;
+}
+
+namespace {
 
 int simple_hash(int const x, int const y, int const z)
 {
@@ -29,8 +38,9 @@ build_tiles(int const world_seed, int const world_x, int const world_y)
     auto const tile_seed = simple_hash(world_seed, world_x, world_y);
     constexpr auto cutoff = static_cast<int>(
         std::numeric_limits<int>::max() * (1 - tile_fill_rate));
-    for (auto x = bounds.left; x < bounds.right; x += tile_size) {
-        for (auto y = bounds.bottom; y < bounds.top; y += tile_size) {
+    for (auto x = layout_bounds.left; x < layout_bounds.right; x += tile_size) {
+        for (auto y = layout_bounds.bottom; y < layout_bounds.top;
+             y += tile_size) {
             auto const hash = simple_hash(tile_seed, x, y);
             if (hash > cutoff) {
                 tiles.push_back(Tile{{x - 25, y + 25}, TileType::Obstacle});
@@ -57,19 +67,19 @@ namespace {
 std::optional<Orientation>
 check_if_out_of_bounds(Position const& position, int& x, int& y)
 {
-    if (position.x < bounds.left) {
+    if (position.x < layout_bounds.left) {
         --x;
         return Orientation::Left;
     }
-    if (position.x > bounds.right) {
+    if (position.x > layout_bounds.right) {
         ++x;
         return Orientation::Right;
     }
-    if (position.y < bounds.bottom) {
+    if (position.y < layout_bounds.bottom) {
         --y;
         return Orientation::Down;
     }
-    if (position.y > bounds.right) {
+    if (position.y > layout_bounds.right) {
         ++y;
         return Orientation::Up;
     }

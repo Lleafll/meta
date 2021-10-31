@@ -65,7 +65,6 @@ void render_texture_at_position(
     if (SDL_RenderCopy(&renderer, texture, nullptr, &dstrect) != 0) {
         throw_sdl_error();
     }
-    SDL_DestroyTexture(texture);
 }
 
 void render_character_texture_at_position(
@@ -100,6 +99,7 @@ void render_character_texture_at_position(
         throw_sdl_error();
     }
     render_texture_at_position(renderer, position, texture);
+    SDL_DestroyTexture(texture);
 }
 
 template<Uint8 red, Uint8 green, Uint8 blue>
@@ -288,6 +288,7 @@ void render_tile(
         throw_sdl_error();
     }
     render_texture_at_position(renderer, tile.position, texture);
+    SDL_DestroyTexture(texture);
 }
 
 void render_tiles(
@@ -313,6 +314,41 @@ void render_tiles(
     }
 }
 
+void render_ground(
+    SDL_Renderer& renderer,
+    metacore::LayoutBounds const& bounds,
+    metacore::EnvironmentTexture const environment_texture)
+{
+    if (environment_texture == metacore::EnvironmentTexture::None) {
+        return;
+    }
+    auto* const image = [environment_texture]() -> SDL_Surface* {
+        switch (environment_texture) {
+            case metacore::EnvironmentTexture::SpaceStation:
+                static auto* const space_station_ground =
+                    IMG_Load("spacestationground.png");
+                return space_station_ground;
+            case metacore::EnvironmentTexture::Castle:
+                static auto* const castle_ground = IMG_Load("castleground.png");
+                return castle_ground;
+        }
+        return nullptr;
+    }();
+    if (image == nullptr) {
+        throw_sdl_error();
+    }
+    auto* const texture = SDL_CreateTextureFromSurface(&renderer, image);
+    if (texture == nullptr) {
+        throw_sdl_error();
+    }
+    for (auto x = bounds.left; x < bounds.right; x += 50) {
+        for (auto y = bounds.bottom; y < bounds.top; y += 50) {
+            render_texture_at_position(renderer, {x, y}, texture);
+        }
+    }
+    SDL_DestroyTexture(texture);
+}
+
 void render_gamestate(
     SDL_Renderer& renderer, metacore::GameState const& state, TTF_Font& font)
 {
@@ -322,6 +358,7 @@ void render_gamestate(
     if (SDL_RenderClear(&renderer) != 0) {
         throw_sdl_error();
     }
+    render_ground(renderer, state.layout_bounds, state.environment_texture);
     render_tiles(renderer, state.tiles, state.environment_texture);
     render_enemies(renderer, state.enemy_positions, state.enemies_texture);
     if (state.slash_attack.has_value()) {

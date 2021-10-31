@@ -2,6 +2,7 @@
 
 #include "CharacterTexture.h"
 #include "EnvironmentTexture.h"
+#include "LayoutBounds.h"
 #include "Orientation.h"
 #include "Position.h"
 #include "Tile.h"
@@ -25,6 +26,7 @@ struct GameState final {
     CharacterTexture player_texture = CharacterTexture::None;
     CharacterTexture enemies_texture = CharacterTexture::None;
     EnvironmentTexture environment_texture = EnvironmentTexture::None;
+    LayoutBounds layout_bounds = {};
 
     bool operator==(GameState const&) const = default;
 };

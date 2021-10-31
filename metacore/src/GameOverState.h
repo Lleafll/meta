@@ -20,6 +20,7 @@ struct GameOverState final {
     CharacterTexture player_texture = CharacterTexture::None;
     CharacterTexture enemies_texture = CharacterTexture::None;
     EnvironmentTexture environment_texture = EnvironmentTexture::None;
+    LayoutBounds layout_bounds = {};
 };
 
 GameState to_game_state(GameOverState const& state);

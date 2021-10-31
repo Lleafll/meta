@@ -15,7 +15,7 @@ struct PickingUpState final {
         Player player,
         UpgradeChoices const& choices,
         Enemies enemies,
-        Layout const& layout = {});
+        Layout layout = {});
 
     Player player;
     UpgradeChoices choices;

@@ -5,11 +5,11 @@
 namespace metacore {
 
 DefaultState::DefaultState(
-    Player player, Pickup const& pickup, Enemies enemies, Layout const& layout)
+    Player player, Pickup const& pickup, Enemies enemies, Layout layout)
     : player{std::move(player)},
       pickup{pickup},
       enemies{std::move(enemies)},
-      layout{layout}
+      layout{std::move(layout)}
 {
 }
 
@@ -33,7 +33,8 @@ GameState to_game_state(DefaultState const& state)
         {tiles.begin(), tiles.end()},
         player.texture,
         enemies.texture,
-        layout.texture};
+        layout.texture,
+        layout.bounds().value_or(LayoutBounds{})};
 }
 
 } // namespace metacore

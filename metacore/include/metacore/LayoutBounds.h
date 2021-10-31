@@ -7,6 +7,8 @@ struct LayoutBounds final {
     int right;
     int bottom;
     int top;
+
+    bool operator==(LayoutBounds const&) const = default;
 };
 
 } // namespace metacore

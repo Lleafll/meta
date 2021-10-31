@@ -16,7 +16,7 @@ struct DefaultState final {
         Player player,
         Pickup const& pickup,
         Enemies enemies,
-        Layout const& layout = {});
+        Layout layout = {});
 
     Player player;
     Pickup pickup;

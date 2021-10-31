@@ -12,6 +12,8 @@ class DungeonLayoutMechanic final {
     static constexpr auto width = 12;
 
   public:
+    static LayoutBounds const& bounds();
+
     DungeonLayoutMechanic();
 
     [[nodiscard]] std::vector<Tile> const& tiles() const;

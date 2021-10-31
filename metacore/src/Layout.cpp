@@ -30,9 +30,16 @@ std::optional<LayoutBounds> Layout::bounds() const
             [](std::monostate const&) -> std::optional<LayoutBounds> {
                 return {};
             },
-            [](auto const&) -> std::optional<LayoutBounds> {
+            [](ArenaLayoutMechanic const&) -> std::optional<LayoutBounds> {
                 return ArenaLayoutMechanic::bounds();
-            }},
+            },
+            [](DungeonLayoutMechanic const&) -> std::optional<LayoutBounds> {
+                return DungeonLayoutMechanic::bounds();
+            },
+            [](OpenWorldLayoutMechanic const&) -> std::optional<LayoutBounds> {
+                return OpenWorldLayoutMechanic::bounds();
+            },
+        },
         layout_);
 }
 

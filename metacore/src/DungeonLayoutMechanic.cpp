@@ -2,6 +2,11 @@
 
 namespace metacore {
 
+LayoutBounds const& DungeonLayoutMechanic::bounds()
+{
+    return bounds_;
+}
+
 namespace {
 
 template<int tile_size, LayoutBounds bounds>

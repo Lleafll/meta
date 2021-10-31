@@ -8,11 +8,11 @@ PickingUpState::PickingUpState(
     Player player,
     UpgradeChoices const& choices,
     Enemies enemies,
-    Layout const& layout)
+    Layout layout)
     : player{std::move(player)},
       choices{choices},
       enemies{std::move(enemies)},
-      layout{layout}
+      layout{std::move(layout)}
 {
 }
 
@@ -36,7 +36,8 @@ GameState to_game_state(PickingUpState const& state)
         {tiles.begin(), tiles.end()},
         player.texture,
         enemies.texture,
-        layout.texture};
+        layout.texture,
+        layout.bounds().value_or(LayoutBounds{})};
 }
 
 } // namespace metacore

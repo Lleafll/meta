@@ -100,7 +100,8 @@ void advance_and_maybe_transition(
             {tiles.begin(), tiles.end()},
             player.texture,
             enemies.texture,
-            layout.texture};
+            layout.texture,
+            layout.bounds().value_or(LayoutBounds{})};
     }
 }
 

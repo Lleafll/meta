@@ -16,7 +16,8 @@ GameState to_game_state(GameOverState const& state)
         state.tiles,
         state.player_texture,
         state.enemies_texture,
-        state.environment_texture};
+        state.environment_texture,
+        state.layout_bounds};
 }
 
 } // namespace metacore
