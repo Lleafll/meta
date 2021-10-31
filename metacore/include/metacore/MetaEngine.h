@@ -10,6 +10,8 @@ namespace metacore {
 
 class MetaEngine final {
   public:
+    struct Impl;
+
     MetaEngine();
     explicit MetaEngine(InternalGameState const& state);
     ~MetaEngine();
@@ -25,8 +27,6 @@ class MetaEngine final {
     void select_second_upgrade();
 
   private:
-    struct Impl;
-
     std::unique_ptr<Impl> impl_;
 };
 

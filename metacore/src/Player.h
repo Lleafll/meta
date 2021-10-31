@@ -6,6 +6,7 @@
 #include "ShootAttackMechanic.h"
 #include "SlashAttackMechanic.h"
 #include "Tile.h"
+#include <optional>
 #include <span>
 #include <variant>
 #include <vector>
@@ -34,8 +35,11 @@ class Player final {
     void attack();
     void set_attack(AttackUpgrade upgrade);
     [[nodiscard]] bool target_is_hit(Position const& target) const;
+    void advance();
 
   private:
+    enum class NextMove { None, Up, Down, Right, Left, Attack };
+    NextMove next_move_ = NextMove::None;
     PositionAndOrientation position_and_orientation_ =
         PositionAndOrientation{{0, 0}, Orientation::Up};
     std::variant<std::monostate, SlashAttackMechanic, ShootAttackMechanic>

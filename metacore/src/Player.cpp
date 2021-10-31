@@ -59,33 +59,18 @@ std::vector<Position> const* Player::projectiles() const
 
 namespace {
 
-void tick(
-    std::variant<std::monostate, SlashAttackMechanic, ShootAttackMechanic>&
-        attack)
-{
-    return std::visit(
-        overloaded{
-            [](SlashAttackMechanic& attack) { attack.tick(); },
-            [](ShootAttackMechanic& attack) { attack.tick(); },
-            [](auto const&) {}},
-        attack);
-}
-
-void move_to_position_if_not_obstructed(
-    PositionAndOrientation& old_value,
+bool is_obstructed(
     PositionAndOrientation const& new_value,
     std::span<Tile const> const environment)
 {
-    if (std::ranges::none_of(
-            environment, [&new_value](Tile const& tile) -> bool {
-                if (tile.type == TileType::Obstacle) {
-                    return is_within_distance<player_size>(
-                        new_value.position, tile.position);
-                }
-                return false;
-            })) {
-        old_value = new_value;
-    }
+    return std::ranges::any_of(
+        environment, [&new_value](Tile const& tile) -> bool {
+            if (tile.type == TileType::Obstacle) {
+                return is_within_distance<player_size>(
+                    new_value.position, tile.position);
+            }
+            return false;
+        });
 }
 
 } // namespace
@@ -93,56 +78,49 @@ void move_to_position_if_not_obstructed(
 void Player::move_up(std::span<Tile const> const environment)
 {
     auto const& position = position_and_orientation_.position;
-    move_to_position_if_not_obstructed(
-        position_and_orientation_,
-        {{position.x, position.y + player_move_increment}, Orientation::Up},
-        environment);
-    tick(attack_);
+    if (!is_obstructed(
+            {{position.x, position.y + player_move_increment}, Orientation::Up},
+            environment)) {
+        next_move_ = NextMove::Up;
+    }
 }
 
 void Player::move_down(std::span<Tile const> const environment)
 {
     auto const& position = position_and_orientation_.position;
-    move_to_position_if_not_obstructed(
-        position_and_orientation_,
-        {{position.x, position.y - player_move_increment}, Orientation::Down},
-        environment);
-    tick(attack_);
+    if (!is_obstructed(
+            {{position.x, position.y - player_move_increment},
+             Orientation::Down},
+            environment)) {
+        next_move_ = NextMove::Down;
+    }
 }
 
 void Player::move_right(std::span<Tile const> const environment)
 {
     auto const& position = position_and_orientation_.position;
-    move_to_position_if_not_obstructed(
-        position_and_orientation_,
-        {{position.x + player_move_increment, position.y}, Orientation::Right},
-        environment);
-    tick(attack_);
+    if (!is_obstructed(
+            {{position.x + player_move_increment, position.y},
+             Orientation::Right},
+            environment)) {
+        next_move_ = NextMove::Right;
+    }
 }
 
 void Player::move_left(std::span<Tile const> const environment)
 {
     auto const& position = position_and_orientation_.position;
-    move_to_position_if_not_obstructed(
-        position_and_orientation_,
-        {{position.x - player_move_increment, position.y}, Orientation::Left},
-        environment);
-    tick(attack_);
+    if (!is_obstructed(
+            {{position.x - player_move_increment, position.y},
+             Orientation::Left},
+            environment)) {
+        next_move_ = NextMove::Left;
+    }
 }
 
 void Player::attack()
 {
-    tick(attack_);
-    std::visit(
-        overloaded{
-            [this](SlashAttackMechanic& attack) {
-                attack.start(position_and_orientation_);
-            },
-            [this](ShootAttackMechanic& attack) {
-                attack.start(position_and_orientation_);
-            },
-            [](auto const&) {}},
-        attack_);
+    next_move_ = NextMove::Attack;
 }
 
 void Player::set_attack(AttackUpgrade const upgrade)
@@ -179,6 +157,54 @@ bool Player::target_is_hit(Position const& target) const
 Orientation Player::orientation() const
 {
     return position_and_orientation_.orientation;
+}
+
+void Player::advance()
+{
+    auto const& position = position_and_orientation_.position;
+    switch (next_move_) {
+        case NextMove::Up:
+            position_and_orientation_ = {
+                {position.x, position.y + player_move_increment},
+                Orientation::Up};
+            break;
+        case NextMove::Down:
+            position_and_orientation_ = {
+                {position.x, position.y - player_move_increment},
+                Orientation::Down};
+            break;
+        case NextMove::Right:
+            position_and_orientation_ = {
+                {position.x + player_move_increment, position.y},
+                Orientation::Right};
+            break;
+        case NextMove::Left:
+            position_and_orientation_ = {
+                {position.x - player_move_increment, position.y},
+                Orientation::Left};
+            break;
+        default:
+            break;
+    }
+    std::visit(
+        overloaded{
+            [](SlashAttackMechanic& attack) { attack.tick(); },
+            [](ShootAttackMechanic& attack) { attack.tick(); },
+            [](auto const&) {}},
+        attack_);
+    if (next_move_ == NextMove::Attack) {
+        std::visit(
+            overloaded{
+                [this](SlashAttackMechanic& attack) {
+                    attack.start(position_and_orientation_);
+                },
+                [this](ShootAttackMechanic& attack) {
+                    attack.start(position_and_orientation_);
+                },
+                [](auto const&) {}},
+            attack_);
+    }
+    next_move_ = NextMove::None;
 }
 
 } // namespace metacore

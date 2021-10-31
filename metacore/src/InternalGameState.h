@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Clock.h"
 #include "DefaultState.h"
 #include "GameOverState.h"
 #include "PickingUpState.h"

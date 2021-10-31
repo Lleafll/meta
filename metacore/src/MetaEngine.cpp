@@ -1,4 +1,5 @@
 #include "MetaEngine.h"
+#include "Clock.h"
 #include "DefaultState.h"
 #include "GameState.h"
 #include "InternalGameState.h"
@@ -18,13 +19,10 @@ constexpr auto enemy_collision_distance = 20;
 } // namespace
 
 struct MetaEngine::Impl final {
-    Impl() = default;
-    explicit Impl(InternalGameState state) : state{std::move(state)}
-    {
-    }
-
     PickUpGenerator pick_up_generator = {};
-    InternalGameState state = [this]() -> InternalGameState {
+
+  private:
+    InternalGameState state_ = [this]() -> InternalGameState {
         auto const layout = Layout{LayoutUpgrade::Arena};
         return {DefaultState{
             Player{Position{0, 0}},
@@ -32,6 +30,26 @@ struct MetaEngine::Impl final {
             Enemies{},
             layout}};
     }();
+
+  public:
+    Clock clock = Clock{state_};
+
+    Impl() = default;
+    explicit Impl(InternalGameState state)
+        : state_{std::move(state)}, clock{state_}
+    {
+    }
+
+    [[nodiscard]] InternalGameState& state()
+    {
+        return state_;
+    }
+
+    void state(InternalGameState const& state)
+    {
+        state_ = state;
+        clock = Clock{state_};
+    }
 };
 
 MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
@@ -49,7 +67,7 @@ GameState MetaEngine::calculate_state() const
 {
     return std::visit(
         [](auto const& state) -> GameState { return to_game_state(state); },
-        impl_->state.value);
+        impl_->state().value);
 }
 
 namespace {
@@ -69,31 +87,16 @@ bool check_pickup(Player const& player, Pickup const& pickup)
         player.position(), pickup.position);
 }
 
-void kill_enemies_that_got_hit(Player const& player, Enemies& enemies)
+void advance_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
 {
-    auto const& positions = enemies.positions();
-    if (positions.empty()) {
-        return;
-    }
-    for (auto i = positions.size(); i > 0; --i) {
-        if (player.target_is_hit(positions[i - 1])) {
-            enemies.kill(i - 1);
-        }
-    }
-}
-
-void advance_and_maybe_transition(
-    DefaultState& state, InternalGameState& internal_state)
-{
-    kill_enemies_that_got_hit(state.player, state.enemies);
-    state.enemies.advance(state.player.position());
+    impl.clock.input();
     if (check_for_enemy_collision(
             state.player.position(), state.enemies.positions())) {
         auto const& player = state.player;
         auto const& enemies = state.enemies;
         auto const& layout = state.layout;
         auto const tiles = layout.tiles();
-        internal_state.value = GameOverState{
+        impl.state({GameOverState{
             player.position(),
             state.pickup.position,
             enemies.positions(),
@@ -101,24 +104,19 @@ void advance_and_maybe_transition(
             player.texture,
             enemies.texture,
             layout.texture,
-            layout.bounds().value_or(LayoutBounds{})};
+            layout.bounds().value_or(LayoutBounds{})}});
     }
 }
 
 template<void (Player::*move_direction)(std::span<Tile const>)>
-void move_and_maybe_transition(
-    DefaultState& state, InternalGameState& internal_state)
+void move_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
 {
     (state.player.*move_direction)(state.layout.tiles());
-    if (state.layout.check_for_transition(
-            state.player, state.enemies.positions())) {
-        return;
-    }
-    advance_and_maybe_transition(state, internal_state);
-    if (std::holds_alternative<DefaultState>(internal_state.value) &&
+    advance_and_maybe_transition(state, impl);
+    if (std::holds_alternative<DefaultState>(impl.state().value) &&
         check_pickup(state.player, state.pickup)) {
-        internal_state.value = PickingUpState{
-            state.player, state.pickup.upgrades, state.enemies, state.layout};
+        impl.state({PickingUpState{
+            state.player, state.pickup.upgrades, state.enemies, state.layout}});
     }
 }
 
@@ -127,13 +125,12 @@ void move_and_maybe_transition(
 void MetaEngine::input_right()
 {
     std::visit(
-        [this]<typename T>(T& state) {
-            if constexpr (std::is_same_v<T, DefaultState>) {
-                move_and_maybe_transition<&Player::move_right>(
-                    state, impl_->state);
-            }
-        },
-        impl_->state.value);
+        overloaded{
+            [this](DefaultState& state) {
+                move_and_maybe_transition<&Player::move_right>(state, *impl_);
+            },
+            [](auto const&) {}},
+        impl_->state().value);
 }
 
 void MetaEngine::input_left()
@@ -141,11 +138,10 @@ void MetaEngine::input_left()
     std::visit(
         overloaded{
             [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_left>(
-                    state, impl_->state);
+                move_and_maybe_transition<&Player::move_left>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state.value);
+        impl_->state().value);
 }
 
 void MetaEngine::input_up()
@@ -153,11 +149,10 @@ void MetaEngine::input_up()
     std::visit(
         overloaded{
             [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_up>(
-                    state, impl_->state);
+                move_and_maybe_transition<&Player::move_up>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state.value);
+        impl_->state().value);
 }
 
 void MetaEngine::input_down()
@@ -165,11 +160,10 @@ void MetaEngine::input_down()
     std::visit(
         overloaded{
             [this](DefaultState& state) {
-                move_and_maybe_transition<&Player::move_down>(
-                    state, impl_->state);
+                move_and_maybe_transition<&Player::move_down>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state.value);
+        impl_->state().value);
 }
 
 void MetaEngine::input_attack()
@@ -178,10 +172,10 @@ void MetaEngine::input_attack()
         overloaded{
             [this](DefaultState& state) {
                 state.player.attack();
-                advance_and_maybe_transition(state, impl_->state);
+                advance_and_maybe_transition(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state.value);
+        impl_->state().value);
 }
 
 void MetaEngine::input_restart()
@@ -249,14 +243,14 @@ void MetaEngine::select_first_upgrade()
     std::visit(
         overloaded{
             [this](PickingUpState& state) {
-                impl_->state.value =
-                    apply_upgrade_and_transition<&UpgradeChoices::first>(
+                impl_->state(
+                    {apply_upgrade_and_transition<&UpgradeChoices::first>(
                         state,
                         impl_->pick_up_generator.generate(
-                            state.layout.bounds()));
+                            state.layout.bounds()))});
             },
             [](auto const&) {}},
-        impl_->state.value);
+        impl_->state().value);
 }
 
 void MetaEngine::select_second_upgrade()
@@ -264,14 +258,14 @@ void MetaEngine::select_second_upgrade()
     std::visit(
         overloaded{
             [this](PickingUpState& state) {
-                impl_->state.value =
-                    apply_upgrade_and_transition<&UpgradeChoices::second>(
+                impl_->state(
+                    {apply_upgrade_and_transition<&UpgradeChoices::second>(
                         state,
                         impl_->pick_up_generator.generate(
-                            state.layout.bounds()));
+                            state.layout.bounds()))});
             },
             [](auto const&) {}},
-        impl_->state.value);
+        impl_->state().value);
 }
 
 } // namespace metacore
