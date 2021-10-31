@@ -138,6 +138,7 @@ TEST(MetaEngineTest, InputRestart)
     auto const state = engine.calculate_state();
     auto expected = GameState{Position{0, 0}, state.upgrade_position};
     expected.tiles = state.tiles;
+    expected.layout_bounds = LayoutBounds{-250, 250, -250, 250};
     EXPECT_EQ(expected, state);
 }
 

@@ -43,10 +43,10 @@ class ArenaLayoutMechanic final {
 
   private:
     static constexpr LayoutBounds bounds_ = {
-        -width / 2 * tile_size,
-        width / 2 * tile_size,
-        -height / 2 * tile_size,
-        height / 2 * tile_size};
+        -(width * tile_size) / 2,
+        (width * tile_size) / 2,
+        -(height* tile_size) / 2,
+        (height * tile_size) / 2};
     std::array<Tile, tile_count> tiles_ = {};
 };
 
