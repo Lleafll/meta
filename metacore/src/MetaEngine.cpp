@@ -89,10 +89,18 @@ void advance_and_maybe_transition(
     state.enemies.advance(state.player.position());
     if (check_for_enemy_collision(
             state.player.position(), state.enemies.positions())) {
+        auto const& player = state.player;
+        auto const& enemies = state.enemies;
+        auto const& layout = state.layout;
+        auto const tiles = layout.tiles();
         internal_state.value = GameOverState{
-            state.player.position(),
+            player.position(),
             state.pickup.position,
-            state.enemies.positions()};
+            enemies.positions(),
+            {tiles.begin(), tiles.end()},
+            player.texture,
+            enemies.texture,
+            layout.texture};
     }
 }
 
