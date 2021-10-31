@@ -13,7 +13,7 @@ namespace metacore {
 namespace {
 
 constexpr auto pickup_distance = 50;
-constexpr auto enemy_collision_distance = 50;
+constexpr auto enemy_collision_distance = 20;
 
 } // namespace
 
