@@ -4,10 +4,35 @@ namespace metacore {
 
 namespace {
 
-Position get_random_stairs_position(
-    std::mt19937& random_engine,
-    LayoutBounds const& bounds,
-    int const tile_size)
+template<int tile_size, LayoutBounds bounds>
+void add_bounds(std::vector<Tile>& tiles)
+{
+    auto const& [left, right, bottom, top] = bounds;
+    for (auto i = left; i < right; i += tile_size) {
+        tiles.push_back(Tile{{i, bottom}, TileType::Obstacle});
+        tiles.push_back(Tile{{i, top - tile_size}, TileType::Obstacle});
+    }
+    for (auto i = bottom + tile_size; i < top - tile_size; i += tile_size) {
+        tiles.push_back(Tile{{left, i}, TileType::Obstacle});
+        tiles.push_back(Tile{{right - tile_size, i}, TileType::Obstacle});
+    }
+}
+
+template<int tile_size, LayoutBounds bounds>
+void add_tiles(std::mt19937& random_engine, std::vector<Tile>& tiles)
+{
+    auto distribution = std::uniform_int_distribution{0, 10};
+    for (auto x = bounds.left; x < bounds.right; x += tile_size) {
+        for (auto y = bounds.bottom; y < bounds.top; y += tile_size) {
+            if (distribution(random_engine) == 10) {
+                tiles.push_back(Tile{{x, y}, TileType::Obstacle});
+            }
+        }
+    }
+}
+
+template<int tile_size, LayoutBounds bounds>
+Position get_random_stairs_position(std::mt19937& random_engine)
 {
     auto const& [left, right, bottom, top] = bounds;
     auto const distribution_width =
@@ -22,33 +47,15 @@ Position get_random_stairs_position(
 
 DungeonLayoutMechanic::DungeonLayoutMechanic()
 {
-    auto index = std::size_t{0};
-    auto const& [left, right, bottom, top] = bounds_;
-    for (auto i = left; i < right; i += tile_size) {
-        tiles_[index] = Tile{{i, bottom}, TileType::Obstacle};
-        ++index;
-        tiles_[index] = Tile{{i, top - tile_size}, TileType::Obstacle};
-        ++index;
-    }
-    for (auto i = bottom + tile_size; i < top - tile_size; i += tile_size) {
-        tiles_[index] = Tile{{left, i}, TileType::Obstacle};
-        ++index;
-        tiles_[index] = Tile{{right - tile_size, i}, TileType::Obstacle};
-        ++index;
-    }
-    tiles_.back() = {
-        get_random_stairs_position(random_engine_, bounds_, tile_size),
-        TileType::Stairs};
+    add_bounds<tile_size, bounds_>(tiles_);
+    tiles_.push_back(
+        {get_random_stairs_position<tile_size, bounds_>(random_engine_),
+         TileType::Stairs});
 }
 
-auto DungeonLayoutMechanic::tiles() const -> std::array<Tile, tile_count> const&
+std::vector<Tile> const& DungeonLayoutMechanic::tiles() const
 {
     return tiles_;
-}
-
-LayoutBounds const& DungeonLayoutMechanic::bounds()
-{
-    return bounds_;
 }
 
 bool DungeonLayoutMechanic::check_for_transition(
@@ -56,9 +63,12 @@ bool DungeonLayoutMechanic::check_for_transition(
 {
     auto& stairs_tile = tiles_.back();
     if (is_within_distance<tile_size>(player_position, stairs_tile.position)) {
-        stairs_tile = {
-            get_random_stairs_position(random_engine_, bounds_, tile_size),
-            TileType::Stairs};
+        tiles_ = {};
+        add_bounds<tile_size, bounds_>(tiles_);
+        add_tiles<tile_size, bounds_>(random_engine_, tiles_);
+        tiles_.push_back(
+            {get_random_stairs_position<tile_size, bounds_>(random_engine_),
+             TileType::Stairs});
         return true;
     }
     return false;

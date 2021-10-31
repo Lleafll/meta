@@ -2,21 +2,19 @@
 
 #include "LayoutBounds.h"
 #include "Tile.h"
-#include <array>
 #include <random>
+#include <vector>
 
 namespace metacore {
 
 class DungeonLayoutMechanic final {
     static constexpr auto height = 12;
     static constexpr auto width = 12;
-    static constexpr auto tile_count = 2 * height + 2 * width - 4 + 1;
 
   public:
     DungeonLayoutMechanic();
 
-    [[nodiscard]] std::array<Tile, tile_count> const& tiles() const;
-    [[nodiscard]] static LayoutBounds const& bounds();
+    [[nodiscard]] std::vector<Tile> const& tiles() const;
     bool check_for_transition(Position const& player_position);
 
   private:
@@ -27,7 +25,7 @@ class DungeonLayoutMechanic final {
         -(height* tile_size) / 2,
         (height * tile_size) / 2};
 
-    std::array<Tile, tile_count> tiles_ = {};
+    std::vector<Tile> tiles_ = {};
     std::mt19937 random_engine_ = std::mt19937{std::random_device{}()};
 };
 
