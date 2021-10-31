@@ -6,7 +6,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto enemy_movement_steps = 25;
+constexpr auto enemy_movement_steps = 10;
 constexpr auto spawn_interval = 4;
 constexpr auto spawn_edge = 300;
 
