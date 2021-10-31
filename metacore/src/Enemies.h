@@ -1,9 +1,9 @@
 #pragma once
 
+#include "CharacterTexture.h"
 #include "Position.h"
 #include <random>
 #include <vector>
-#include "CharacterTexture.h"
 
 namespace metacore {
 
