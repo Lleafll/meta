@@ -43,10 +43,7 @@ void render_rectangle_at_position(
     auto const screen_position =
         world_position_to_screen_position(world_position);
     auto r = SDL_Rect{
-        screen_position.x - width / 2,
-        screen_position.y - height / 2,
-        width,
-        height};
+        screen_position.x - width, screen_position.y - height, width, height};
     if (SDL_SetRenderDrawColor(&renderer, red, green, blue, 255) != 0) {
         throw_sdl_error();
     }
@@ -61,7 +58,7 @@ void render_texture_at_position(
 {
     auto const screen_position = world_position_to_screen_position(position);
     auto dstrect =
-        SDL_Rect{screen_position.x - 25, screen_position.y - 25, 50, 50};
+        SDL_Rect{screen_position.x - 50, screen_position.y - 50, 50, 50};
     if (SDL_RenderCopy(&renderer, texture, nullptr, &dstrect) != 0) {
         throw_sdl_error();
     }
@@ -137,22 +134,26 @@ void render_slash_attack(
         case metacore::Orientation::Up:
             height = slash_reach / 2;
             width = slash_reach;
-            position.y += height / 2;
+            position.x += 25;
+            position.y += 25;
             break;
         case metacore::Orientation::Down:
             height = slash_reach / 2;
             width = slash_reach;
-            position.y -= height / 2;
+            position.x += 25;
+            position.y -= 25;
             break;
         case metacore::Orientation::Left:
             height = slash_reach;
             width = slash_reach / 2;
-            position.x -= width / 2;
+            position.x -= 25;
+            position.y -= 25;
             break;
         case metacore::Orientation::Right:
             height = slash_reach;
             width = slash_reach / 2;
-            position.x += width / 2;
+            position.x += 25;
+            position.y -= 25;
             break;
     }
     render_rectangle_at_position<255, 255, 0>(
@@ -331,6 +332,8 @@ void render_ground(
             case metacore::EnvironmentTexture::Castle:
                 static auto* const castle_ground = IMG_Load("castleground.png");
                 return castle_ground;
+            case metacore::EnvironmentTexture::None:
+                return nullptr;
         }
         return nullptr;
     }();
