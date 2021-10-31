@@ -6,8 +6,8 @@ namespace metacore {
 
 namespace {
 
-constexpr auto height_count = 11;
-constexpr auto width_count = 15;
+constexpr auto height_count = 12;
+constexpr auto width_count = 16;
 constexpr auto tile_size = 50;
 constexpr auto height = height_count * tile_size;
 constexpr auto width = width_count * tile_size;
@@ -43,7 +43,7 @@ build_tiles(int const world_seed, int const world_x, int const world_y)
              y += tile_size) {
             auto const hash = simple_hash(tile_seed, x, y);
             if (hash > cutoff) {
-                tiles.push_back(Tile{{x - 25, y + 25}, TileType::Obstacle});
+                tiles.push_back(Tile{{x, y}, TileType::Obstacle});
             }
         }
     }
