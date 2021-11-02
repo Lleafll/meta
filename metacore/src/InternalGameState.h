@@ -12,4 +12,6 @@ struct InternalGameState final {
     std::variant<DefaultState, PickingUpState, GameOverState> value;
 };
 
+void advance(InternalGameState& state);
+
 } // namespace metacore

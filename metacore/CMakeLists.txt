@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME}
         "src/Clock.cpp"
         "src/Enemies.cpp"
         "src/GameOverState.cpp"
+        "src/InternalGameState.cpp"
         "src/Layout.cpp"
         "src/MetaEngine.cpp"
         "src/OpenWorldLayoutMechanic.cpp"
