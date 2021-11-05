@@ -59,7 +59,7 @@ void Layout::set_upgrade(LayoutUpgrade const upgrade)
 }
 
 bool Layout::check_for_transition(
-    Player& player, std::span<Position> const enemies)
+    Player& player, std::span<PositionD> const enemies)
 {
     return std::visit(
         overloaded{

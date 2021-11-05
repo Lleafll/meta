@@ -4,7 +4,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto slash_radius = 50;
+constexpr auto slash_radius = 50.0;
 
 } // namespace
 
@@ -13,7 +13,7 @@ bool SlashAttackMechanic::is_active() const
     return is_active_;
 }
 
-void SlashAttackMechanic::start(PositionAndOrientation const& where)
+void SlashAttackMechanic::start(PositionDAndOrientation const& where)
 {
     is_active_ = true;
     where_ = where;
@@ -24,7 +24,7 @@ void SlashAttackMechanic::tick()
     is_active_ = false;
 }
 
-bool SlashAttackMechanic::target_is_hit(Position const& target) const
+bool SlashAttackMechanic::target_is_hit(PositionD const& target) const
 {
     if (!is_active_) {
         return false;

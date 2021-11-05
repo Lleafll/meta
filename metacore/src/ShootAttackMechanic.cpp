@@ -7,18 +7,18 @@ namespace metacore {
 
 namespace {
 
-constexpr auto projectile_step_size = 50;
+constexpr auto projectile_speed = 50.0 / 1000.0; // per millisecond
 
 } // namespace
 
 ShootAttackMechanic::ShootAttackMechanic(
-    std::span<PositionAndOrientation const> const projectiles)
-    : positions_{[projectiles]() -> std::vector<Position> {
-          auto positions = std::vector<Position>{};
+    std::span<PositionDAndOrientation const> const projectiles)
+    : positions_{[projectiles]() -> std::vector<PositionD> {
+          auto positions = std::vector<PositionD>{};
           std::ranges::transform(
               projectiles,
               std::back_inserter(positions),
-              &PositionAndOrientation::position);
+              &PositionDAndOrientation::position);
           return positions;
       }()},
       orientations_{[projectiles]() -> std::vector<Orientation> {
@@ -26,56 +26,57 @@ ShootAttackMechanic::ShootAttackMechanic(
           std::ranges::transform(
               projectiles,
               std::back_inserter(orientations),
-              &PositionAndOrientation::orientation);
+              &PositionDAndOrientation::orientation);
           return orientations;
       }()}
 {
 }
 
-std::vector<Position> const& ShootAttackMechanic::projectiles() const
+std::vector<PositionD> const& ShootAttackMechanic::projectiles() const
 {
     return positions_;
 }
 
 void ShootAttackMechanic::start(
-    PositionAndOrientation const& position_and_orientation)
+    PositionDAndOrientation const& position_and_orientation)
 {
     auto position = position_and_orientation.position;
     switch (position_and_orientation.orientation) {
         case Orientation::Up:
-            position.y += projectile_step_size;
+            position.y += projectile_speed;
             break;
         case Orientation::Down:
-            position.y -= projectile_step_size;
+            position.y -= projectile_speed;
             break;
         case Orientation::Left:
-            position.x -= projectile_step_size;
+            position.x -= projectile_speed;
             break;
         case Orientation::Right:
-            position.x += projectile_step_size;
+            position.x += projectile_speed;
             break;
     }
     positions_.push_back(position);
     orientations_.push_back(position_and_orientation.orientation);
 }
 
-void ShootAttackMechanic::tick()
+void ShootAttackMechanic::tick(std::chrono::milliseconds const diff)
 {
     Expects(positions_.size() == orientations_.size());
+    auto const step = projectile_speed * gsl::narrow_cast<double>(diff.count());
     for (auto i = 0ull; i < positions_.size(); ++i) {
         auto& position = positions_[i];
         switch (orientations_[i]) {
             case Orientation::Up:
-                position.y += projectile_step_size;
+                position.y += step;
                 break;
             case Orientation::Down:
-                position.y -= projectile_step_size;
+                position.y -= step;
                 break;
             case Orientation::Right:
-                position.x += projectile_step_size;
+                position.x += step;
                 break;
             case Orientation::Left:
-                position.x -= projectile_step_size;
+                position.x -= step;
                 break;
         }
     }

@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME}
         "MetaEngineTest.cpp"
         "PickingUpStateTest.cpp"
         "PlayerTest.cpp"
-        "PositionTest.cpp"
+        "PositionDTest.cpp"
         "ShootAttackMechanicTest.cpp"
         "SlashAttackMechanicTest.cpp"
         )

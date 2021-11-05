@@ -65,7 +65,7 @@ std::vector<Tile> const& OpenWorldLayoutMechanic::tiles() const
 namespace {
 
 std::optional<Orientation>
-check_if_out_of_bounds(Position const& position, int& x, int& y)
+check_if_out_of_bounds(PositionD const& position, int& x, int& y)
 {
     if (position.x < layout_bounds.left) {
         --x;
@@ -86,7 +86,7 @@ check_if_out_of_bounds(Position const& position, int& x, int& y)
     return std::nullopt;
 }
 
-void move_from_bound(Position& position, Orientation const bound)
+void move_from_bound(PositionD& position, Orientation const bound)
 {
     switch (bound) {
         case Orientation::Left:
@@ -107,7 +107,7 @@ void move_from_bound(Position& position, Orientation const bound)
 } // namespace
 
 bool OpenWorldLayoutMechanic::check_for_transition(
-    Player& player, std::span<Position> const enemies)
+    Player& player, std::span<PositionD> const enemies)
 {
     auto const bound =
         check_if_out_of_bounds(player.position(), world_x, world_y);

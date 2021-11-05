@@ -13,8 +13,8 @@ namespace metacore {
 
 namespace {
 
-constexpr auto pickup_distance = 50;
-constexpr auto enemy_collision_distance = 20;
+constexpr auto pickup_distance = 50.0;
+constexpr auto enemy_collision_distance = 20.0;
 
 } // namespace
 
@@ -25,7 +25,7 @@ struct MetaEngine::Impl final {
     InternalGameState state_ = [this]() -> InternalGameState {
         auto const layout = Layout{LayoutUpgrade::Arena};
         return {DefaultState{
-            Player{Position{0, 0}},
+            Player{PositionD{0, 0}},
             pick_up_generator.generate(layout.bounds()),
             Enemies{},
             layout}};
@@ -73,10 +73,10 @@ GameState MetaEngine::calculate_state() const
 namespace {
 
 bool check_for_enemy_collision(
-    Position const& player, std::vector<Position> const& enemies)
+    PositionD const& player, std::vector<PositionD> const& enemies)
 {
     return std::ranges::any_of(
-        enemies, [&player](Position const& enemy) -> bool {
+        enemies, [&player](PositionD const& enemy) -> bool {
             return is_within_distance<enemy_collision_distance>(player, enemy);
         });
 }
@@ -84,7 +84,15 @@ bool check_for_enemy_collision(
 bool check_pickup(Player const& player, Pickup const& pickup)
 {
     return is_within_distance<pickup_distance>(
-        player.position(), pickup.position);
+        player.position(), to_position_d(pickup.position));
+}
+
+std::vector<Position> to_positions(std::vector<PositionD> const& positions_d)
+{
+    auto positions = std::vector<Position>{};
+    std::ranges::transform(
+        positions_d, std::back_inserter(positions), to_position);
+    return positions;
 }
 
 void advance_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
@@ -97,9 +105,9 @@ void advance_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
         auto const& layout = state.layout;
         auto const tiles = layout.tiles();
         impl.state({GameOverState{
-            player.position(),
+            to_position(player.position()),
             state.pickup.position,
-            enemies.positions(),
+            to_positions(enemies.positions()),
             {tiles.begin(), tiles.end()},
             player.texture,
             enemies.texture,
@@ -108,10 +116,10 @@ void advance_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
     }
 }
 
-template<void (Player::*move_direction)(std::span<Tile const>)>
+template<void (Player::*move_direction)()>
 void move_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
 {
-    (state.player.*move_direction)(state.layout.tiles());
+    (state.player.*move_direction)();
     advance_and_maybe_transition(state, impl);
     if (std::holds_alternative<DefaultState>(impl.state().value) &&
         check_pickup(state.player, state.pickup)) {

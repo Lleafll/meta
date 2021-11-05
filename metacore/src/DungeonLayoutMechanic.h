@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LayoutBounds.h"
+#include "PositionD.h"
 #include "Tile.h"
 #include <random>
 #include <vector>
@@ -17,7 +18,7 @@ class DungeonLayoutMechanic final {
     DungeonLayoutMechanic();
 
     [[nodiscard]] std::vector<Tile> const& tiles() const;
-    bool check_for_transition(Position const& player_position);
+    bool check_for_transition(PositionD const& player_position);
 
   private:
     static constexpr auto tile_size = 50;

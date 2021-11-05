@@ -5,19 +5,25 @@ namespace metacore {
 
 namespace {
 
-constexpr auto sleep_duration = std::chrono::milliseconds{50};
+constexpr auto sleep_duration = std::chrono::milliseconds{5};
 
 } // namespace
 
 RealTimeClock::RealTimeClock(InternalGameState& state)
     : thread_{
           [](std::stop_token stop_token, InternalGameState* const state) {
+              auto start = std::chrono::steady_clock::now();
               while (true) {
                   if (stop_token.stop_requested()) {
                       return;
                   }
-                  advance(*state);
                   std::this_thread::sleep_for(sleep_duration);
+                  auto const now = std::chrono::steady_clock::now();
+                  auto const diff =
+                      std::chrono::duration_cast<std::chrono::milliseconds>(
+                          now - start);
+                  start = now;
+                  advance(*state, diff);
               }
           },
           &state}

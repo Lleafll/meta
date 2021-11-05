@@ -9,7 +9,7 @@ namespace {
 TEST(DefaultStateTest, ToGameState)
 {
     auto const state = DefaultState{
-        Player{Position{12, 34}},
+        Player{PositionD{12, 34}},
         Pickup{
             Position{56, 78},
             UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}},
@@ -23,11 +23,11 @@ TEST(DefaultStateTest, ToGameState)
 TEST(DefaultStateTest, ToGameStateConsidersEnemies)
 {
     auto const state = DefaultState{
-        Player{Position{}},
+        Player{PositionD{}},
         Pickup{
             Position{},
             UpgradeChoices{PickupUpgrade::Slash, PickupUpgrade::Shoot}},
-        Enemies{{Position{4353, 786}}}};
+        Enemies{{PositionD{4353, 786}}}};
     auto const enemy_positions = to_game_state(state).enemy_positions;
     auto const expected = std::vector<Position>{{4353, 786}};
     EXPECT_EQ(expected, enemy_positions);
@@ -38,7 +38,7 @@ TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
     player.attack();
-    player.advance();
+    player.advance({});
     auto const state = DefaultState{
         player,
         Pickup{
@@ -50,11 +50,11 @@ TEST(DefaultStateTest, SlashingIsTrueWhenPlayerIsAttacking)
 
 TEST(DefaultStateTest, ToGameStateConsidersProjectiles)
 {
-    auto player = Player{Position{324, 765}};
+    auto player = Player{PositionD{324, 765}};
     {
         player.set_attack(AttackUpgrade::Shoot);
         player.attack();
-        player.advance();
+        player.advance({});
     }
     auto const state = DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{}};
     auto const game_state_projectiles = to_game_state(state).projectiles;

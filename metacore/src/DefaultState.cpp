@@ -13,6 +13,18 @@ DefaultState::DefaultState(
 {
 }
 
+namespace {
+
+std::vector<Position> to_positions(std::vector<PositionD> const& positions_d)
+{
+    auto positions = std::vector<Position>{};
+    std::ranges::transform(
+        positions_d, std::back_inserter(positions), to_position);
+    return positions;
+}
+
+} // namespace
+
 GameState to_game_state(DefaultState const& state)
 {
     auto const& player = state.player;
@@ -21,15 +33,16 @@ GameState to_game_state(DefaultState const& state)
     auto const* const projectiles = player.projectiles();
     auto const tiles = layout.tiles();
     return {
-        player.position(),
+        to_position(player.position()),
         state.pickup.position,
         std::nullopt,
         player.is_slashing() ? std::optional{player.orientation()}
                              : std::optional<Orientation>{},
-        enemies.positions(),
+        to_positions(enemies.positions()),
         GameProgress::Running,
-        projectiles == nullptr ? std::optional<std::vector<Position>>{}
-                               : std::optional{*projectiles},
+        projectiles == nullptr
+            ? std::optional<std::vector<Position>>{}
+            : std::optional<std::vector<Position>>{to_positions(*projectiles)},
         {tiles.begin(), tiles.end()},
         player.texture,
         enemies.texture,

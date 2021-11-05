@@ -28,7 +28,7 @@ target_include_directories(${PROJECT_NAME}
         "src"
         )
 target_link_libraries(${PROJECT_NAME}
-        PRIVATE
+        PUBLIC
         CONAN_PKG::ms-gsl
         )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)

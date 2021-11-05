@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Orientation.h"
-#include "Position.h"
-#include "PositionAndOrientation.h"
+#include "PositionDAndOrientation.h"
+#include <chrono>
 #include <span>
 #include <vector>
 
@@ -12,14 +12,14 @@ class ShootAttackMechanic final {
   public:
     ShootAttackMechanic() = default;
     explicit ShootAttackMechanic(
-        std::span<PositionAndOrientation const> projectiles);
+        std::span<PositionDAndOrientation const> projectiles);
 
-    [[nodiscard]] std::vector<Position> const& projectiles() const;
-    void start(PositionAndOrientation const& position_and_orientation);
-    void tick();
+    [[nodiscard]] std::vector<PositionD> const& projectiles() const;
+    void start(PositionDAndOrientation const& position_and_orientation);
+    void tick(std::chrono::milliseconds diff = std::chrono::milliseconds{1000});
 
   private:
-    std::vector<Position> positions_ = {};
+    std::vector<PositionD> positions_ = {};
     std::vector<Orientation> orientations_ = {};
 };
 

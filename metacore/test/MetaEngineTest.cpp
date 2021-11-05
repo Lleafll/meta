@@ -59,7 +59,7 @@ TEST(MetaEngineTest, UpgradePositionIsNonZeroOnStart)
 TEST(MetaEngineTest, UpgradeCollision)
 {
     auto engine = MetaEngine{InternalGameState{DefaultState{
-        Player{Position{0, 0}},
+        Player{PositionD{0, 0}},
         Pickup{Position{50, 0}, {{}, {}}},
         Enemies{{}}}}};
     ASSERT_EQ((Position{50, 0}), engine.calculate_state().upgrade_position);
@@ -70,7 +70,7 @@ TEST(MetaEngineTest, UpgradeCollision)
 TEST(MetaEngineTest, UpgradeSelectFirst)
 {
     auto engine = MetaEngine{{PickingUpState{
-        Player{Position{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
+        Player{PositionD{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
     {
         auto const original_state = engine.calculate_state();
         ASSERT_TRUE(original_state.upgrade_choices.has_value());
@@ -85,7 +85,7 @@ TEST(MetaEngineTest, UpgradeSelectFirst)
 TEST(MetaEngineTest, UpgradeSelectSecond)
 {
     auto engine = MetaEngine{{PickingUpState{
-        Player{Position{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
+        Player{PositionD{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
     {
         auto const original_state = engine.calculate_state();
         ASSERT_TRUE(original_state.upgrade_choices.has_value());
@@ -111,9 +111,9 @@ TEST(MetaEngineTest, AttackStartsSlash)
 TEST(MetaEngineTest, ProperlyTransitionToGameOver)
 {
     auto engine = MetaEngine{{DefaultState{
-        Player{Position{50, 0}},
+        Player{PositionD{50, 0}},
         Pickup{{500, 500}, {{}, {}}},
-        Enemies{{Position{0, 0}}}}}};
+        Enemies{{PositionD{0, 0}}}}}};
     engine.input_left();
     auto const state = engine.calculate_state();
     auto const expected = GameState{
@@ -129,9 +129,9 @@ TEST(MetaEngineTest, ProperlyTransitionToGameOver)
 TEST(MetaEngineTest, InputRestart)
 {
     auto engine = MetaEngine{{DefaultState{
-        Player{Position{34, 65}},
+        Player{PositionD{34, 65}},
         Pickup{{5634, 654}, {{}, {}}},
-        Enemies{{Position{654, 65}}}}}};
+        Enemies{{PositionD{654, 65}}}}}};
     engine.input_restart();
     auto const state = engine.calculate_state();
     auto expected = GameState{Position{0, 0}, state.upgrade_position};
@@ -145,7 +145,7 @@ TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfNoUpgradeIsSelected)
     auto engine = MetaEngine{{DefaultState{
         Player{{0, 0}},
         Pickup{{5634, 654}, {{}, {}}},
-        Enemies{{Position{-50, -50}}}}}};
+        Enemies{{PositionD{-50, -50}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(1, enemies_count);
@@ -153,10 +153,10 @@ TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfNoUpgradeIsSelected)
 
 TEST(MetaengineTest, KillEnemiesInSlashRangeIfSlashUpgradeIsSelected)
 {
-    auto player = Player{Position{0, 0}}; // Player faces up
+    auto player = Player{PositionD{0, 0}}; // Player faces up
     player.set_attack(AttackUpgrade::Slash);
     auto engine = MetaEngine{{DefaultState{
-        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{Position{50, 50}}}}}};
+        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{PositionD{50, 50}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(0, enemies_count);
@@ -164,12 +164,12 @@ TEST(MetaengineTest, KillEnemiesInSlashRangeIfSlashUpgradeIsSelected)
 
 TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfShootUpgradeIsSelected)
 {
-    auto player = Player{Position{0, 0}};
+    auto player = Player{PositionD{0, 0}};
     player.set_attack(AttackUpgrade::Shoot);
     auto engine = MetaEngine{{DefaultState{
         player,
         Pickup{{5634, 654}, {{}, {}}},
-        Enemies{{Position{-100, -100}}}}}};
+        Enemies{{PositionD{-100, -100}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(1, enemies_count);
@@ -177,10 +177,10 @@ TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfShootUpgradeIsSelected)
 
 TEST(MetaEngineTest, DoNotSlashEnemiesBehindPlayer)
 {
-    auto player = Player{Position{0, 0}}; // Player is facing up
+    auto player = Player{PositionD{0, 0}}; // Player is facing up
     player.set_attack(AttackUpgrade::Slash);
     auto engine = MetaEngine{{DefaultState{
-        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{Position{0, -50}}}}}};
+        player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{PositionD{0, -50}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
     EXPECT_EQ(1, enemies_count);
@@ -188,7 +188,7 @@ TEST(MetaEngineTest, DoNotSlashEnemiesBehindPlayer)
 
 TEST(MetaEngineTest, InputAttackAdvancesProjectiles)
 {
-    auto player = Player{Position{0, 0}};
+    auto player = Player{PositionD{0, 0}};
     player.set_attack(AttackUpgrade::Shoot);
     auto engine = MetaEngine{
         {DefaultState{player, Pickup{{65464, 754676}, {{}, {}}}, Enemies{{}}}}};

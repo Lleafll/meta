@@ -20,16 +20,16 @@ void kill_enemies_that_got_hit(Player const& player, Enemies& enemies)
 
 } // namespace
 
-void advance(InternalGameState& state)
+void advance(InternalGameState& state, std::chrono::milliseconds const diff)
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) {
-                state.player.advance();
+            [diff](DefaultState& state) {
+                state.player.advance(state.layout.tiles(), diff);
                 state.layout.check_for_transition(
                     state.player, state.enemies.positions());
                 kill_enemies_that_got_hit(state.player, state.enemies);
-                state.enemies.advance(state.player.position());
+                state.enemies.advance(state.player.position(), diff);
             },
             [](auto const&) {}},
         state.value);

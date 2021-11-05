@@ -9,7 +9,7 @@ namespace {
 TEST(PickingUpStateTest, ToGameState)
 {
     auto const state = PickingUpState{
-        Player{Position{12, 34}},
+        Player{PositionD{12, 34}},
         UpgradeChoices{PickupUpgrade::Shoot, PickupUpgrade::Slash},
         Enemies{{}}};
     auto const game_state = to_game_state(state);
@@ -23,9 +23,9 @@ TEST(PickingUpStateTest, ToGameState)
 TEST(PickingUpStateTest, ToGameStateConsidersEnemies)
 {
     auto const state = PickingUpState{
-        Player{Position{}},
+        Player{PositionD{}},
         UpgradeChoices{PickupUpgrade::Shoot, PickupUpgrade::Slash},
-        Enemies{{Position{435, 765}}}};
+        Enemies{{PositionD{435, 765}}}};
     auto const enemy_positions = to_game_state(state).enemy_positions;
     auto const expected = std::vector<Position>{{435, 765}};
     EXPECT_EQ(expected, enemy_positions);

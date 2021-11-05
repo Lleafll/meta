@@ -1,19 +1,19 @@
 #pragma once
 
-#include "PositionAndOrientation.h"
+#include "PositionDAndOrientation.h"
 
 namespace metacore {
 
 class SlashAttackMechanic final {
   public:
     [[nodiscard]] bool is_active() const;
-    void start(PositionAndOrientation const& where);
+    void start(PositionDAndOrientation const& where);
     void tick();
-    [[nodiscard]] bool target_is_hit(Position const& target) const;
+    [[nodiscard]] bool target_is_hit(PositionD const& target) const;
 
   private:
     bool is_active_ = false;
-    PositionAndOrientation where_ = {};
+    PositionDAndOrientation where_ = {};
 };
 
 } // namespace metacore

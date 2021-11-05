@@ -16,7 +16,7 @@ class OpenWorldLayoutMechanic final {
     OpenWorldLayoutMechanic();
 
     [[nodiscard]] std::vector<Tile> const& tiles() const;
-    bool check_for_transition(Player& player, std::span<Position> enemies);
+    bool check_for_transition(Player& player, std::span<PositionD> enemies);
 
   private:
     int seed;
