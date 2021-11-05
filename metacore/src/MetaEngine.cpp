@@ -48,7 +48,7 @@ struct MetaEngine::Impl final {
     void state(InternalGameState const& state)
     {
         state_ = state;
-        clock = Clock{state_};
+        clock.set_state(state_);
     }
 };
 
@@ -190,6 +190,7 @@ void set_upgrade(
     Player& player,
     Enemies& enemies,
     Layout& layout,
+    Clock& clock,
     UpgradeChoices const& choices)
 {
     auto const choice = choices.*member;
@@ -224,15 +225,20 @@ void set_upgrade(
         case PickupUpgrade::Castle:
             layout.texture = EnvironmentTexture::Castle;
             break;
+        case PickupUpgrade::RealTime:
+            clock.set(ClockUpgrade::RealTime);
+            break;
+        case PickupUpgrade::Superhot:
+            break;
     }
 }
 
 template<PickupUpgrade UpgradeChoices::*member>
-DefaultState
-apply_upgrade_and_transition(PickingUpState& state, Pickup const& next_pickup)
+DefaultState apply_upgrade_and_transition(
+    PickingUpState& state, Pickup const& next_pickup, Clock& clock)
 {
     set_upgrade<member>(
-        state.player, state.enemies, state.layout, state.choices);
+        state.player, state.enemies, state.layout, clock, state.choices);
     return DefaultState{state.player, next_pickup, state.enemies, state.layout};
 }
 
@@ -247,7 +253,8 @@ void MetaEngine::select_first_upgrade()
                     {apply_upgrade_and_transition<&UpgradeChoices::first>(
                         state,
                         impl_->pick_up_generator.generate(
-                            state.layout.bounds()))});
+                            state.layout.bounds()),
+                        impl_->clock)});
             },
             [](auto const&) {}},
         impl_->state().value);
@@ -262,7 +269,8 @@ void MetaEngine::select_second_upgrade()
                     {apply_upgrade_and_transition<&UpgradeChoices::second>(
                         state,
                         impl_->pick_up_generator.generate(
-                            state.layout.bounds()))});
+                            state.layout.bounds()),
+                        impl_->clock)});
             },
             [](auto const&) {}},
         impl_->state().value);

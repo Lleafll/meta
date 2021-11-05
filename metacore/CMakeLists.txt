@@ -15,6 +15,7 @@ add_library(${PROJECT_NAME}
         "src/PickingUpState.cpp"
         "src/PickUpGenerator.cpp"
         "src/Player.cpp"
+        "src/RealTimeClock.cpp"
         "src/ShootAttackMechanic.cpp"
         "src/SlashAttackMechanic.cpp"
         "src/TurnBasedClock.cpp"

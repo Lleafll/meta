@@ -12,7 +12,9 @@ enum class PickupUpgrade {
     Alien,
     Robot,
     SpaceStation,
-    Castle
+    Castle,
+    RealTime,
+    Superhot
 };
 
 } // namespace metacore
