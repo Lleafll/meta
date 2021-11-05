@@ -17,6 +17,7 @@ add_library(${PROJECT_NAME}
         "src/Player.cpp"
         "src/ShootAttackMechanic.cpp"
         "src/SlashAttackMechanic.cpp"
+        "src/TurnBasedClock.cpp"
         )
 target_include_directories(${PROJECT_NAME}
         PUBLIC

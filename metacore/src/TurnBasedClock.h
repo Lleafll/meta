@@ -1,23 +1,18 @@
 #pragma once
 
-#include "TurnBasedClock.h"
-#include <variant>
 namespace metacore {
 struct InternalGameState;
 } // namespace metacore
 
 namespace metacore {
 
-enum class ClockUpgrade { TurnBased };
-
-class Clock {
+class TurnBasedClock {
   public:
-    explicit Clock(InternalGameState& state);
+    explicit TurnBasedClock(InternalGameState& state);
 
     void input();
 
   private:
-    std::variant<TurnBasedClock> clock_;
     InternalGameState* state_;
 };
 

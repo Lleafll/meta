@@ -1,15 +1,15 @@
 #include "Clock.h"
-#include "InternalGameState.h"
 
 namespace metacore {
 
-Clock::Clock(InternalGameState& state) : state_{&state}
+Clock::Clock(InternalGameState& state)
+    : clock_{TurnBasedClock{state}}, state_{&state}
 {
 }
 
 void Clock::input()
 {
-    advance(*state_);
+    std::visit([](TurnBasedClock& clock) { clock.input(); }, clock_);
 }
 
 } // namespace metacore
