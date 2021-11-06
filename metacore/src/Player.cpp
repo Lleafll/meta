@@ -7,7 +7,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto player_move_speed = 50.0 / 1000.0; // per millisecond
+constexpr auto player_move_speed = 2000.0 / 1000.0; // per millisecond
 constexpr auto shoot_kill_radius = 50.0;
 constexpr auto player_size = 49.0;
 
