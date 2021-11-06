@@ -388,49 +388,58 @@ enum class CloseRequested : bool { Yes, No };
 
 CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
 {
+    static auto last_key = std::optional<SDL_Keycode>{};
     auto close_requested = CloseRequested::No;
     auto event = SDL_Event{};
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_d:
-                    case SDLK_RIGHT:
-                        engine.input_right();
-                        break;
-                    case SDLK_a:
-                    case SDLK_LEFT:
-                        engine.input_left();
-                        break;
-                    case SDLK_w:
-                    case SDLK_UP:
-                        engine.input_up();
-                        break;
-                    case SDLK_s:
-                    case SDLK_DOWN:
-                        engine.input_down();
-                        break;
-                    case SDLK_1:
-                        engine.select_first_upgrade();
-                        break;
-                    case SDLK_2:
-                        engine.select_second_upgrade();
-                        break;
-                    case SDLK_SPACE:
-                        engine.input_attack();
-                        break;
-                    case SDLK_F5:
-                        engine.input_restart();
-                        break;
-                    case SDLK_ESCAPE:
-                        close_requested = CloseRequested::Yes;
-                        break;
+                last_key = event.key.keysym.sym;
+                break;
+            case SDL_KEYUP:
+                if (last_key == event.key.keysym.sym) {
+                    last_key = {};
                 }
                 break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
                     close_requested = CloseRequested::Yes;
                 }
+                break;
+        }
+    }
+    if (last_key.has_value()) {
+        switch (*last_key) {
+            case SDLK_d:
+            case SDLK_RIGHT:
+                engine.input_right();
+                break;
+            case SDLK_a:
+            case SDLK_LEFT:
+                engine.input_left();
+                break;
+            case SDLK_w:
+            case SDLK_UP:
+                engine.input_up();
+                break;
+            case SDLK_s:
+            case SDLK_DOWN:
+                engine.input_down();
+                break;
+            case SDLK_1:
+                engine.select_first_upgrade();
+                break;
+            case SDLK_2:
+                engine.select_second_upgrade();
+                break;
+            case SDLK_SPACE:
+                engine.input_attack();
+                break;
+            case SDLK_F5:
+                engine.input_restart();
+                break;
+            case SDLK_ESCAPE:
+                close_requested = CloseRequested::Yes;
                 break;
         }
     }
