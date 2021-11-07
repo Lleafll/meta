@@ -49,10 +49,11 @@ TEST(PlayerTest, MoveLeft)
 
 TEST(PlayerTest, MoveUpConsidersObstacles)
 {
+    constexpr auto tick = std::chrono::milliseconds{10};
     auto const environment = std::array{Tile{{0, 50}, TileType::Obstacle}};
     auto player = Player{{0, 0}};
     player.move_up();
-    player.advance(environment);
+    player.advance(environment, tick);
     auto const position = player.position();
     EXPECT_EQ((PositionD{0, 0}), position);
 }
@@ -64,35 +65,39 @@ TEST(PlayerTest, MoveUpDoesWorkWithStairs)
     player.move_up();
     player.advance(environment);
     auto const position = player.position();
-    EXPECT_EQ((PositionD{0, 50}), position);
+    EXPECT_EQ(0, position.x);
+    EXPECT_GT(position.y, 0);
 }
 
 TEST(PlayerTest, MoveDownConsidersObstacles)
 {
+    constexpr auto tick = std::chrono::milliseconds{10};
     auto const environment = std::array{Tile{{0, -50}, TileType::Obstacle}};
     auto player = Player{{0, 0}};
     player.move_down();
-    player.advance(environment);
+    player.advance(environment, tick);
     auto const position = player.position();
     EXPECT_EQ((PositionD{0, 0}), position);
 }
 
 TEST(PlayerTest, MoveRightConsidersObstacles)
 {
+    constexpr auto tick = std::chrono::milliseconds{10};
     auto const environment = std::array{Tile{{50, 0}, TileType::Obstacle}};
     auto player = Player{{0, 0}};
     player.move_right();
-    player.advance(environment);
+    player.advance(environment, tick);
     auto const position = player.position();
     EXPECT_EQ((PositionD{0, 0}), position);
 }
 
 TEST(PlayerTest, MoveLeftConsidersObstacles)
 {
+    constexpr auto tick = std::chrono::milliseconds{10};
     auto const environment = std::array{Tile{{-50, 0}, TileType::Obstacle}};
     auto player = Player{{0, 0}};
     player.move_left();
-    player.advance(environment);
+    player.advance(environment, tick);
     auto const position = player.position();
     EXPECT_EQ((PositionD{0, 0}), position);
 }
