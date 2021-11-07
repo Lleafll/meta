@@ -58,8 +58,11 @@ TEST(DefaultStateTest, ToGameStateConsidersProjectiles)
     }
     auto const state = DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{}};
     auto const game_state_projectiles = to_game_state(state).projectiles;
-    auto const expected = std::vector{Position{324, 815}};
-    EXPECT_EQ(expected, game_state_projectiles);
+    EXPECT_TRUE(game_state_projectiles.has_value());
+    EXPECT_EQ(1, game_state_projectiles->size());
+    auto const& projectile = game_state_projectiles->front();
+    EXPECT_EQ(324, projectile.x);
+    EXPECT_GE(projectile.y, 765);
 }
 
 TEST(DefaultStateTest, ToGameStateConsidersLayout)
