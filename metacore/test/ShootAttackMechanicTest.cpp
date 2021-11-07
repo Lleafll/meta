@@ -12,8 +12,10 @@ TEST(ShootAttackMechanic, Start)
     ASSERT_TRUE(attack.projectiles().empty());
     attack.start({PositionD{23, 65}, Orientation::Right});
     auto const& projectiles = attack.projectiles();
-    auto const expected = std::vector<PositionD>{{73, 65}};
-    EXPECT_EQ(expected, projectiles);
+    EXPECT_EQ(1, projectiles.size());
+    auto const& projectile = projectiles.front();
+    EXPECT_GT(projectile.x, 23);
+    EXPECT_EQ(65, projectile.y);
 }
 
 TEST(ShootAttackMechanic, Tick)
