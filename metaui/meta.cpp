@@ -442,6 +442,8 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                 close_requested = CloseRequested::Yes;
                 break;
         }
+    } else {
+        engine.input_stop();
     }
     return close_requested;
 }

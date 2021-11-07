@@ -23,6 +23,7 @@ class MetaEngine final {
     void input_down();
     void input_attack();
     void input_restart();
+    void input_stop();
     void select_first_upgrade();
     void select_second_upgrade();
 

@@ -33,6 +33,7 @@ class Player final {
     void move_down();
     void move_right();
     void move_left();
+    void stop();
     void attack();
     void set_attack(AttackUpgrade upgrade);
     [[nodiscard]] bool target_is_hit(PositionD const& target) const;

@@ -191,6 +191,15 @@ void MetaEngine::input_restart()
     impl_ = std::make_unique<Impl>();
 }
 
+void MetaEngine::input_stop()
+{
+    std::visit(
+        overloaded{
+            [](DefaultState& state) { state.player.stop(); },
+            [](auto const&) {}},
+        impl_->state().value);
+}
+
 namespace {
 
 template<PickupUpgrade UpgradeChoices::*member>

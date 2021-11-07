@@ -78,6 +78,11 @@ void Player::move_left()
     next_move_ = NextMove::Left;
 }
 
+void Player::stop()
+{
+    next_move_ = NextMove::None;
+}
+
 void Player::attack()
 {
     next_move_ = NextMove::Attack;
@@ -185,8 +190,8 @@ void Player::advance(
                 },
                 [](std::monostate const&) {}},
             attack_);
+        next_move_ = NextMove::None;
     }
-    next_move_ = NextMove::None;
 }
 
 } // namespace metacore
