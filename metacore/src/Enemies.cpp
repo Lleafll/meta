@@ -6,7 +6,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto enemy_movement_speed = 10.0 / 1'000'000.0;
+constexpr auto enemy_movement_speed = 50.0 / 1'000'000.0; // per microsecond
 constexpr auto spawn_interval = std::chrono::microseconds{4'000'000};
 constexpr auto spawn_edge = 300;
 
