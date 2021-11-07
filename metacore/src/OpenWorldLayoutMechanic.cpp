@@ -79,7 +79,7 @@ check_if_out_of_bounds(PositionD const& position, int& x, int& y)
         --y;
         return Orientation::Down;
     }
-    if (position.y > layout_bounds.right) {
+    if (position.y > layout_bounds.top) {
         ++y;
         return Orientation::Up;
     }
