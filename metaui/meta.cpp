@@ -391,10 +391,14 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
     static auto last_key = std::optional<SDL_Keycode>{};
     auto close_requested = CloseRequested::No;
     auto event = SDL_Event{};
+    auto key = std::optional<SDL_Keycode>{};
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_KEYDOWN:
-                last_key = event.key.keysym.sym;
+                if (last_key != event.key.keysym.sym) {
+                    key = event.key.keysym.sym;
+                    last_key = key;
+                }
                 break;
             case SDL_KEYUP:
                 if (last_key == event.key.keysym.sym) {
@@ -408,8 +412,8 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                 break;
         }
     }
-    if (last_key.has_value()) {
-        switch (*last_key) {
+    if (key.has_value()) {
+        switch (*key) {
             case SDLK_d:
             case SDLK_RIGHT:
                 engine.input_right();
@@ -442,7 +446,7 @@ CloseRequested read_and_pass_input(metacore::MetaEngine& engine)
                 close_requested = CloseRequested::Yes;
                 break;
         }
-    } else {
+    } else if (!last_key.has_value()) {
         engine.input_stop();
     }
     return close_requested;
