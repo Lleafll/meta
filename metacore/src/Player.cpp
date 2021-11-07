@@ -8,7 +8,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto player_move_speed = 200.0 / 1000.0; // per millisecond
+constexpr auto player_move_speed = 200.0 / 1'000'000.0; // per microsecond
 constexpr auto shoot_kill_radius = 50.0;
 constexpr auto player_size = 49.0;
 
@@ -145,7 +145,7 @@ bool is_obstructed(
 
 void Player::advance(
     std::span<Tile const> const environment,
-    std::chrono::milliseconds const diff)
+    std::chrono::microseconds const diff)
 {
     auto const new_position =
         [this, diff]() -> std::optional<PositionDAndOrientation> {

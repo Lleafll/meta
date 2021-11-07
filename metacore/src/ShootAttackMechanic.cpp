@@ -7,7 +7,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto projectile_speed = 200.0 / 1000.0; // per millisecond
+constexpr auto projectile_speed = 200.0 / 1'000'000.0; // per microsecond
 
 } // namespace
 
@@ -59,7 +59,7 @@ void ShootAttackMechanic::start(
     orientations_.push_back(position_and_orientation.orientation);
 }
 
-void ShootAttackMechanic::tick(std::chrono::milliseconds const diff)
+void ShootAttackMechanic::tick(std::chrono::microseconds const diff)
 {
     Expects(positions_.size() == orientations_.size());
     auto const step = projectile_speed * gsl::narrow_cast<double>(diff.count());

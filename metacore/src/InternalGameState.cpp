@@ -20,7 +20,7 @@ void kill_enemies_that_got_hit(Player const& player, Enemies& enemies)
 
 } // namespace
 
-void advance(InternalGameState& state, std::chrono::milliseconds const diff)
+void advance(InternalGameState& state, std::chrono::microseconds const diff)
 {
     std::visit(
         overloaded{

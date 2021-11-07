@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RealTimeClock.h"
+#include "SuperhotClock.h"
 #include "TurnBasedClock.h"
 #include <variant>
 namespace metacore {
@@ -9,7 +10,7 @@ struct InternalGameState;
 
 namespace metacore {
 
-enum class ClockUpgrade { TurnBased, RealTime };
+enum class ClockUpgrade { TurnBased, RealTime, Superhot };
 
 class Clock {
   public:
@@ -18,9 +19,10 @@ class Clock {
     void set_state(InternalGameState& state);
     void set(ClockUpgrade upgrade);
     void input();
+    void stop();
 
   private:
-    std::variant<TurnBasedClock, RealTimeClock> clock_;
+    std::variant<TurnBasedClock, RealTimeClock, SuperhotClock> clock_;
     InternalGameState* state_;
 };
 

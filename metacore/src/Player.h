@@ -39,7 +39,7 @@ class Player final {
     [[nodiscard]] bool target_is_hit(PositionD const& target) const;
     void advance(
         std::span<Tile const> environment,
-        std::chrono::milliseconds diff = std::chrono::milliseconds{1000});
+        std::chrono::microseconds diff = std::chrono::microseconds{1000000});
 
   private:
     enum class NextMove { None, Up, Down, Right, Left, Attack };

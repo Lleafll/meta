@@ -16,7 +16,7 @@ class ShootAttackMechanic final {
 
     [[nodiscard]] std::vector<PositionD> const& projectiles() const;
     void start(PositionDAndOrientation const& position_and_orientation);
-    void tick(std::chrono::milliseconds diff = std::chrono::milliseconds{1000});
+    void tick(std::chrono::microseconds diff = std::chrono::microseconds{1000});
 
   private:
     std::vector<PositionD> positions_ = {};

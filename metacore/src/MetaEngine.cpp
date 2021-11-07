@@ -195,7 +195,10 @@ void MetaEngine::input_stop()
 {
     std::visit(
         overloaded{
-            [](DefaultState& state) { state.player.stop(); },
+            [this](DefaultState& state) {
+                state.player.stop();
+                impl_->clock.stop();
+            },
             [](auto const&) {}},
         impl_->state().value);
 }
@@ -246,6 +249,7 @@ void set_upgrade(
             clock.set(ClockUpgrade::RealTime);
             break;
         case PickupUpgrade::Superhot:
+            clock.set(ClockUpgrade::Superhot);
             break;
     }
 }

@@ -12,6 +12,6 @@ struct InternalGameState final {
     std::variant<DefaultState, PickingUpState, GameOverState> value;
 };
 
-void advance(InternalGameState& state, std::chrono::milliseconds diff);
+void advance(InternalGameState& state, std::chrono::microseconds diff);
 
 } // namespace metacore

@@ -6,8 +6,8 @@ namespace metacore {
 
 namespace {
 
-constexpr auto enemy_movement_speed = 10.0 / 1000.0;
-constexpr auto spawn_interval = std::chrono::milliseconds{4000};
+constexpr auto enemy_movement_speed = 10.0 / 1'000'000.0;
+constexpr auto spawn_interval = std::chrono::microseconds{4'000'000};
 constexpr auto spawn_edge = 300;
 
 } // namespace
@@ -101,7 +101,7 @@ PositionD generate_random_position(std::mt19937& random_engine)
 } // namespace
 
 void Enemies::advance(
-    PositionD const& player_position, std::chrono::milliseconds const diff)
+    PositionD const& player_position, std::chrono::microseconds const diff)
 {
     auto const step =
         enemy_movement_speed * gsl::narrow_cast<double>(diff.count());

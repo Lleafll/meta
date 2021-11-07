@@ -24,6 +24,9 @@ void Clock::set(ClockUpgrade const upgrade)
         case ClockUpgrade::RealTime:
             clock_ = RealTimeClock{*state_};
             break;
+        case ClockUpgrade::Superhot:
+            clock_ = SuperhotClock{*state_};
+            break;
     }
 }
 
@@ -31,7 +34,18 @@ void Clock::input()
 {
     std::visit(
         overloaded{
-            [](TurnBasedClock& clock) { clock.input(); }, [](auto const&) {}},
+            [](TurnBasedClock& clock) { clock.input(); },
+            [](SuperhotClock& clock) { clock.input_start(); },
+            [](auto const&) {}},
+        clock_);
+}
+
+void Clock::stop()
+{
+    std::visit(
+        overloaded{
+            [](SuperhotClock& clock) { clock.input_stop(); },
+            [](auto const&) {}},
         clock_);
 }
 
