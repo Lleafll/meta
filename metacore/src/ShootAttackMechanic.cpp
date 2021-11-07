@@ -7,7 +7,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto projectile_speed = 50.0 / 1000.0; // per millisecond
+constexpr auto projectile_speed = 200.0 / 1000.0; // per millisecond
 
 } // namespace
 

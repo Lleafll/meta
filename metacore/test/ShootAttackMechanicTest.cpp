@@ -23,8 +23,11 @@ TEST(ShootAttackMechanic, Tick)
     auto attack = ShootAttackMechanic{std::array{
         PositionDAndOrientation{PositionD{0, 0}, Orientation::Right}}};
     attack.tick();
-    auto const expected = std::vector<PositionD>{{50, 0}};
-    EXPECT_EQ(expected, attack.projectiles());
+    auto const& projectiles = attack.projectiles();
+    EXPECT_EQ(1, projectiles.size());
+    auto const& projectile = projectiles.front();
+    EXPECT_GT(projectile.x, 0);
+    EXPECT_EQ(0, projectile.y);
 }
 
 TEST(ShootAttackMechanic, TickObeysDirections)
@@ -32,8 +35,11 @@ TEST(ShootAttackMechanic, TickObeysDirections)
     auto attack = ShootAttackMechanic{
         std::array{PositionDAndOrientation{PositionD{0, 0}, Orientation::Up}}};
     attack.tick();
-    auto const expected = std::vector<PositionD>{{0, 50}};
-    EXPECT_EQ(expected, attack.projectiles());
+    auto const& projectiles = attack.projectiles();
+    EXPECT_EQ(1, projectiles.size());
+    auto const& projectile = projectiles.front();
+    EXPECT_EQ(0, projectile.x);
+    EXPECT_GT(projectile.y, 0);
 }
 
 } // namespace
