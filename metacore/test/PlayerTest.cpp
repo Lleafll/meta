@@ -208,21 +208,21 @@ TEST(PlayerTest, ShootAttackObeysDirectionFromMovingUp)
 
 TEST(PlayerTest, ShootAttackObeysDirectionFromMovingLeft)
 {
+    constexpr auto tick = std::chrono::milliseconds{5};
     auto player = Player{PositionDAndOrientation{{0, 0}, Orientation::Down}};
     player.set_attack(AttackUpgrade::Shoot);
     player.move_right();
-    player.advance({});
+    player.advance({}, tick);
     player.attack();
-    player.advance({});
+    player.advance({}, tick);
     player.move_up();
-    player.advance({});
+    player.advance({}, tick);
     auto const* const projectiles = player.projectiles();
     ASSERT_TRUE(projectiles != nullptr);
     ASSERT_EQ(1, projectiles->size());
     auto const projectile = projectiles->front();
-    auto const expected = PositionD{50 + 50 + 50, 0};
-    EXPECT_EQ(expected, projectile)
-        << std::format("{},{}", projectile.x, projectile.y);
+    EXPECT_GT(projectile.x, 0);
+    EXPECT_EQ(0, projectile.y);
 }
 
 TEST(PlayerTest, ShootAttackObeysDirectionFromMovingRight)
