@@ -22,7 +22,7 @@ TEST(SlashAttackMechanicTest, IsInactiveAfterTick)
 {
     auto mechanic = SlashAttackMechanic{};
     mechanic.start({});
-    mechanic.tick();
+    mechanic.tick(std::chrono::microseconds{5'000'000});
     EXPECT_FALSE(mechanic.is_active());
 }
 

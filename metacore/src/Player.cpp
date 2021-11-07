@@ -176,7 +176,7 @@ void Player::advance(
     }
     std::visit(
         overloaded{
-            [](SlashAttackMechanic& attack) { attack.tick(); },
+            [diff](SlashAttackMechanic& attack) { attack.tick(diff); },
             [diff](ShootAttackMechanic& attack) { attack.tick(diff); },
             [](auto const&) {}},
         attack_);

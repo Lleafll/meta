@@ -5,28 +5,29 @@ namespace metacore {
 namespace {
 
 constexpr auto slash_radius = 50.0;
+constexpr auto attack_duration = std::chrono::microseconds{200'000};
 
 } // namespace
 
 bool SlashAttackMechanic::is_active() const
 {
-    return is_active_;
+    return time_passed_ < attack_duration;
 }
 
 void SlashAttackMechanic::start(PositionDAndOrientation const& where)
 {
-    is_active_ = true;
+    time_passed_ = {};
     where_ = where;
 }
 
-void SlashAttackMechanic::tick()
+void SlashAttackMechanic::tick(std::chrono::microseconds const diff)
 {
-    is_active_ = false;
+    time_passed_ += diff;
 }
 
 bool SlashAttackMechanic::target_is_hit(PositionD const& target) const
 {
-    if (!is_active_) {
+    if (!is_active()) {
         return false;
     }
     auto const& position = where_.position;
