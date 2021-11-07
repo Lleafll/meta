@@ -6,7 +6,7 @@ namespace metacore {
 namespace {
 
 constexpr auto sleep_duration = std::chrono::milliseconds{5};
-constexpr auto slow_motion_rate = 10;
+constexpr auto slow_motion_rate = 20;
 
 } // namespace
 
