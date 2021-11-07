@@ -5,7 +5,7 @@ namespace metacore {
 
 namespace {
 
-constexpr auto turn_time = std::chrono::milliseconds{25};
+constexpr auto turn_time = std::chrono::milliseconds{250};
 
 } // namespace
 
