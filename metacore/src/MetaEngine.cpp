@@ -11,45 +11,8 @@
 
 namespace metacore {
 
-namespace {
-
-constexpr auto pickup_distance = 50.0;
-constexpr auto enemy_collision_distance = 20.0;
-
-} // namespace
-
 struct MetaEngine::Impl final {
-    PickUpGenerator pick_up_generator = {};
-
-  private:
-    InternalGameState state_ = [this]() -> InternalGameState {
-        auto const layout = Layout{LayoutUpgrade::Arena};
-        return {DefaultState{
-            Player{PositionD{0, 0}},
-            pick_up_generator.generate(layout.bounds()),
-            Enemies{},
-            layout}};
-    }();
-
-  public:
-    Clock clock = Clock{state_};
-
-    Impl() = default;
-    explicit Impl(InternalGameState state)
-        : state_{std::move(state)}, clock{state_}
-    {
-    }
-
-    [[nodiscard]] InternalGameState& state()
-    {
-        return state_;
-    }
-
-    void state(InternalGameState const& state)
-    {
-        state_ = state;
-        clock.set_state(state_);
-    }
+    InternalGameState state_;
 };
 
 MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
@@ -57,7 +20,7 @@ MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
 }
 
 MetaEngine::MetaEngine(InternalGameState const& state)
-    : impl_{std::make_unique<Impl>(state)}
+    : impl_{std::make_unique<Impl>()}
 {
 }
 
@@ -65,9 +28,7 @@ MetaEngine::~MetaEngine() = default;
 
 GameState MetaEngine::calculate_state() const
 {
-    return std::visit(
-        [](auto const& state) -> GameState { return to_game_state(state); },
-        impl_->state().value);
+    return impl_->state_.to_game_state();
 }
 
 namespace {
@@ -121,7 +82,7 @@ void move_and_maybe_transition(DefaultState& state, MetaEngine::Impl& impl)
 {
     (state.player.*move_direction)();
     advance_and_maybe_transition(state, impl);
-    if (std::holds_alternative<DefaultState>(impl.state().value) &&
+    if (std::holds_alternative<DefaultState>(impl.state().state_) &&
         check_pickup(state.player, state.pickup)) {
         impl.state({PickingUpState{
             state.player, state.pickup.upgrades, state.enemies, state.layout}});
@@ -138,7 +99,7 @@ void MetaEngine::input_right()
                 move_and_maybe_transition<&Player::move_right>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 void MetaEngine::input_left()
@@ -149,7 +110,7 @@ void MetaEngine::input_left()
                 move_and_maybe_transition<&Player::move_left>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 void MetaEngine::input_up()
@@ -160,7 +121,7 @@ void MetaEngine::input_up()
                 move_and_maybe_transition<&Player::move_up>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 void MetaEngine::input_down()
@@ -171,7 +132,7 @@ void MetaEngine::input_down()
                 move_and_maybe_transition<&Player::move_down>(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 void MetaEngine::input_attack()
@@ -183,7 +144,7 @@ void MetaEngine::input_attack()
                 advance_and_maybe_transition(state, *impl_);
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 void MetaEngine::input_restart()
@@ -200,7 +161,7 @@ void MetaEngine::input_stop()
                 impl_->clock.stop();
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 namespace {
@@ -278,7 +239,7 @@ void MetaEngine::select_first_upgrade()
                         impl_->clock)});
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 void MetaEngine::select_second_upgrade()
@@ -294,7 +255,7 @@ void MetaEngine::select_second_upgrade()
                         impl_->clock)});
             },
             [](auto const&) {}},
-        impl_->state().value);
+        impl_->state().state_);
 }
 
 } // namespace metacore

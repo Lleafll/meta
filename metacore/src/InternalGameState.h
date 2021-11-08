@@ -4,14 +4,28 @@
 #include "DefaultState.h"
 #include "GameOverState.h"
 #include "PickingUpState.h"
+#include "PickUpGenerator.h"
 #include <variant>
 
 namespace metacore {
 
-struct InternalGameState final {
-    std::variant<DefaultState, PickingUpState, GameOverState> value;
-};
+class InternalGameState final {
+  public:
+    InternalGameState();
 
-void advance(InternalGameState& state, std::chrono::microseconds diff);
+    void advance(std::chrono::microseconds diff);
+    [[nodiscard]] GameState to_game_state() const;
+
+    ~InternalGameState() = default;
+    InternalGameState(InternalGameState const&) = delete;
+    InternalGameState(InternalGameState&&) = delete;
+    InternalGameState operator=(InternalGameState const&) = delete;
+    InternalGameState operator=(InternalGameState&&) = delete;
+
+  private:
+    PickUpGenerator pickup_generator_ = {};
+    std::variant<DefaultState, PickingUpState, GameOverState> state_;
+    Clock clock_;
+};
 
 } // namespace metacore
