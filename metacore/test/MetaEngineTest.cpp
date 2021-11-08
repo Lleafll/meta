@@ -69,7 +69,7 @@ TEST(MetaEngineTest, UpgradeCollision)
 
 TEST(MetaEngineTest, UpgradeSelectFirst)
 {
-    auto engine = MetaEngine{{PickingUpState{
+    auto engine = MetaEngine{InternalGameState{PickingUpState{
         Player{PositionD{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
     {
         auto const original_state = engine.calculate_state();
@@ -84,7 +84,7 @@ TEST(MetaEngineTest, UpgradeSelectFirst)
 
 TEST(MetaEngineTest, UpgradeSelectSecond)
 {
-    auto engine = MetaEngine{{PickingUpState{
+    auto engine = MetaEngine{InternalGameState{PickingUpState{
         Player{PositionD{453, 7865}}, UpgradeChoices{{}, {}}, Enemies{{}}}}};
     {
         auto const original_state = engine.calculate_state();
@@ -101,8 +101,8 @@ TEST(MetaEngineTest, AttackStartsSlash)
 {
     auto player = Player{};
     player.set_attack(AttackUpgrade::Slash);
-    auto engine =
-        MetaEngine{{DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{{}}}}};
+    auto engine = MetaEngine{InternalGameState{
+        DefaultState{player, Pickup{{}, {{}, {}}}, Enemies{{}}}}};
     ASSERT_FALSE(engine.calculate_state().slash_attack);
     engine.input_attack();
     EXPECT_TRUE(engine.calculate_state().slash_attack);
@@ -110,7 +110,7 @@ TEST(MetaEngineTest, AttackStartsSlash)
 
 TEST(MetaEngineTest, ProperlyTransitionToGameOver)
 {
-    auto engine = MetaEngine{{DefaultState{
+    auto engine = MetaEngine{InternalGameState{DefaultState{
         Player{PositionD{50, 0}},
         Pickup{{500, 500}, {{}, {}}},
         Enemies{{PositionD{0, 0}}}}}};
@@ -128,7 +128,7 @@ TEST(MetaEngineTest, ProperlyTransitionToGameOver)
 
 TEST(MetaEngineTest, InputRestart)
 {
-    auto engine = MetaEngine{{DefaultState{
+    auto engine = MetaEngine{InternalGameState{DefaultState{
         Player{PositionD{34, 65}},
         Pickup{{5634, 654}, {{}, {}}},
         Enemies{{PositionD{654, 65}}}}}};
@@ -142,7 +142,7 @@ TEST(MetaEngineTest, InputRestart)
 
 TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfNoUpgradeIsSelected)
 {
-    auto engine = MetaEngine{{DefaultState{
+    auto engine = MetaEngine{InternalGameState{DefaultState{
         Player{{0, 0}},
         Pickup{{5634, 654}, {{}, {}}},
         Enemies{{PositionD{-50, -50}}}}}};
@@ -155,7 +155,7 @@ TEST(MetaengineTest, KillEnemiesInSlashRangeIfSlashUpgradeIsSelected)
 {
     auto player = Player{PositionD{0, 0}}; // Player faces up
     player.set_attack(AttackUpgrade::Slash);
-    auto engine = MetaEngine{{DefaultState{
+    auto engine = MetaEngine{InternalGameState{DefaultState{
         player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{PositionD{50, 50}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
@@ -166,7 +166,7 @@ TEST(MetaengineTest, DoNotKillEnemiesInSlashRangeIfShootUpgradeIsSelected)
 {
     auto player = Player{PositionD{0, 0}};
     player.set_attack(AttackUpgrade::Shoot);
-    auto engine = MetaEngine{{DefaultState{
+    auto engine = MetaEngine{InternalGameState{DefaultState{
         player,
         Pickup{{5634, 654}, {{}, {}}},
         Enemies{{PositionD{-100, -100}}}}}};
@@ -179,7 +179,7 @@ TEST(MetaEngineTest, DoNotSlashEnemiesBehindPlayer)
 {
     auto player = Player{PositionD{0, 0}}; // Player is facing up
     player.set_attack(AttackUpgrade::Slash);
-    auto engine = MetaEngine{{DefaultState{
+    auto engine = MetaEngine{InternalGameState{DefaultState{
         player, Pickup{{5634, 654}, {{}, {}}}, Enemies{{PositionD{0, -50}}}}}};
     engine.input_attack();
     auto const enemies_count = engine.calculate_state().enemy_positions.size();
@@ -190,8 +190,8 @@ TEST(MetaEngineTest, InputAttackAdvancesProjectiles)
 {
     auto player = Player{PositionD{0, 0}};
     player.set_attack(AttackUpgrade::Shoot);
-    auto engine = MetaEngine{
-        {DefaultState{player, Pickup{{65464, 754676}, {{}, {}}}, Enemies{{}}}}};
+    auto engine = MetaEngine{InternalGameState{
+        DefaultState{player, Pickup{{65464, 754676}, {{}, {}}}, Enemies{{}}}}};
     {
         auto const projectiles = engine.calculate_state().projectiles;
         ASSERT_TRUE(projectiles.has_value());

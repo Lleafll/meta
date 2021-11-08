@@ -1,5 +1,4 @@
 #include "DungeonLayoutMechanic.h"
-#include "PositionD.h"
 
 namespace metacore {
 
@@ -68,8 +67,8 @@ bool DungeonLayoutMechanic::check_for_transition(
     PositionD const& player_position)
 {
     auto& stairs_tile = tiles_.back();
-    if (is_within_distance<double{tile_size}>(
-            player_position, to_position_d(stairs_tile.position))) {
+    if (is_within_distance(
+            tile_size, player_position, to_position_d(stairs_tile.position))) {
         tiles_ = {};
         add_bounds<tile_size, bounds_>(tiles_);
         add_tiles<tile_size, bounds_>(random_engine_, tiles_);

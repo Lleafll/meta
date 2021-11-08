@@ -17,7 +17,7 @@ TurnBasedClock::TurnBasedClock(InternalGameState& state) : state_{&state}
 
 void TurnBasedClock::input()
 {
-    advance(*state_, turn_time);
+    state_->advance(turn_time);
 }
 
 } // namespace metacore

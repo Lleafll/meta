@@ -9,12 +9,20 @@
 
 namespace metacore {
 
+enum class UpgradeSelection { First, Second };
+
 class InternalGameState final {
   public:
     InternalGameState();
+    explicit InternalGameState(
+        std::variant<DefaultState, PickingUpState, GameOverState> state);
 
     void advance(std::chrono::microseconds diff);
     [[nodiscard]] GameState to_game_state() const;
+    void move_player(Orientation orientation);
+    void attack_player();
+    void stop_player();
+    void select_upgrade(UpgradeSelection selection);
 
     ~InternalGameState() = default;
     InternalGameState(InternalGameState const&) = delete;

@@ -28,8 +28,8 @@ constexpr Position to_position(PositionD const& position_d)
 
 namespace detail {
 
-template<double distance>
-constexpr bool is_within_distance(double const lhs, double const rhs)
+constexpr bool
+is_within_distance(double const distance, double const lhs, double const rhs)
 {
     auto const diff = lhs - rhs;
     if (diff >= 0) {
@@ -41,11 +41,11 @@ constexpr bool is_within_distance(double const lhs, double const rhs)
 
 } // namespace detail
 
-template<double distance>
-constexpr bool is_within_distance(PositionD const& lhs, PositionD const& rhs)
+constexpr bool is_within_distance(
+    double const distance, PositionD const& lhs, PositionD const& rhs)
 {
-    return detail::is_within_distance<distance>(lhs.x, rhs.x) &&
-        detail::is_within_distance<distance>(lhs.y, rhs.y);
+    return detail::is_within_distance(distance, lhs.x, rhs.x) &&
+        detail::is_within_distance(distance, lhs.y, rhs.y);
 }
 
 } // namespace metacore

@@ -23,7 +23,7 @@ RealTimeClock::RealTimeClock(InternalGameState& state)
                       std::chrono::duration_cast<std::chrono::microseconds>(
                           now - start);
                   start = now;
-                  advance(*state, diff);
+                  state->advance(diff);
               }
           },
           &state}

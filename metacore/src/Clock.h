@@ -5,7 +5,7 @@
 #include "TurnBasedClock.h"
 #include <variant>
 namespace metacore {
-struct InternalGameState;
+class InternalGameState;
 } // namespace metacore
 
 namespace metacore {

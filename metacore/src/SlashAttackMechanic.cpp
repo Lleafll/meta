@@ -31,7 +31,7 @@ bool SlashAttackMechanic::target_is_hit(PositionD const& target) const
         return false;
     }
     auto const& position = where_.position;
-    if (!is_within_distance<slash_radius>(position, target)) {
+    if (!is_within_distance(slash_radius, position, target)) {
         return false;
     }
     switch (where_.orientation) {

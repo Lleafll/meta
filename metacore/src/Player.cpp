@@ -112,8 +112,8 @@ bool Player::target_is_hit(PositionD const& target) const
                 return std::ranges::any_of(
                     attack.projectiles(),
                     [&target](PositionD const& projectile) -> bool {
-                        return is_within_distance<shoot_kill_radius>(
-                            projectile, target);
+                        return is_within_distance(
+                            shoot_kill_radius, projectile, target);
                     });
             },
             [](auto const&) -> bool { return false; }},
@@ -134,8 +134,10 @@ bool is_obstructed(
     return std::ranges::any_of(
         environment, [&new_value](Tile const& tile) -> bool {
             if (tile.type == TileType::Obstacle) {
-                return is_within_distance<player_size>(
-                    new_value.position, to_position_d(tile.position));
+                return is_within_distance(
+                    player_size,
+                    new_value.position,
+                    to_position_d(tile.position));
             }
             return false;
         });

@@ -3,7 +3,7 @@
 #include <memory>
 namespace metacore {
 struct GameState;
-struct InternalGameState;
+class InternalGameState;
 } // namespace metacore
 
 namespace metacore {

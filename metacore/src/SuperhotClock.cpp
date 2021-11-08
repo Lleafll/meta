@@ -29,7 +29,7 @@ SuperhotClock::SuperhotClock(InternalGameState& state)
                       diff /= slow_motion_rate;
                   }
                   start = now;
-                  advance(*state, diff);
+                  state->advance(diff);
               }
           },
           &state,
