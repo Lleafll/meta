@@ -184,6 +184,10 @@ void InternalGameState::move_player(Orientation const orientation)
 
 void InternalGameState::attack_player()
 {
+    if (auto* const state = std::get_if<DefaultState>(&state_);
+        state != nullptr) {
+        state->player.attack();
+    }
 }
 
 void InternalGameState::stop_player()
