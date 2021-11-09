@@ -12,6 +12,9 @@ Clock::Clock(InternalGameState& state)
 void Clock::set_state(InternalGameState& state)
 {
     state_ = &state;
+    if (auto* const clock = std::get_if<TurnBasedClock>(&clock_)) {
+        clock->set_state(state);
+    }
 }
 
 void Clock::set(ClockUpgrade const upgrade)

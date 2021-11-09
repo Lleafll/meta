@@ -15,6 +15,11 @@ TurnBasedClock::TurnBasedClock(InternalGameState& state) : state_{&state}
 {
 }
 
+void TurnBasedClock::set_state(InternalGameState& state)
+{
+    state_ = &state;
+}
+
 void TurnBasedClock::input()
 {
     state_->advance(turn_time);

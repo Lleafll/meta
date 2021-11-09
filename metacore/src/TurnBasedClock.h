@@ -10,6 +10,7 @@ class TurnBasedClock {
   public:
     explicit TurnBasedClock(InternalGameState& state);
 
+    void set_state(InternalGameState& state);
     void input();
 
   private:

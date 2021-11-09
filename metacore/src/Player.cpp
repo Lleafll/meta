@@ -169,7 +169,7 @@ void Player::advance(
                     {position.x - step, position.y}, Orientation::Left};
             default:
                 break;
-        };
+        }
         return std::nullopt;
     }();
     if (new_position.has_value() &&

@@ -147,7 +147,10 @@ struct StateAdvancer final {
 
 void InternalGameState::advance(std::chrono::microseconds const diff)
 {
-    std::visit(StateAdvancer{diff}, state_);
+    auto const new_state = std::visit(StateAdvancer{diff}, state_);
+    if (new_state.has_value()) {
+        state_ = *new_state;
+    }
 }
 
 GameState InternalGameState::to_game_state() const
@@ -187,6 +190,7 @@ void InternalGameState::attack_player()
     if (auto* const state = std::get_if<DefaultState>(&state_);
         state != nullptr) {
         state->player.attack();
+        clock_.input();
     }
 }
 
