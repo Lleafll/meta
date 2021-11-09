@@ -13,7 +13,7 @@ class MetaEngine final {
     struct Impl;
 
     MetaEngine();
-    explicit MetaEngine(InternalGameState const& state);
+    explicit MetaEngine(InternalGameState state);
     ~MetaEngine();
 
     [[nodiscard]] GameState calculate_state() const;

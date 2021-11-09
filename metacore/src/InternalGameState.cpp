@@ -13,14 +13,16 @@ constexpr auto enemy_collision_distance = 20.0;
 } // namespace
 
 InternalGameState::InternalGameState()
-    : InternalGameState{{[this]() -> DefaultState {
+    : pickup_generator_{},
+      state_{[this]() -> DefaultState {
           auto const layout = Layout{LayoutUpgrade::Arena};
           return {
               Player{PositionD{0, 0}},
               pickup_generator_.generate(layout.bounds()),
               Enemies{},
               layout};
-      }()}}
+      }()},
+      clock_{*this}
 {
 }
 
@@ -28,6 +30,24 @@ InternalGameState::InternalGameState(
     std::variant<DefaultState, PickingUpState, GameOverState> state)
     : state_{std::move(state)}, clock_{*this}
 {
+}
+
+InternalGameState::InternalGameState(InternalGameState&& other) noexcept
+    : pickup_generator_{other.pickup_generator_},
+      state_{std::move(other.state_)},
+      clock_{std::move(other.clock_)}
+{
+    clock_.set_state(*this);
+}
+
+InternalGameState&
+InternalGameState::operator=(InternalGameState&& other) noexcept
+{
+    pickup_generator_ = other.pickup_generator_;
+    state_ = std::move(other.state_);
+    clock_ = std::move(other.clock_);
+    clock_.set_state(*this);
+    return *this;
 }
 
 namespace {

@@ -14,8 +14,8 @@ MetaEngine::MetaEngine() : impl_{std::make_unique<Impl>()}
 {
 }
 
-MetaEngine::MetaEngine(InternalGameState const& state)
-    : impl_{std::make_unique<Impl>()}
+MetaEngine::MetaEngine(InternalGameState state)
+    : impl_{std::make_unique<Impl>(Impl{std::move(state)})}
 {
 }
 

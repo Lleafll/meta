@@ -17,18 +17,18 @@ class InternalGameState final {
     explicit InternalGameState(
         std::variant<DefaultState, PickingUpState, GameOverState> state);
 
+    ~InternalGameState() = default;
+    InternalGameState(InternalGameState const&) = delete;
+    InternalGameState(InternalGameState&& other) noexcept;
+    InternalGameState& operator=(InternalGameState const&) = delete;
+    InternalGameState& operator=(InternalGameState&& other) noexcept;
+
     void advance(std::chrono::microseconds diff);
     [[nodiscard]] GameState to_game_state() const;
     void move_player(Orientation orientation);
     void attack_player();
     void stop_player();
     void select_upgrade(UpgradeSelection selection);
-
-    ~InternalGameState() = default;
-    InternalGameState(InternalGameState const&) = delete;
-    InternalGameState(InternalGameState&&) = delete;
-    InternalGameState operator=(InternalGameState const&) = delete;
-    InternalGameState operator=(InternalGameState&&) = delete;
 
   private:
     PickUpGenerator pickup_generator_ = {};
