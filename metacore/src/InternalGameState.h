@@ -5,6 +5,7 @@
 #include "GameOverState.h"
 #include "PickingUpState.h"
 #include "PickUpGenerator.h"
+#include <mutex>
 #include <variant>
 
 namespace metacore {
@@ -34,6 +35,7 @@ class InternalGameState final {
     PickUpGenerator pickup_generator_ = {};
     std::variant<DefaultState, PickingUpState, GameOverState> state_;
     Clock clock_;
+    mutable std::recursive_mutex mutex_;
 };
 
 } // namespace metacore

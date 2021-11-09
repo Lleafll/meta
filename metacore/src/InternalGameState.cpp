@@ -147,6 +147,7 @@ struct StateAdvancer final {
 
 void InternalGameState::advance(std::chrono::microseconds const diff)
 {
+    auto const lock = std::scoped_lock{mutex_};
     auto const new_state = std::visit(StateAdvancer{diff}, state_);
     if (new_state.has_value()) {
         state_ = *new_state;
@@ -155,6 +156,7 @@ void InternalGameState::advance(std::chrono::microseconds const diff)
 
 GameState InternalGameState::to_game_state() const
 {
+    auto const lock = std::scoped_lock{mutex_};
     return std::visit(
         [](auto const& state) -> GameState {
             return metacore::to_game_state(state);
@@ -164,6 +166,7 @@ GameState InternalGameState::to_game_state() const
 
 void InternalGameState::move_player(Orientation const orientation)
 {
+    auto const lock = std::scoped_lock{mutex_};
     if (auto* const state = std::get_if<DefaultState>(&state_);
         state != nullptr) {
         auto& player = state->player;
@@ -187,6 +190,7 @@ void InternalGameState::move_player(Orientation const orientation)
 
 void InternalGameState::attack_player()
 {
+    auto const lock = std::scoped_lock{mutex_};
     if (auto* const state = std::get_if<DefaultState>(&state_);
         state != nullptr) {
         state->player.attack();
@@ -196,6 +200,7 @@ void InternalGameState::attack_player()
 
 void InternalGameState::stop_player()
 {
+    auto const lock = std::scoped_lock{mutex_};
     if (auto* const state = std::get_if<DefaultState>(&state_);
         state != nullptr) {
         state->player.stop();
@@ -265,6 +270,7 @@ transition_to_default(PickingUpState& state, PickUpGenerator& generator)
 
 void InternalGameState::select_upgrade(UpgradeSelection const selection)
 {
+    auto const lock = std::scoped_lock{mutex_};
     if (auto* const state = std::get_if<PickingUpState>(&state_);
         state != nullptr) {
         auto const& choices = state->choices;
