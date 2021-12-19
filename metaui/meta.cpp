@@ -471,7 +471,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
                 IMG_GetError())};
         }
         window = SDL_CreateWindow(
-            "SDL Example",
+            "Meta",
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
             screen_width,
